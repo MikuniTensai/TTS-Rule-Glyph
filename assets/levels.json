@@ -1,0 +1,5403 @@
+{
+  "base_levels": [
+    {
+      "id": 1,
+      "name": "Langkah Pertama",
+      "description": "Capai portal tanpa glyph. Ini level pemanasan.",
+      "width": 5,
+      "height": 5,
+      "movesLimit": 3,
+      "initialRules": {
+        "red": "STOP",
+        "blue": "STOP",
+        "green": "STOP"
+      },
+      "allowedRules": {
+        "red": [
+          "STOP"
+        ],
+        "blue": [
+          "STOP"
+        ],
+        "green": [
+          "STOP"
+        ]
+      },
+      "map": [
+        "#####",
+        "#@.X#",
+        "#...#",
+        "#...#",
+        "#####"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Dorong Sakelar",
+      "description": "Gunakan PUSH untuk menahan plate merah dan membuka gate.",
+      "width": 7,
+      "height": 5,
+      "movesLimit": 7,
+      "initialRules": {
+        "red": "STOP",
+        "blue": "STOP",
+        "green": "STOP"
+      },
+      "allowedRules": {
+        "red": [
+          "STOP",
+          "PUSH"
+        ],
+        "blue": [
+          "STOP"
+        ],
+        "green": [
+          "STOP"
+        ]
+      },
+      "map": [
+        "#######",
+        "#@..1X#",
+        "#A###.#",
+        "#a....#",
+        "#######"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Koridor Dorong",
+      "description": "Dorong glyph lebih jauh sebelum kembali ke jalur utama.",
+      "width": 8,
+      "height": 5,
+      "movesLimit": 10,
+      "initialRules": {
+        "red": "STOP",
+        "blue": "STOP",
+        "green": "STOP"
+      },
+      "allowedRules": {
+        "red": [
+          "STOP",
+          "PUSH"
+        ],
+        "blue": [
+          "STOP"
+        ],
+        "green": [
+          "STOP"
+        ]
+      },
+      "map": [
+        "########",
+        "#@...1X#",
+        "#A####.#",
+        "#a.....#",
+        "########"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Ruang Tukar",
+      "description": "Gunakan SWAP untuk masuk lewat glyph biru.",
+      "width": 7,
+      "height": 5,
+      "movesLimit": 10,
+      "initialRules": {
+        "red": "STOP",
+        "blue": "STOP",
+        "green": "STOP"
+      },
+      "allowedRules": {
+        "red": [
+          "STOP"
+        ],
+        "blue": [
+          "STOP",
+          "SWAP"
+        ],
+        "green": [
+          "STOP"
+        ]
+      },
+      "map": [
+        "#######",
+        "#@B#..#",
+        "##..#X#",
+        "#.....#",
+        "#######"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Tukar Zigzag",
+      "description": "SWAP membuka jalur pendek melewati ruang yang dipisah dinding.",
+      "width": 8,
+      "height": 5,
+      "movesLimit": 12,
+      "initialRules": {
+        "red": "STOP",
+        "blue": "STOP",
+        "green": "STOP"
+      },
+      "allowedRules": {
+        "red": [
+          "STOP"
+        ],
+        "blue": [
+          "STOP",
+          "SWAP"
+        ],
+        "green": [
+          "STOP"
+        ]
+      },
+      "map": [
+        "########",
+        "#@B#..X#",
+        "##.#.#.#",
+        "#..B...#",
+        "########"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Kunci Merge",
+      "description": "Gabungkan dua glyph merah agar lorong bisa dibuka.",
+      "width": 8,
+      "height": 5,
+      "movesLimit": 12,
+      "initialRules": {
+        "red": "STOP",
+        "blue": "STOP",
+        "green": "STOP"
+      },
+      "allowedRules": {
+        "red": [
+          "STOP",
+          "MERGE"
+        ],
+        "blue": [
+          "STOP"
+        ],
+        "green": [
+          "STOP"
+        ]
+      },
+      "map": [
+        "########",
+        "#@AAa..#",
+        "#.####.#",
+        "#....1X#",
+        "########"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Lorong Padat",
+      "description": "Tiga glyph harus diringkas dengan MERGE sebelum gate merah.",
+      "width": 9,
+      "height": 5,
+      "movesLimit": 14,
+      "initialRules": {
+        "red": "STOP",
+        "blue": "STOP",
+        "green": "STOP"
+      },
+      "allowedRules": {
+        "red": [
+          "STOP",
+          "MERGE"
+        ],
+        "blue": [
+          "STOP"
+        ],
+        "green": [
+          "STOP"
+        ]
+      },
+      "map": [
+        "#########",
+        "#@AAAa..#",
+        "#.#####.#",
+        "#.....1X#",
+        "#########"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Jembatan Spike",
+      "description": "Dorong glyph ke spike untuk menyeberang dengan aman.",
+      "width": 7,
+      "height": 3,
+      "movesLimit": 4,
+      "initialRules": {
+        "red": "STOP",
+        "blue": "STOP",
+        "green": "STOP"
+      },
+      "allowedRules": {
+        "red": [
+          "STOP",
+          "PUSH"
+        ],
+        "blue": [
+          "STOP"
+        ],
+        "green": [
+          "STOP"
+        ]
+      },
+      "map": [
+        "#######",
+        "#@A^X.#",
+        "#######"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Dua Warna",
+      "description": "Buka gate merah dengan PUSH, lalu lewati glyph biru dengan SWAP.",
+      "width": 9,
+      "height": 6,
+      "movesLimit": 16,
+      "initialRules": {
+        "red": "STOP",
+        "blue": "STOP",
+        "green": "STOP"
+      },
+      "allowedRules": {
+        "red": [
+          "STOP",
+          "PUSH"
+        ],
+        "blue": [
+          "STOP",
+          "SWAP"
+        ],
+        "green": [
+          "STOP"
+        ]
+      },
+      "map": [
+        "#########",
+        "#@A.a...#",
+        "#.#####.#",
+        "#...1B#X#",
+        "#####...#",
+        "#########"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Hijau Pertama",
+      "description": "PUSH merah membuka jalur, MERGE hijau membuka portal.",
+      "width": 10,
+      "height": 6,
+      "movesLimit": 20,
+      "initialRules": {
+        "red": "STOP",
+        "blue": "STOP",
+        "green": "STOP"
+      },
+      "allowedRules": {
+        "red": [
+          "STOP",
+          "PUSH"
+        ],
+        "blue": [
+          "STOP"
+        ],
+        "green": [
+          "STOP",
+          "MERGE"
+        ]
+      },
+      "map": [
+        "##########",
+        "#@A.a....#",
+        "#.######.#",
+        "#...1CCcX#",
+        "#......3.#",
+        "##########"
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Tiga Kunci",
+      "description": "Gabungkan tiga mekanik dasar dalam satu jalur.",
+      "width": 10,
+      "height": 8,
+      "movesLimit": 26,
+      "initialRules": {
+        "red": "STOP",
+        "blue": "STOP",
+        "green": "STOP"
+      },
+      "allowedRules": {
+        "red": [
+          "STOP",
+          "PUSH"
+        ],
+        "blue": [
+          "STOP",
+          "SWAP"
+        ],
+        "green": [
+          "STOP",
+          "MERGE"
+        ]
+      },
+      "map": [
+        "##########",
+        "#@A.a....#",
+        "#.######.#",
+        "#...1B#..#",
+        "#####...##",
+        "#.....CCc#",
+        "#......3X#",
+        "##########"
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Ruang Sempit",
+      "description": "Jalur lebih rapat dengan gate yang tetap harus dibuka berurutan.",
+      "width": 10,
+      "height": 8,
+      "movesLimit": 26,
+      "initialRules": {
+        "red": "STOP",
+        "blue": "STOP",
+        "green": "STOP"
+      },
+      "allowedRules": {
+        "red": [
+          "STOP",
+          "PUSH"
+        ],
+        "blue": [
+          "STOP",
+          "SWAP"
+        ],
+        "green": [
+          "STOP",
+          "MERGE"
+        ]
+      },
+      "map": [
+        "##########",
+        "#@A.a....#",
+        "#.######.#",
+        "#...1B#..#",
+        "###.#...##",
+        "#...#.CCc#",
+        "#.####.3X#",
+        "##########"
+      ]
+    },
+    {
+      "id": 13,
+      "name": "Rintangan Tajam",
+      "description": "Spike mempersempit jalur setelah gate biru.",
+      "width": 10,
+      "height": 8,
+      "movesLimit": 28,
+      "initialRules": {
+        "red": "STOP",
+        "blue": "STOP",
+        "green": "STOP"
+      },
+      "allowedRules": {
+        "red": [
+          "STOP",
+          "PUSH"
+        ],
+        "blue": [
+          "STOP",
+          "SWAP"
+        ],
+        "green": [
+          "STOP",
+          "MERGE"
+        ]
+      },
+      "map": [
+        "##########",
+        "#@A.a.^..#",
+        "#.######.#",
+        "#...1B#..#",
+        "#####...##",
+        "#.....CCc#",
+        "#......3X#",
+        "##########"
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Audit Ketat",
+      "description": "Batas langkah mulai lebih sempit.",
+      "width": 10,
+      "height": 8,
+      "movesLimit": 27,
+      "initialRules": {
+        "red": "STOP",
+        "blue": "STOP",
+        "green": "STOP"
+      },
+      "allowedRules": {
+        "red": [
+          "STOP",
+          "PUSH"
+        ],
+        "blue": [
+          "STOP",
+          "SWAP"
+        ],
+        "green": [
+          "STOP",
+          "MERGE"
+        ]
+      },
+      "map": [
+        "##########",
+        "#@A.a....#",
+        "#.######.#",
+        "#...1B#..#",
+        "#####...##",
+        "#.....CCc#",
+        "#......3X#",
+        "##########"
+      ]
+    },
+    {
+      "id": 15,
+      "name": "Batas Hampir Pas",
+      "description": "Solusi butuh urutan rule yang efisien.",
+      "width": 10,
+      "height": 8,
+      "movesLimit": 26,
+      "initialRules": {
+        "red": "STOP",
+        "blue": "STOP",
+        "green": "STOP"
+      },
+      "allowedRules": {
+        "red": [
+          "STOP",
+          "PUSH"
+        ],
+        "blue": [
+          "STOP",
+          "SWAP"
+        ],
+        "green": [
+          "STOP",
+          "MERGE"
+        ]
+      },
+      "map": [
+        "##########",
+        "#@A.a....#",
+        "#.######.#",
+        "#...1B#..#",
+        "#####.^.##",
+        "#.....CCc#",
+        "#......3X#",
+        "##########"
+      ]
+    },
+    {
+      "id": 16,
+      "name": "Plate Jauh",
+      "description": "Plate dan gate masih berurutan, tapi ruang baca lebih padat.",
+      "width": 10,
+      "height": 9,
+      "movesLimit": 30,
+      "initialRules": {
+        "red": "STOP",
+        "blue": "STOP",
+        "green": "STOP"
+      },
+      "allowedRules": {
+        "red": [
+          "STOP",
+          "PUSH"
+        ],
+        "blue": [
+          "STOP",
+          "SWAP"
+        ],
+        "green": [
+          "STOP",
+          "MERGE"
+        ]
+      },
+      "map": [
+        "##########",
+        "#@A.a....#",
+        "#.######.#",
+        "#...1B#..#",
+        "#####...##",
+        "#.....CCc#",
+        "#......3X#",
+        "#........#",
+        "##########"
+      ]
+    },
+    {
+      "id": 17,
+      "name": "Jalur Bercabang",
+      "description": "Cabang palsu membuat route yang benar lebih sulit dibaca.",
+      "width": 10,
+      "height": 9,
+      "movesLimit": 30,
+      "initialRules": {
+        "red": "STOP",
+        "blue": "STOP",
+        "green": "STOP"
+      },
+      "allowedRules": {
+        "red": [
+          "STOP",
+          "PUSH"
+        ],
+        "blue": [
+          "STOP",
+          "SWAP"
+        ],
+        "green": [
+          "STOP",
+          "MERGE"
+        ]
+      },
+      "map": [
+        "##########",
+        "#@A.a....#",
+        "#.######.#",
+        "#...1B#..#",
+        "#####...##",
+        "#.....CCc#",
+        "#..#...3X#",
+        "#........#",
+        "##########"
+      ]
+    },
+    {
+      "id": 18,
+      "name": "Sirkuit Padat",
+      "description": "Semua gate inti muncul lagi dengan ruang gerak lebih kecil.",
+      "width": 10,
+      "height": 8,
+      "movesLimit": 25,
+      "initialRules": {
+        "red": "STOP",
+        "blue": "STOP",
+        "green": "STOP"
+      },
+      "allowedRules": {
+        "red": [
+          "STOP",
+          "PUSH"
+        ],
+        "blue": [
+          "STOP",
+          "SWAP"
+        ],
+        "green": [
+          "STOP",
+          "MERGE"
+        ]
+      },
+      "map": [
+        "##########",
+        "#@A.a.^..#",
+        "#.######.#",
+        "#...1B#..#",
+        "#####.^.##",
+        "#.....CCc#",
+        "#......3X#",
+        "##########"
+      ]
+    },
+    {
+      "id": 19,
+      "name": "Pra-Finale",
+      "description": "Hanya beberapa langkah cadangan tersisa.",
+      "width": 10,
+      "height": 9,
+      "movesLimit": 24,
+      "initialRules": {
+        "red": "STOP",
+        "blue": "STOP",
+        "green": "STOP"
+      },
+      "allowedRules": {
+        "red": [
+          "STOP",
+          "PUSH"
+        ],
+        "blue": [
+          "STOP",
+          "SWAP"
+        ],
+        "green": [
+          "STOP",
+          "MERGE"
+        ]
+      },
+      "map": [
+        "##########",
+        "#@A.a....#",
+        "#.######.#",
+        "#...1B#..#",
+        "#####...##",
+        "#.....CCc#",
+        "#..#...3X#",
+        "#..^.....#",
+        "##########"
+      ]
+    },
+    {
+      "id": 20,
+      "name": "Ujian Bab Satu",
+      "description": "Semua rule inti muncul sebelum campaign masuk ke ronde presisi.",
+      "width": 10,
+      "height": 8,
+      "movesLimit": 24,
+      "initialRules": {
+        "red": "STOP",
+        "blue": "STOP",
+        "green": "STOP"
+      },
+      "allowedRules": {
+        "red": [
+          "STOP",
+          "PUSH"
+        ],
+        "blue": [
+          "STOP",
+          "SWAP"
+        ],
+        "green": [
+          "STOP",
+          "MERGE"
+        ]
+      },
+      "map": [
+        "##########",
+        "#@A.a.^..#",
+        "#.######.#",
+        "#...1B#..#",
+        "#####.^.##",
+        "#.....CCc#",
+        "#......3X#",
+        "##########"
+      ]
+    },
+    {
+      "id": 21,
+      "name": "Laboratorium Laser",
+      "description": "Tembak laser, teleport, dan timbun jurang. Pahami cara glyph berinteraksi dengan elemen ini.",
+      "width": 8,
+      "height": 7,
+      "movesLimit": 22,
+      "initialRules": {
+        "red": "STOP",
+        "blue": "STOP",
+        "green": "STOP"
+      },
+      "allowedRules": {
+        "red": [
+          "STOP",
+          "PUSH",
+          "SWAP"
+        ],
+        "blue": [
+          "STOP",
+          "PUSH"
+        ],
+        "green": [
+          "STOP"
+        ]
+      },
+      "map": [
+        "########",
+        "#@.L..X#",
+        "#A.###.#",
+        "#..#_..#",
+        "#B.#...#",
+        "#[.#.]##",
+        "########"
+      ]
+    },
+    {
+      "id": 22,
+      "name": "Transisi Berwaktu",
+      "description": "Injak lantai sensor untuk menyalin aturan, dan manfaatkan lantai berjalan sebelum aturan berwaktu habis.",
+      "width": 8,
+      "height": 7,
+      "movesLimit": 20,
+      "initialRules": {
+        "red": "PUSH",
+        "blue": "STOP",
+        "green": "STOP"
+      },
+      "allowedRules": {
+        "red": [
+          "STOP",
+          "PUSH"
+        ],
+        "blue": [
+          "STOP",
+          "PUSH"
+        ],
+        "green": [
+          "STOP"
+        ]
+      },
+      "map": [
+        "########",
+        "#@.S...#",
+        "#A.#####",
+        "#..)..)#",
+        "#B.#####",
+        "#J....X#",
+        "########"
+      ]
+    }
+  ],
+  "levels_by_mode": {
+    "1": [
+      {
+        "id": 1,
+        "name": "Langkah Pertama",
+        "description": "Capai portal tanpa glyph. Ini level pemanasan.",
+        "width": 5,
+        "height": 5,
+        "movesLimit": 3,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP"
+          ],
+          "blue": [
+            "STOP"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "#####",
+          "#@.X#",
+          "#...#",
+          "#...#",
+          "#####"
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Dorong Sakelar",
+        "description": "Gunakan PUSH untuk menahan plate merah dan membuka gate.",
+        "width": 7,
+        "height": 5,
+        "movesLimit": 7,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "#######",
+          "#@..1X#",
+          "#A###.#",
+          "#a....#",
+          "#######"
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Koridor Dorong",
+        "description": "Dorong glyph lebih jauh sebelum kembali ke jalur utama.",
+        "width": 8,
+        "height": 5,
+        "movesLimit": 10,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "########",
+          "#@...1X#",
+          "#A####.#",
+          "#a.....#",
+          "########"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Ruang Tukar",
+        "description": "Gunakan SWAP untuk masuk lewat glyph biru.",
+        "width": 7,
+        "height": 5,
+        "movesLimit": 10,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "#######",
+          "#@B#..#",
+          "##..#X#",
+          "#.....#",
+          "#######"
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Tukar Zigzag",
+        "description": "SWAP membuka jalur pendek melewati ruang yang dipisah dinding.",
+        "width": 8,
+        "height": 5,
+        "movesLimit": 12,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "########",
+          "#@B#..X#",
+          "##.#.#.#",
+          "#..B...#",
+          "########"
+        ]
+      },
+      {
+        "id": 6,
+        "name": "Kunci Merge",
+        "description": "Gabungkan dua glyph merah agar lorong bisa dibuka.",
+        "width": 8,
+        "height": 5,
+        "movesLimit": 12,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "MERGE"
+          ],
+          "blue": [
+            "STOP"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "########",
+          "#@AAa..#",
+          "#.####.#",
+          "#....1X#",
+          "########"
+        ]
+      },
+      {
+        "id": 7,
+        "name": "Lorong Padat",
+        "description": "Tiga glyph harus diringkas dengan MERGE sebelum gate merah.",
+        "width": 9,
+        "height": 5,
+        "movesLimit": 14,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "MERGE"
+          ],
+          "blue": [
+            "STOP"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "#########",
+          "#@AAAa..#",
+          "#.#####.#",
+          "#.....1X#",
+          "#########"
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Jembatan Spike",
+        "description": "Dorong glyph ke spike untuk menyeberang dengan aman.",
+        "width": 7,
+        "height": 3,
+        "movesLimit": 4,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "#######",
+          "#@A^X.#",
+          "#######"
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Dua Warna",
+        "description": "Buka gate merah dengan PUSH, lalu lewati glyph biru dengan SWAP.",
+        "width": 9,
+        "height": 6,
+        "movesLimit": 16,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "#########",
+          "#@A.a...#",
+          "#.#####.#",
+          "#...1B#X#",
+          "#####...#",
+          "#########"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "Hijau Pertama",
+        "description": "PUSH merah membuka jalur, MERGE hijau membuka portal.",
+        "width": 10,
+        "height": 6,
+        "movesLimit": 20,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1CCcX#",
+          "#......3.#",
+          "##########"
+        ]
+      },
+      {
+        "id": 11,
+        "name": "Tiga Kunci",
+        "description": "Gabungkan tiga mekanik dasar dalam satu jalur.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 26,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 12,
+        "name": "Ruang Sempit",
+        "description": "Jalur lebih rapat dengan gate yang tetap harus dibuka berurutan.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 26,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "###.#...##",
+          "#...#.CCc#",
+          "#.####.3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 13,
+        "name": "Rintangan Tajam",
+        "description": "Spike mempersempit jalur setelah gate biru.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 28,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 14,
+        "name": "Audit Ketat",
+        "description": "Batas langkah mulai lebih sempit.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 27,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "Batas Hampir Pas",
+        "description": "Solusi butuh urutan rule yang efisien.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 26,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 16,
+        "name": "Plate Jauh",
+        "description": "Plate dan gate masih berurutan, tapi ruang baca lebih padat.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 30,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "#........#",
+          "##########"
+        ]
+      },
+      {
+        "id": 17,
+        "name": "Jalur Bercabang",
+        "description": "Cabang palsu membuat route yang benar lebih sulit dibaca.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 30,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#..#...3X#",
+          "#........#",
+          "##########"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "Sirkuit Padat",
+        "description": "Semua gate inti muncul lagi dengan ruang gerak lebih kecil.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 25,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "Pra-Finale",
+        "description": "Hanya beberapa langkah cadangan tersisa.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 24,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#..#...3X#",
+          "#..^.....#",
+          "##########"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "Ujian Bab Satu",
+        "description": "Semua rule inti muncul sebelum campaign masuk ke ronde presisi.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 24,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "Laboratorium Laser",
+        "description": "Tembak laser, teleport, dan timbun jurang. Pahami cara glyph berinteraksi dengan elemen ini.",
+        "width": 8,
+        "height": 7,
+        "movesLimit": 22,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH",
+            "SWAP"
+          ],
+          "blue": [
+            "STOP",
+            "PUSH"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "########",
+          "#@.L..X#",
+          "#A.###.#",
+          "#..#_..#",
+          "#B.#...#",
+          "#[.#.]##",
+          "########"
+        ]
+      },
+      {
+        "id": 22,
+        "name": "Transisi Berwaktu",
+        "description": "Injak lantai sensor untuk menyalin aturan, dan manfaatkan lantai berjalan sebelum aturan berwaktu habis.",
+        "width": 8,
+        "height": 7,
+        "movesLimit": 20,
+        "initialRules": {
+          "red": "PUSH",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "PUSH"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "########",
+          "#@.S...#",
+          "#A.#####",
+          "#..)..)#",
+          "#B.#####",
+          "#J....X#",
+          "########"
+        ]
+      },
+      {
+        "id": 23,
+        "name": "Bab 2: Rute Lanjutan 1",
+        "description": "Tiga Kunci dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 23,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 24,
+        "name": "Bab 2: Rute Lanjutan 2",
+        "description": "Ruang Sempit dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 23,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "###.#...##",
+          "#...#.CCc#",
+          "#.####.3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 25,
+        "name": "Bab 2: Rute Lanjutan 3",
+        "description": "Rintangan Tajam dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 23,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 26,
+        "name": "Bab 2: Rute Lanjutan 4",
+        "description": "Audit Ketat dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 23,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 27,
+        "name": "Bab 2: Rute Lanjutan 5",
+        "description": "Batas Hampir Pas dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 23,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 28,
+        "name": "Bab 2: Rute Lanjutan 6",
+        "description": "Plate Jauh dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 23,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "#........#",
+          "##########"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Bab 2: Rute Lanjutan 7",
+        "description": "Jalur Bercabang dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 23,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#..#...3X#",
+          "#........#",
+          "##########"
+        ]
+      },
+      {
+        "id": 30,
+        "name": "Bab 2: Rute Lanjutan 8",
+        "description": "Sirkuit Padat dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 23,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 31,
+        "name": "Bab 2: Rute Lanjutan 9",
+        "description": "Pra-Finale dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 23,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#..#...3X#",
+          "#..^.....#",
+          "##########"
+        ]
+      },
+      {
+        "id": 32,
+        "name": "Bab 2: Rute Lanjutan 10",
+        "description": "Ujian Bab Satu dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 23,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 33,
+        "name": "Bab 2: Rute Lanjutan 11",
+        "description": "Laboratorium Laser dengan batas langkah lebih ketat.",
+        "width": 8,
+        "height": 7,
+        "movesLimit": 23,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH",
+            "SWAP"
+          ],
+          "blue": [
+            "STOP",
+            "PUSH"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "########",
+          "#@.L..X#",
+          "#A.###.#",
+          "#..#_..#",
+          "#B.#...#",
+          "#[.#.]##",
+          "########"
+        ]
+      },
+      {
+        "id": 34,
+        "name": "Bab 2: Rute Lanjutan 12",
+        "description": "Transisi Berwaktu dengan batas langkah lebih ketat.",
+        "width": 8,
+        "height": 7,
+        "movesLimit": 23,
+        "initialRules": {
+          "red": "PUSH",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "PUSH"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "########",
+          "#@.S...#",
+          "#A.#####",
+          "#..)..)#",
+          "#B.#####",
+          "#J....X#",
+          "########"
+        ]
+      },
+      {
+        "id": 35,
+        "name": "Bab 3: Rute Padat 1",
+        "description": "Tiga Kunci dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 22,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 36,
+        "name": "Bab 3: Rute Padat 2",
+        "description": "Ruang Sempit dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 22,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "###.#...##",
+          "#...#.CCc#",
+          "#.####.3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 37,
+        "name": "Bab 3: Rute Padat 3",
+        "description": "Rintangan Tajam dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 22,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 38,
+        "name": "Bab 3: Rute Padat 4",
+        "description": "Audit Ketat dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 22,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 39,
+        "name": "Bab 3: Rute Padat 5",
+        "description": "Batas Hampir Pas dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 22,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 40,
+        "name": "Bab 3: Rute Padat 6",
+        "description": "Plate Jauh dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 22,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "#........#",
+          "##########"
+        ]
+      },
+      {
+        "id": 41,
+        "name": "Bab 3: Rute Padat 7",
+        "description": "Jalur Bercabang dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 22,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#..#...3X#",
+          "#........#",
+          "##########"
+        ]
+      },
+      {
+        "id": 42,
+        "name": "Bab 3: Rute Padat 8",
+        "description": "Sirkuit Padat dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 22,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 43,
+        "name": "Bab 3: Rute Padat 9",
+        "description": "Pra-Finale dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 22,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#..#...3X#",
+          "#..^.....#",
+          "##########"
+        ]
+      },
+      {
+        "id": 44,
+        "name": "Bab 3: Rute Padat 10",
+        "description": "Ujian Bab Satu dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 22,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 45,
+        "name": "Bab 3: Rute Padat 11",
+        "description": "Laboratorium Laser dengan batas langkah lebih ketat.",
+        "width": 8,
+        "height": 7,
+        "movesLimit": 22,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH",
+            "SWAP"
+          ],
+          "blue": [
+            "STOP",
+            "PUSH"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "########",
+          "#@.L..X#",
+          "#A.###.#",
+          "#..#_..#",
+          "#B.#...#",
+          "#[.#.]##",
+          "########"
+        ]
+      },
+      {
+        "id": 46,
+        "name": "Bab 3: Rute Padat 12",
+        "description": "Transisi Berwaktu dengan batas langkah lebih ketat.",
+        "width": 8,
+        "height": 7,
+        "movesLimit": 22,
+        "initialRules": {
+          "red": "PUSH",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "PUSH"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "########",
+          "#@.S...#",
+          "#A.#####",
+          "#..)..)#",
+          "#B.#####",
+          "#J....X#",
+          "########"
+        ]
+      },
+      {
+        "id": 47,
+        "name": "Bab 4: Jalur Tajam 1",
+        "description": "Tiga Kunci dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 21,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 48,
+        "name": "Bab 4: Jalur Tajam 2",
+        "description": "Ruang Sempit dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 21,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "###.#...##",
+          "#...#.CCc#",
+          "#.####.3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 49,
+        "name": "Bab 4: Jalur Tajam 3",
+        "description": "Rintangan Tajam dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 21,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 50,
+        "name": "Bab 4: Jalur Tajam 4",
+        "description": "Audit Ketat dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 21,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 51,
+        "name": "Bab 4: Jalur Tajam 5",
+        "description": "Batas Hampir Pas dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 21,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 52,
+        "name": "Bab 4: Jalur Tajam 6",
+        "description": "Plate Jauh dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 21,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "#........#",
+          "##########"
+        ]
+      },
+      {
+        "id": 53,
+        "name": "Bab 4: Jalur Tajam 7",
+        "description": "Jalur Bercabang dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 21,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#..#...3X#",
+          "#........#",
+          "##########"
+        ]
+      },
+      {
+        "id": 54,
+        "name": "Bab 4: Jalur Tajam 8",
+        "description": "Sirkuit Padat dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 21,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 55,
+        "name": "Bab 4: Jalur Tajam 9",
+        "description": "Pra-Finale dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 21,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#..#...3X#",
+          "#..^.....#",
+          "##########"
+        ]
+      },
+      {
+        "id": 56,
+        "name": "Bab 4: Jalur Tajam 10",
+        "description": "Ujian Bab Satu dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 21,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 57,
+        "name": "Bab 4: Jalur Tajam 11",
+        "description": "Laboratorium Laser dengan batas langkah lebih ketat.",
+        "width": 8,
+        "height": 7,
+        "movesLimit": 21,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH",
+            "SWAP"
+          ],
+          "blue": [
+            "STOP",
+            "PUSH"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "########",
+          "#@.L..X#",
+          "#A.###.#",
+          "#..#_..#",
+          "#B.#...#",
+          "#[.#.]##",
+          "########"
+        ]
+      },
+      {
+        "id": 58,
+        "name": "Bab 4: Jalur Tajam 12",
+        "description": "Transisi Berwaktu dengan batas langkah lebih ketat.",
+        "width": 8,
+        "height": 7,
+        "movesLimit": 21,
+        "initialRules": {
+          "red": "PUSH",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "PUSH"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "########",
+          "#@.S...#",
+          "#A.#####",
+          "#..)..)#",
+          "#B.#####",
+          "#J....X#",
+          "########"
+        ]
+      },
+      {
+        "id": 59,
+        "name": "Bab 5: Audit Cepat 1",
+        "description": "Tiga Kunci dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 20,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 60,
+        "name": "Bab 5: Audit Cepat 2",
+        "description": "Ruang Sempit dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 20,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "###.#...##",
+          "#...#.CCc#",
+          "#.####.3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 61,
+        "name": "Bab 5: Audit Cepat 3",
+        "description": "Rintangan Tajam dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 20,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 62,
+        "name": "Bab 5: Audit Cepat 4",
+        "description": "Audit Ketat dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 20,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 63,
+        "name": "Bab 5: Audit Cepat 5",
+        "description": "Batas Hampir Pas dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 20,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 64,
+        "name": "Bab 5: Audit Cepat 6",
+        "description": "Plate Jauh dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 20,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "#........#",
+          "##########"
+        ]
+      },
+      {
+        "id": 65,
+        "name": "Bab 5: Audit Cepat 7",
+        "description": "Jalur Bercabang dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 20,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#..#...3X#",
+          "#........#",
+          "##########"
+        ]
+      },
+      {
+        "id": 66,
+        "name": "Bab 5: Audit Cepat 8",
+        "description": "Sirkuit Padat dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 20,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 67,
+        "name": "Bab 5: Audit Cepat 9",
+        "description": "Pra-Finale dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 20,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#..#...3X#",
+          "#..^.....#",
+          "##########"
+        ]
+      },
+      {
+        "id": 68,
+        "name": "Bab 5: Audit Cepat 10",
+        "description": "Ujian Bab Satu dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 20,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 69,
+        "name": "Bab 5: Audit Cepat 11",
+        "description": "Laboratorium Laser dengan batas langkah lebih ketat.",
+        "width": 8,
+        "height": 7,
+        "movesLimit": 20,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH",
+            "SWAP"
+          ],
+          "blue": [
+            "STOP",
+            "PUSH"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "########",
+          "#@.L..X#",
+          "#A.###.#",
+          "#..#_..#",
+          "#B.#...#",
+          "#[.#.]##",
+          "########"
+        ]
+      },
+      {
+        "id": 70,
+        "name": "Bab 5: Audit Cepat 12",
+        "description": "Transisi Berwaktu dengan batas langkah lebih ketat.",
+        "width": 8,
+        "height": 7,
+        "movesLimit": 20,
+        "initialRules": {
+          "red": "PUSH",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "PUSH"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "########",
+          "#@.S...#",
+          "#A.#####",
+          "#..)..)#",
+          "#B.#####",
+          "#J....X#",
+          "########"
+        ]
+      },
+      {
+        "id": 71,
+        "name": "Bab 6: Hampir Presisi 1",
+        "description": "Tiga Kunci dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 19,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 72,
+        "name": "Bab 6: Hampir Presisi 2",
+        "description": "Ruang Sempit dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 19,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "###.#...##",
+          "#...#.CCc#",
+          "#.####.3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 73,
+        "name": "Bab 6: Hampir Presisi 3",
+        "description": "Rintangan Tajam dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 19,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 74,
+        "name": "Bab 6: Hampir Presisi 4",
+        "description": "Audit Ketat dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 19,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 75,
+        "name": "Bab 6: Hampir Presisi 5",
+        "description": "Batas Hampir Pas dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 19,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 76,
+        "name": "Bab 6: Hampir Presisi 6",
+        "description": "Plate Jauh dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 19,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "#........#",
+          "##########"
+        ]
+      },
+      {
+        "id": 77,
+        "name": "Bab 6: Hampir Presisi 7",
+        "description": "Jalur Bercabang dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 19,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#..#...3X#",
+          "#........#",
+          "##########"
+        ]
+      },
+      {
+        "id": 78,
+        "name": "Bab 6: Hampir Presisi 8",
+        "description": "Sirkuit Padat dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 19,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 79,
+        "name": "Bab 6: Hampir Presisi 9",
+        "description": "Pra-Finale dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 19,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#..#...3X#",
+          "#..^.....#",
+          "##########"
+        ]
+      },
+      {
+        "id": 80,
+        "name": "Bab 6: Hampir Presisi 10",
+        "description": "Ujian Bab Satu dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 19,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 81,
+        "name": "Bab 6: Hampir Presisi 11",
+        "description": "Laboratorium Laser dengan batas langkah lebih ketat.",
+        "width": 8,
+        "height": 7,
+        "movesLimit": 19,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH",
+            "SWAP"
+          ],
+          "blue": [
+            "STOP",
+            "PUSH"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "########",
+          "#@.L..X#",
+          "#A.###.#",
+          "#..#_..#",
+          "#B.#...#",
+          "#[.#.]##",
+          "########"
+        ]
+      },
+      {
+        "id": 82,
+        "name": "Bab 6: Hampir Presisi 12",
+        "description": "Transisi Berwaktu dengan batas langkah lebih ketat.",
+        "width": 8,
+        "height": 7,
+        "movesLimit": 19,
+        "initialRules": {
+          "red": "PUSH",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "PUSH"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "########",
+          "#@.S...#",
+          "#A.#####",
+          "#..)..)#",
+          "#B.#####",
+          "#J....X#",
+          "########"
+        ]
+      },
+      {
+        "id": 83,
+        "name": "Bab 7: Presisi 1",
+        "description": "Tiga Kunci dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 18,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 84,
+        "name": "Bab 7: Presisi 2",
+        "description": "Ruang Sempit dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 18,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "###.#...##",
+          "#...#.CCc#",
+          "#.####.3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 85,
+        "name": "Bab 7: Presisi 3",
+        "description": "Rintangan Tajam dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 18,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 86,
+        "name": "Bab 7: Presisi 4",
+        "description": "Audit Ketat dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 18,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 87,
+        "name": "Bab 7: Presisi 5",
+        "description": "Batas Hampir Pas dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 18,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 88,
+        "name": "Bab 7: Presisi 6",
+        "description": "Plate Jauh dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 18,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "#........#",
+          "##########"
+        ]
+      },
+      {
+        "id": 89,
+        "name": "Bab 7: Presisi 7",
+        "description": "Jalur Bercabang dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 18,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#..#...3X#",
+          "#........#",
+          "##########"
+        ]
+      },
+      {
+        "id": 90,
+        "name": "Bab 7: Presisi 8",
+        "description": "Sirkuit Padat dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 18,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 91,
+        "name": "Bab 7: Presisi 9",
+        "description": "Pra-Finale dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 18,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#..#...3X#",
+          "#..^.....#",
+          "##########"
+        ]
+      },
+      {
+        "id": 92,
+        "name": "Bab 7: Presisi 10",
+        "description": "Ujian Bab Satu dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 18,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 93,
+        "name": "Bab 7: Presisi 11",
+        "description": "Laboratorium Laser dengan batas langkah lebih ketat.",
+        "width": 8,
+        "height": 7,
+        "movesLimit": 18,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH",
+            "SWAP"
+          ],
+          "blue": [
+            "STOP",
+            "PUSH"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "########",
+          "#@.L..X#",
+          "#A.###.#",
+          "#..#_..#",
+          "#B.#...#",
+          "#[.#.]##",
+          "########"
+        ]
+      },
+      {
+        "id": 94,
+        "name": "Bab 7: Presisi 12",
+        "description": "Transisi Berwaktu dengan batas langkah lebih ketat.",
+        "width": 8,
+        "height": 7,
+        "movesLimit": 18,
+        "initialRules": {
+          "red": "PUSH",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "PUSH"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "########",
+          "#@.S...#",
+          "#A.#####",
+          "#..)..)#",
+          "#B.#####",
+          "#J....X#",
+          "########"
+        ]
+      },
+      {
+        "id": 95,
+        "name": "Bab 8: Master 1",
+        "description": "Tiga Kunci dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 17,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 96,
+        "name": "Bab 8: Master 2",
+        "description": "Ruang Sempit dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 17,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "###.#...##",
+          "#...#.CCc#",
+          "#.####.3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 97,
+        "name": "Bab 8: Master 3",
+        "description": "Rintangan Tajam dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 17,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 98,
+        "name": "Bab 8: Master 4",
+        "description": "Audit Ketat dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 17,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 99,
+        "name": "Bab 8: Master 5",
+        "description": "Batas Hampir Pas dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 17,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 100,
+        "name": "Bab 8: Master 6",
+        "description": "Plate Jauh dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 17,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "#........#",
+          "##########"
+        ]
+      },
+      {
+        "id": 101,
+        "name": "Bab 8: Master 7",
+        "description": "Jalur Bercabang dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 17,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#..#...3X#",
+          "#........#",
+          "##########"
+        ]
+      },
+      {
+        "id": 102,
+        "name": "Bab 8: Master 8",
+        "description": "Sirkuit Padat dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 17,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 103,
+        "name": "Bab 8: Master 9",
+        "description": "Pra-Finale dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 17,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#..#...3X#",
+          "#..^.....#",
+          "##########"
+        ]
+      },
+      {
+        "id": 104,
+        "name": "Bab 8: Master 10",
+        "description": "Ujian Bab Satu dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 17,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 105,
+        "name": "Bab 8: Master 11",
+        "description": "Laboratorium Laser dengan batas langkah lebih ketat.",
+        "width": 8,
+        "height": 7,
+        "movesLimit": 17,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH",
+            "SWAP"
+          ],
+          "blue": [
+            "STOP",
+            "PUSH"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "########",
+          "#@.L..X#",
+          "#A.###.#",
+          "#..#_..#",
+          "#B.#...#",
+          "#[.#.]##",
+          "########"
+        ]
+      },
+      {
+        "id": 106,
+        "name": "Bab 8: Master 12",
+        "description": "Transisi Berwaktu dengan batas langkah lebih ketat.",
+        "width": 8,
+        "height": 7,
+        "movesLimit": 17,
+        "initialRules": {
+          "red": "PUSH",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "PUSH"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "########",
+          "#@.S...#",
+          "#A.#####",
+          "#..)..)#",
+          "#B.#####",
+          "#J....X#",
+          "########"
+        ]
+      },
+      {
+        "id": 107,
+        "name": "Finale 1",
+        "description": "Tiga Kunci dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 16,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 108,
+        "name": "Finale 2",
+        "description": "Ruang Sempit dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 16,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "###.#...##",
+          "#...#.CCc#",
+          "#.####.3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 109,
+        "name": "Finale 3",
+        "description": "Rintangan Tajam dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 16,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 110,
+        "name": "Finale 4",
+        "description": "Audit Ketat dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 16,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 111,
+        "name": "Finale 5",
+        "description": "Batas Hampir Pas dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 16,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 112,
+        "name": "Finale 6",
+        "description": "Plate Jauh dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 16,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#......3X#",
+          "#........#",
+          "##########"
+        ]
+      },
+      {
+        "id": 113,
+        "name": "Finale 7",
+        "description": "Jalur Bercabang dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 16,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#..#...3X#",
+          "#........#",
+          "##########"
+        ]
+      },
+      {
+        "id": 114,
+        "name": "Finale 8",
+        "description": "Sirkuit Padat dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 16,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 115,
+        "name": "Finale 9",
+        "description": "Pra-Finale dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 16,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a....#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####...##",
+          "#.....CCc#",
+          "#..#...3X#",
+          "#..^.....#",
+          "##########"
+        ]
+      },
+      {
+        "id": 116,
+        "name": "Finale 10",
+        "description": "Ujian Bab Satu dengan batas langkah lebih ketat.",
+        "width": 10,
+        "height": 8,
+        "movesLimit": 16,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "SWAP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@A.a.^..#",
+          "#.######.#",
+          "#...1B#..#",
+          "#####.^.##",
+          "#.....CCc#",
+          "#......3X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 117,
+        "name": "Finale 11",
+        "description": "Laboratorium Laser dengan batas langkah lebih ketat.",
+        "width": 8,
+        "height": 7,
+        "movesLimit": 16,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH",
+            "SWAP"
+          ],
+          "blue": [
+            "STOP",
+            "PUSH"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "########",
+          "#@.L..X#",
+          "#A.###.#",
+          "#..#_..#",
+          "#B.#...#",
+          "#[.#.]##",
+          "########"
+        ]
+      },
+      {
+        "id": 118,
+        "name": "Tamat: Audit Akhir",
+        "description": "Final campaign: semua rule inti harus dibaca tanpa satu langkah cadangan.",
+        "width": 8,
+        "height": 7,
+        "movesLimit": 16,
+        "initialRules": {
+          "red": "PUSH",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "PUSH"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "########",
+          "#@.S...#",
+          "#A.#####",
+          "#..)..)#",
+          "#B.#####",
+          "#J....X#",
+          "########"
+        ]
+      }
+    ],
+    "2": [
+      {
+        "id": 1,
+        "name": "Dualitas Sakelar",
+        "description": "P1 dan P2 harus saling menginjak plate untuk membuka gate masing-masing.",
+        "width": 8,
+        "height": 5,
+        "movesLimit": 10,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP"
+          ],
+          "blue": [
+            "STOP"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "########",
+          "#@.b.1X#",
+          "########",
+          "#%.a.2X#",
+          "########"
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Dorong Sinkron",
+        "description": "P1 mendorong glyph merah ke plate merah untuk membuka jalur P1, sementara P2 menekan plate biru.",
+        "width": 10,
+        "height": 5,
+        "movesLimit": 18,
+        "initialRules": {
+          "red": "PUSH",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@..A.1.X#",
+          "####.#####",
+          "#%.b.a.2.X#",
+          "##########"
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Persilangan Spike",
+        "description": "Gunakan SWAP/PUSH pada glyph biru untuk menyeberang dengan selamat.",
+        "width": 9,
+        "height": 5,
+        "movesLimit": 12,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP"
+          ],
+          "blue": [
+            "STOP",
+            "PUSH",
+            "SWAP"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "#########",
+          "#@.B.^.X#",
+          "####.####",
+          "#%.B.^.X#",
+          "#########"
+        ]
+      }
+    ],
+    "3": [
+      {
+        "id": 1,
+        "name": "Triad Sakelar",
+        "description": "Tiga pemain harus saling membantu membuka gate dalam urutan melingkar.",
+        "width": 9,
+        "height": 7,
+        "movesLimit": 12,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP"
+          ],
+          "blue": [
+            "STOP"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "#########",
+          "#@.c.1.X#",
+          "#########",
+          "#%.a.2.X#",
+          "#########",
+          "#*.b.3.X#",
+          "#########"
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Segitiga Spike",
+        "description": "Dorong glyph masing-masing ke atas spikes dan injak plate untuk membuka gate teman.",
+        "width": 11,
+        "height": 7,
+        "movesLimit": 20,
+        "initialRules": {
+          "red": "PUSH",
+          "blue": "PUSH",
+          "green": "PUSH"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "PUSH"
+          ],
+          "green": [
+            "STOP",
+            "PUSH"
+          ]
+        },
+        "map": [
+          "###########",
+          "#@.A.^.b1X#",
+          "#####.#####",
+          "#%.B.^.c2X#",
+          "#####.#####",
+          "#*.C.^.a3X#",
+          "###########"
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Merge Bertiga",
+        "description": "Gabungkan glyph hijau di pilar bawah untuk menyelesaikan level.",
+        "width": 10,
+        "height": 7,
+        "movesLimit": 16,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "MERGE"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP"
+          ],
+          "blue": [
+            "STOP"
+          ],
+          "green": [
+            "STOP",
+            "MERGE"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@..C.3.X#",
+          "#.########",
+          "#%.C.3.X##",
+          "#.########",
+          "#*.c.C.3X#",
+          "##########"
+        ]
+      }
+    ],
+    "4": [
+      {
+        "id": 1,
+        "name": "Kuartet Sakelar",
+        "description": "Empat pemain bekerja sama menggunakan 3 warna gate dengan dependency melingkar.",
+        "width": 9,
+        "height": 9,
+        "movesLimit": 16,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP"
+          ],
+          "blue": [
+            "STOP"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "#########",
+          "#@.b.1.X#",
+          "#########",
+          "#%.c.2.X#",
+          "#########",
+          "#*.a.3.X#",
+          "#########",
+          "#$.a.1.X#",
+          "#########"
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Kerja Sama Kuartet",
+        "description": "P1, P2, P3 harus menyeberangi spike, sementara P4 berdiri di atas plate-plate pengontrol gate.",
+        "width": 10,
+        "height": 9,
+        "movesLimit": 16,
+        "initialRules": {
+          "red": "PUSH",
+          "blue": "PUSH",
+          "green": "PUSH"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP",
+            "PUSH"
+          ],
+          "blue": [
+            "STOP",
+            "PUSH"
+          ],
+          "green": [
+            "STOP",
+            "PUSH"
+          ]
+        },
+        "map": [
+          "##########",
+          "#@.A.^.1X#",
+          "##########",
+          "#%.B.^.2X#",
+          "##########",
+          "#*.C.^.3X#",
+          "##########",
+          "#$.a.b.cX#",
+          "##########"
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Persilangan Kuartet",
+        "description": "Gunakan dependency melingkar untuk membebaskan semua rekan tim.",
+        "width": 9,
+        "height": 9,
+        "movesLimit": 16,
+        "initialRules": {
+          "red": "STOP",
+          "blue": "STOP",
+          "green": "STOP"
+        },
+        "allowedRules": {
+          "red": [
+            "STOP"
+          ],
+          "blue": [
+            "STOP"
+          ],
+          "green": [
+            "STOP"
+          ]
+        },
+        "map": [
+          "#########",
+          "#@.a.1.X#",
+          "#########",
+          "#%.b.2.X#",
+          "#########",
+          "#*.c.3.X#",
+          "#########",
+          "#$.b.2.X#",
+          "#########"
+        ]
+      }
+    ]
+  }
+}

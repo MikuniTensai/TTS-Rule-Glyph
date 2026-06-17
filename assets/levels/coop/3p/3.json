@@ -1,0 +1,34 @@
+{
+  "id": 3,
+  "name": "Merge Bertiga",
+  "description": "Gabungkan glyph hijau di pilar bawah untuk menyelesaikan level.",
+  "width": 10,
+  "height": 7,
+  "movesLimit": 16,
+  "initialRules": {
+    "red": "STOP",
+    "blue": "STOP",
+    "green": "MERGE"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP"
+    ],
+    "blue": [
+      "STOP"
+    ],
+    "green": [
+      "STOP",
+      "MERGE"
+    ]
+  },
+  "map": [
+    "##########",
+    "#@..C.3.X#",
+    "#.########",
+    "#%.C.3.X##",
+    "#.########",
+    "#*.c.C.3X#",
+    "##########"
+  ]
+}

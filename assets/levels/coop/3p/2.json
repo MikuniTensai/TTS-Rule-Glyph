@@ -1,0 +1,36 @@
+{
+  "id": 2,
+  "name": "Segitiga Spike",
+  "description": "Dorong glyph masing-masing ke atas spikes dan injak plate untuk membuka gate teman.",
+  "width": 11,
+  "height": 7,
+  "movesLimit": 20,
+  "initialRules": {
+    "red": "PUSH",
+    "blue": "PUSH",
+    "green": "PUSH"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP",
+      "PUSH"
+    ],
+    "blue": [
+      "STOP",
+      "PUSH"
+    ],
+    "green": [
+      "STOP",
+      "PUSH"
+    ]
+  },
+  "map": [
+    "###########",
+    "#@.A.^.b1X#",
+    "#####.#####",
+    "#%.B.^.c2X#",
+    "#####.#####",
+    "#*.C.^.a3X#",
+    "###########"
+  ]
+}

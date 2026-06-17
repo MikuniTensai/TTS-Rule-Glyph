@@ -1,0 +1,32 @@
+{
+  "id": 7,
+  "name": "Lorong Padat",
+  "description": "Tiga glyph harus diringkas dengan MERGE sebelum gate merah.",
+  "width": 9,
+  "height": 5,
+  "movesLimit": 14,
+  "initialRules": {
+    "red": "STOP",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP",
+      "MERGE"
+    ],
+    "blue": [
+      "STOP"
+    ],
+    "green": [
+      "STOP"
+    ]
+  },
+  "map": [
+    "#########",
+    "#@AAAa..#",
+    "#.#####.#",
+    "#.....1X#",
+    "#########"
+  ]
+}

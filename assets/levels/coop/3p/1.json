@@ -1,0 +1,33 @@
+{
+  "id": 1,
+  "name": "Triad Sakelar",
+  "description": "Tiga pemain harus saling membantu membuka gate dalam urutan melingkar.",
+  "width": 9,
+  "height": 7,
+  "movesLimit": 12,
+  "initialRules": {
+    "red": "STOP",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP"
+    ],
+    "blue": [
+      "STOP"
+    ],
+    "green": [
+      "STOP"
+    ]
+  },
+  "map": [
+    "#########",
+    "#@.c.1.X#",
+    "#########",
+    "#%.a.2.X#",
+    "#########",
+    "#*.b.3.X#",
+    "#########"
+  ]
+}

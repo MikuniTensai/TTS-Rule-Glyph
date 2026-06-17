@@ -1,0 +1,38 @@
+{
+  "id": 2,
+  "name": "Kerja Sama Kuartet",
+  "description": "P1, P2, P3 harus menyeberangi spike, sementara P4 berdiri di atas plate-plate pengontrol gate.",
+  "width": 10,
+  "height": 9,
+  "movesLimit": 16,
+  "initialRules": {
+    "red": "PUSH",
+    "blue": "PUSH",
+    "green": "PUSH"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP",
+      "PUSH"
+    ],
+    "blue": [
+      "STOP",
+      "PUSH"
+    ],
+    "green": [
+      "STOP",
+      "PUSH"
+    ]
+  },
+  "map": [
+    "##########",
+    "#@.A.^.1X#",
+    "##########",
+    "#%.B.^.2X#",
+    "##########",
+    "#*.C.^.3X#",
+    "##########",
+    "#$.a.b.cX#",
+    "##########"
+  ]
+}

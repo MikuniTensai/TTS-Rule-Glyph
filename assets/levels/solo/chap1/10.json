@@ -1,0 +1,34 @@
+{
+  "id": 10,
+  "name": "Hijau Pertama",
+  "description": "PUSH merah membuka jalur, MERGE hijau membuka portal.",
+  "width": 10,
+  "height": 6,
+  "movesLimit": 20,
+  "initialRules": {
+    "red": "STOP",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP",
+      "PUSH"
+    ],
+    "blue": [
+      "STOP"
+    ],
+    "green": [
+      "STOP",
+      "MERGE"
+    ]
+  },
+  "map": [
+    "##########",
+    "#@A.a....#",
+    "#.######.#",
+    "#...1CCcX#",
+    "#......3.#",
+    "##########"
+  ]
+}

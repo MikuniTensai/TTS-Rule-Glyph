@@ -1,0 +1,31 @@
+{
+  "id": 1,
+  "name": "Langkah Pertama",
+  "description": "Capai portal tanpa glyph. Ini level pemanasan.",
+  "width": 5,
+  "height": 5,
+  "movesLimit": 5,
+  "initialRules": {
+    "red": "STOP",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP"
+    ],
+    "blue": [
+      "STOP"
+    ],
+    "green": [
+      "STOP"
+    ]
+  },
+  "map": [
+    "#####",
+    "#@..#",
+    "#.#.#",
+    "#..X#",
+    "#####"
+  ]
+}

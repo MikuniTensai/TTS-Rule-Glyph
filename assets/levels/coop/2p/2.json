@@ -1,0 +1,32 @@
+{
+  "id": 2,
+  "name": "Dorong Sinkron",
+  "description": "P1 mendorong glyph merah ke plate merah untuk membuka jalur P1, sementara P2 menekan plate biru.",
+  "width": 10,
+  "height": 5,
+  "movesLimit": 18,
+  "initialRules": {
+    "red": "PUSH",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP",
+      "PUSH"
+    ],
+    "blue": [
+      "STOP"
+    ],
+    "green": [
+      "STOP"
+    ]
+  },
+  "map": [
+    "##########",
+    "#@..A.1.X#",
+    "####.#####",
+    "#%.b.a.2X#",
+    "##########"
+  ]
+}

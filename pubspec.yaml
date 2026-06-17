@@ -1,0 +1,38 @@
+name: rule_glyph_app
+description: "Rule Glyph Lab - A native Dart/Flutter port of the logical rule-based grid puzzle game."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.5
+  audioplayers: ^6.0.0
+  shared_preferences: ^2.5.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/audio/
+    - assets/levels/solo/chap1/
+    - assets/levels/solo/chap2/
+    - assets/levels/solo/chap3/
+    - assets/levels/solo/chap4/
+    - assets/levels/solo/chap5/
+    - assets/levels/solo/chap6/
+    - assets/levels/solo/chap7/
+    - assets/levels/solo/chap8/
+    - assets/levels/solo/chap9/
+    - assets/levels/coop/2p/
+    - assets/levels/coop/3p/
+    - assets/levels/coop/4p/

@@ -1,0 +1,36 @@
+{
+  "id": 4,
+  "name": "Ruang Tukar",
+  "description": "Gunakan SWAP untuk masuk lewat glyph biru.",
+  "width": 9,
+  "height": 7,
+  "movesLimit": 17,
+  "initialRules": {
+    "red": "PUSH",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP",
+      "PUSH"
+    ],
+    "blue": [
+      "STOP",
+      "PUSH"
+    ],
+    "green": [
+      "STOP",
+      "PUSH"
+    ]
+  },
+  "map": [
+    "#########",
+    "#.....A.#",
+    "##.###..#",
+    "#.C###B.#",
+    "#..#@.A.#",
+    "#.X#..###",
+    "#########"
+  ]
+}

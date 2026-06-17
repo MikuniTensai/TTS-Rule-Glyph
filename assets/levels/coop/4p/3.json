@@ -1,0 +1,35 @@
+{
+  "id": 3,
+  "name": "Persilangan Kuartet",
+  "description": "Gunakan dependency melingkar untuk membebaskan semua rekan tim.",
+  "width": 9,
+  "height": 9,
+  "movesLimit": 16,
+  "initialRules": {
+    "red": "STOP",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP"
+    ],
+    "blue": [
+      "STOP"
+    ],
+    "green": [
+      "STOP"
+    ]
+  },
+  "map": [
+    "#########",
+    "#@.a.1.X#",
+    "#########",
+    "#%.b.2.X#",
+    "#########",
+    "#*.c.3.X#",
+    "#########",
+    "#$.b.2.X#",
+    "#########"
+  ]
+}

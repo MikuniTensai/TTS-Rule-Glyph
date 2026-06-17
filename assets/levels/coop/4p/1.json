@@ -1,0 +1,35 @@
+{
+  "id": 1,
+  "name": "Kuartet Sakelar",
+  "description": "Empat pemain bekerja sama menggunakan 3 warna gate dengan dependency melingkar.",
+  "width": 9,
+  "height": 9,
+  "movesLimit": 16,
+  "initialRules": {
+    "red": "STOP",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP"
+    ],
+    "blue": [
+      "STOP"
+    ],
+    "green": [
+      "STOP"
+    ]
+  },
+  "map": [
+    "#########",
+    "#@.b.1.X#",
+    "#########",
+    "#%.c.2.X#",
+    "#########",
+    "#*.a.3.X#",
+    "#########",
+    "#$.a.1.X#",
+    "#########"
+  ]
+}

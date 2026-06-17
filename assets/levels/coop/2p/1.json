@@ -1,0 +1,31 @@
+{
+  "id": 1,
+  "name": "Dualitas Sakelar",
+  "description": "P1 dan P2 harus saling menginjak plate untuk membuka gate masing-masing.",
+  "width": 8,
+  "height": 5,
+  "movesLimit": 10,
+  "initialRules": {
+    "red": "STOP",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP"
+    ],
+    "blue": [
+      "STOP"
+    ],
+    "green": [
+      "STOP"
+    ]
+  },
+  "map": [
+    "########",
+    "#@.b.1X#",
+    "########",
+    "#%.a.2X#",
+    "########"
+  ]
+}

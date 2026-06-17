@@ -1,0 +1,33 @@
+{
+  "id": 3,
+  "name": "Persilangan Spike",
+  "description": "Gunakan SWAP/PUSH pada glyph biru untuk menyeberang dengan selamat.",
+  "width": 9,
+  "height": 5,
+  "movesLimit": 12,
+  "initialRules": {
+    "red": "STOP",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP"
+    ],
+    "blue": [
+      "STOP",
+      "PUSH",
+      "SWAP"
+    ],
+    "green": [
+      "STOP"
+    ]
+  },
+  "map": [
+    "#########",
+    "#@.B.^.X#",
+    "####.####",
+    "#%.B.^.X#",
+    "#########"
+  ]
+}
