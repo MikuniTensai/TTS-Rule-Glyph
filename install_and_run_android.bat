@@ -32,7 +32,20 @@ if exist "%ADB_PATH%" (
     )
 )
 
+:: Resolve Flutter path
+set "FLUTTER=flutter"
+where flutter >nul 2>&1
+if !errorlevel! neq 0 (
+    if exist "C:\flutter\bin\flutter.bat" (
+        set "FLUTTER=C:\flutter\bin\flutter.bat"
+    ) else (
+        echo [WARNING] Flutter executable not found in system PATH or C:\flutter\bin\flutter.bat.
+        echo Will try default 'flutter' command.
+    )
+)
+
 echo [INFO] Using ADB: %ADB%
+echo [INFO] Using Flutter: %FLUTTER%
 
 :: Check connected devices
 echo [INFO] Checking connected Android devices...
@@ -52,7 +65,7 @@ if not exist "%APK_FILE%" (
 if /i "!REBUILD!"=="Y" (
     echo [INFO] Building release APK...
     cd /d "%FLUTTER_DIR%"
-    call flutter build apk --release
+    call "%FLUTTER%" build apk --release
     if !errorlevel! neq 0 (
         echo [ERROR] Flutter build failed!
         pause
@@ -63,7 +76,7 @@ if /i "!REBUILD!"=="Y" (
 :: Install on device
 echo [INFO] Installing app-release.apk to connected device...
 cd /d "%FLUTTER_DIR%"
-call flutter install
+call "%FLUTTER%" install
 if !errorlevel! neq 0 (
     echo [INFO] Falling back to manual adb install...
     "%ADB%" install -r "%APK_FILE%"
