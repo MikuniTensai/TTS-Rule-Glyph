@@ -1,0 +1,35 @@
+{
+  "id": 18,
+  "name": "Transisi Berwaktu",
+  "description": "Injak lantai sensor untuk menyalin aturan, dan manfaatkan lantai berjalan sebelum aturan berwaktu habis.",
+  "width": 8,
+  "height": 7,
+  "movesLimit": 20,
+  "initialRules": {
+    "red": "PUSH",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP",
+      "PUSH"
+    ],
+    "blue": [
+      "STOP",
+      "PUSH"
+    ],
+    "green": [
+      "STOP"
+    ]
+  },
+  "map": [
+    "########",
+    "#@.S...#",
+    "#A.#####",
+    "#..)..)#",
+    "#B.#####",
+    "#J....X#",
+    "########"
+  ]
+}

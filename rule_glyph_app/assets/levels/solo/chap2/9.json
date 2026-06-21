@@ -1,0 +1,37 @@
+{
+  "id": 31,
+  "name": "Bab 2: Rute Lanjutan 6",
+  "description": "Tantangan bab Bab 2: Rute Lanjutan.",
+  "width": 10,
+  "height": 8,
+  "movesLimit": 24,
+  "initialRules": {
+    "red": "STOP",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP",
+      "PUSH"
+    ],
+    "blue": [
+      "STOP",
+      "SWAP"
+    ],
+    "green": [
+      "STOP",
+      "MERGE"
+    ]
+  },
+  "map": [
+    "##########",
+    "#@.......#",
+    "#........#",
+    "#........#",
+    "#........#",
+    "#........#",
+    "#.......X#",
+    "##########"
+  ]
+}

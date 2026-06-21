@@ -1,0 +1,37 @@
+{
+  "id": 8,
+  "name": "Ruang Sempit",
+  "description": "Jalur lebih rapat dengan gate yang tetap harus dibuka berurutan.",
+  "width": 10,
+  "height": 8,
+  "movesLimit": 26,
+  "initialRules": {
+    "red": "STOP",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP",
+      "PUSH"
+    ],
+    "blue": [
+      "STOP",
+      "SWAP"
+    ],
+    "green": [
+      "STOP",
+      "MERGE"
+    ]
+  },
+  "map": [
+    "##########",
+    "#@A.a....#",
+    "#.######.#",
+    "#...1B#..#",
+    "###.#...##",
+    "#...#.CCc#",
+    "#.####.3X#",
+    "##########"
+  ]
+}

@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rule Glyph Lab - Puzzle Grid Logika Aturan</title>
+  <meta name="description" content="Ubah aturan Glyph fisik (Push, Stop, Swap, Merge) dalam real-time untuk memecahkan puzzle logika grid pendek dengan moves terbatas.">
+  <link rel="stylesheet" href="styles.css?v=1.0.6">
+</head>
+<body>
+
+  <!-- MAIN MENU SCREEN -->
+  <div id="main-menu" class="menu-screen">
+    <div class="menu-content">
+      <h1 class="menu-title">Rule <span>Glyph Lab</span></h1>
+      <p class="menu-subtitle">Android Edition</p>
+      
+      <div class="menu-buttons">
+        <button id="btn-menu-survival" class="btn-primary menu-btn">
+          🏆 Survival (1 Player)
+        </button>
+        <button id="btn-menu-coop2" class="btn-primary menu-btn" style="background: linear-gradient(135deg, var(--neon-yellow), #b87e00); box-shadow: 0 0 15px rgba(255, 183, 0, 0.35); color: #171100;">
+          👥 2 Players (Local / Online Soon)
+        </button>
+        <button id="btn-menu-coop34" class="btn-primary menu-btn" style="background: linear-gradient(135deg, var(--neon-red), #b8173f); box-shadow: 0 0 15px rgba(255, 42, 95, 0.35); color: #fff;">
+          🌐 3-4 Players (Local / Online Soon)
+        </button>
+        
+        <div class="menu-btn-sec-container">
+          <button id="btn-menu-options" class="btn-action menu-btn-sec">
+            ⚙️ Options
+          </button>
+          <button id="btn-menu-credits" class="btn-action menu-btn-sec">
+            ℹ️ Credits
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header>
+    <h1 id="game-title">Rule <span>Glyph Lab</span></h1>
+    <div class="header-controls">
+      <button id="btn-home" class="btn-icon" title="Kembali ke Menu Utama" aria-label="Home">🏠</button>
+      <button id="btn-help" class="btn-icon" title="Cara Bermain" aria-label="Bantuan">?</button>
+      <button id="btn-levels-menu" class="btn-icon" title="Pilih Level" aria-label="Level">☰</button>
+      <button id="btn-mute" class="btn-icon" title="Mute Suara" aria-label="Mute">🔊</button>
+    </div>
+  </header>
+
+  <!-- MAIN PLAY AREA -->
+  <main>
+    <div class="game-container">
+      
+      <!-- Left Panel: Virtual D-Pad / Analog Control -->
+      <div class="analog-container" id="analog-control-panel">
+        <div class="dpad">
+          <button id="btn-dpad-up" class="dpad-btn dpad-up" aria-label="Move Up">▲</button>
+          <button id="btn-dpad-left" class="dpad-btn dpad-left" aria-label="Move Left">◀</button>
+          <div class="dpad-center"></div>
+          <button id="btn-dpad-right" class="dpad-btn dpad-right" aria-label="Move Right">▶</button>
+          <button id="btn-dpad-down" class="dpad-btn dpad-down" aria-label="Move Down">▼</button>
+        </div>
+      </div>
+      
+      <!-- Center Panel: Game Board and Navigation -->
+      <div class="play-area">
+        <!-- Status Information -->
+        <div class="stat-bar">
+          <span id="level-display">LEVEL: 1/100</span>
+          <span id="moves-display">STEPS: <span id="moves-counter">15</span></span>
+        </div>
+
+        <!-- The Physical Grid -->
+        <div class="board-outer" id="board-container">
+          <div class="board" id="game-board">
+            <!-- Grid Lines Background -->
+            <div class="grid-overlay" id="grid-bg-overlay"></div>
+            <!-- Dynamic elements will be injected here via JS -->
+          </div>
+        </div>
+
+        <!-- Reset / Undo Navigation Toolbar -->
+        <div class="control-bar">
+          <button id="btn-undo" class="btn-action" title="Undo Langkah Sebelumnya" disabled>
+            <span>↩</span> Undo
+          </button>
+          <button id="btn-reset" class="btn-action" title="Ulangi Level Ini">
+            <span>⟲</span> Reset
+          </button>
+        </div>
+      </div>
+
+      <!-- Right Panel: Rules Lab Control Center -->
+      <div class="rule-lab">
+        <div class="rule-lab-title">
+          <span>Glyph Rule Lab</span>
+          <span id="lab-indicator" style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal;">READY</span>
+        </div>
+
+        <!-- Red Glyph rules config -->
+        <div class="rule-row rule-row-red">
+          <div class="glyph-label glyph-label-red">
+            <span class="label-dot"></span>
+            <span>RED GLYPH (▲ Alpha)</span>
+          </div>
+          <div class="rules-options" data-glyph="red">
+            <button class="rule-opt" data-rule="STOP">STOP</button>
+            <button class="rule-opt" data-rule="PUSH">PUSH</button>
+            <button class="rule-opt" data-rule="SWAP">SWAP</button>
+            <button class="rule-opt" data-rule="MERGE">MERGE</button>
+          </div>
+        </div>
+
+        <!-- Blue Glyph rules config -->
+        <div class="rule-row rule-row-blue">
+          <div class="glyph-label glyph-label-blue">
+            <span class="label-dot"></span>
+            <span>BLUE GLYPH (■ Beta)</span>
+          </div>
+          <div class="rules-options" data-glyph="blue">
+            <button class="rule-opt" data-rule="STOP">STOP</button>
+            <button class="rule-opt" data-rule="PUSH">PUSH</button>
+            <button class="rule-opt" data-rule="SWAP">SWAP</button>
+            <button class="rule-opt" data-rule="MERGE">MERGE</button>
+          </div>
+        </div>
+
+        <!-- Green Glyph rules config -->
+        <div class="rule-row rule-row-green">
+          <div class="glyph-label glyph-label-green">
+            <span class="label-dot"></span>
+            <span>GREEN GLYPH (● Gamma)</span>
+          </div>
+          <div class="rules-options" data-glyph="green">
+            <button class="rule-opt" data-rule="STOP">STOP</button>
+            <button class="rule-opt" data-rule="PUSH">PUSH</button>
+            <button class="rule-opt" data-rule="SWAP">SWAP</button>
+            <button class="rule-opt" data-rule="MERGE">MERGE</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Editor Panel: Level Creator Admin Tools -->
+      <div id="editor-panel" class="rule-lab">
+        <div class="rule-lab-title">
+          <span>Level Creator Lab</span>
+          <span id="editor-save-status" class="editor-save-status" data-state="ready">READY</span>
+        </div>
+
+        <!-- Frequently used brushes stay visible while the full palette scrolls. -->
+        <div class="editor-quick-tools" aria-label="Quick draw tools">
+          <span>Quick Draw</span>
+          <div class="editor-quick-grid">
+            <button class="btn-action brush-btn active" data-brush="clear" title="Hapus isi cell">⌫ Clear</button>
+            <button class="btn-action brush-btn" data-brush="wall" title="Tambah dinding biasa">▦ Wall</button>
+            <button class="btn-action brush-btn" data-brush="portal" title="Tambah portal finish">◎ Goal</button>
+            <button class="btn-action brush-btn" data-brush="player" title="Tambah posisi awal Player 1">◇ P1</button>
+            <button class="btn-action brush-btn" data-brush="glyph-red" title="Tambah glyph merah">▲ Red</button>
+            <button class="btn-action brush-btn" data-brush="glyph-blue" title="Tambah glyph biru">■ Blue</button>
+            <button class="btn-action brush-btn" data-brush="glyph-green" title="Tambah glyph hijau">● Green</button>
+            <button class="btn-action brush-btn" data-brush="spikes" title="Tambah spike">△ Spike</button>
+          </div>
+        </div>
+
+        <!-- Player Mode Selection inside Editor -->
+        <div style="display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.5rem;">
+          <span style="font-family: 'Share Tech Mono', monospace; font-size: 0.9rem; color: var(--neon-cyan);">Campaign Player Mode:</span>
+          <div class="editor-mode-tabs" style="display: flex; gap: 0.3rem;">
+            <button class="btn-action editor-mode-tab active" data-mode="1" style="flex: 1; padding: 0.4rem 0.2rem; font-size: 0.80rem; max-width: none;">1P</button>
+            <button class="btn-action editor-mode-tab" data-mode="2" style="flex: 1; padding: 0.4rem 0.2rem; font-size: 0.80rem; max-width: none;">2P</button>
+            <button class="btn-action editor-mode-tab" data-mode="3" style="flex: 1; padding: 0.4rem 0.2rem; font-size: 0.80rem; max-width: none;">3P</button>
+            <button class="btn-action editor-mode-tab" data-mode="4" style="flex: 1; padding: 0.4rem 0.2rem; font-size: 0.80rem; max-width: none;">4P</button>
+          </div>
+        </div>
+
+        <!-- Load Campaign Level Selector -->
+        <div style="display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.25rem;">
+          <div style="display: flex; flex-direction: column; gap: 0.15rem; margin-bottom: 0.2rem;">
+            <span style="font-family: 'Share Tech Mono', monospace; font-size: 0.9rem; color: var(--neon-cyan);">Filter Bab (Chapter):</span>
+            <div style="display: flex; gap: 0.3rem;">
+              <select id="editor-chapter-select" style="flex: 1; background: var(--bg-primary); border: 1px solid var(--border-color); color: #fff; font-family: 'Share Tech Mono', monospace; font-size: 0.85rem; padding: 0.4rem; border-radius: 6px; outline: none; cursor: pointer; border-color: rgba(0, 240, 255, 0.25);">
+              </select>
+              <input type="text" id="editor-chapter-name-input" placeholder="Nama Bab Baru" style="display: none; flex: 1; background: var(--bg-primary); border: 1px solid var(--border-color); color: #fff; font-family: 'Share Tech Mono', monospace; font-size: 0.85rem; padding: 0.4rem; border-radius: 6px; outline: none; border-color: rgba(0, 240, 255, 0.25);">
+              <button id="btn-editor-create-chapter" class="btn-action" style="padding: 0.4rem; font-size: 0.8rem; border-color: rgba(0, 240, 255, 0.25); color: var(--neon-cyan); background: rgba(0, 240, 255, 0.06); cursor: pointer;" title="Tambah Bab Baru">➕</button>
+              <button id="btn-editor-rename-chapter" class="btn-action" style="padding: 0.4rem; font-size: 0.8rem; border-color: rgba(0, 240, 255, 0.25); color: var(--neon-cyan); background: rgba(0, 240, 255, 0.06); cursor: pointer;" title="Rename Bab Terpilih">📝</button>
+              <button id="btn-editor-delete-chapter" class="btn-action" style="padding: 0.4rem; font-size: 0.8rem; border-color: rgba(255,42,95,0.25); color: var(--neon-red); background: rgba(255,42,95,0.06); cursor: pointer;" title="Hapus Bab Terpilih beserta Levelnya">🗑️</button>
+            </div>
+          </div>
+          <span style="font-family: 'Share Tech Mono', monospace; font-size: 0.9rem; color: var(--neon-cyan);">Edit Saved Campaign Level:</span>
+          <select id="editor-level-select" style="width: 100%; background: var(--bg-primary); border: 1px solid var(--border-color); color: #fff; font-family: 'Share Tech Mono', monospace; font-size: 0.85rem; padding: 0.4rem; border-radius: 6px; outline: none; cursor: pointer; border-color: rgba(0, 240, 255, 0.25);">
+            <option value="" disabled selected>-- Select level to edit --</option>
+          </select>
+          <div style="display: flex; gap: 0.3rem; margin-top: 0.2rem; margin-bottom: 0.2rem;">
+            <input type="text" id="editor-level-name" placeholder="Nama Level" style="flex: 1; background: var(--bg-primary); border: 1px solid var(--border-color); color: #fff; font-family: 'Share Tech Mono', monospace; font-size: 0.85rem; padding: 0.4rem; border-radius: 6px; outline: none; border-color: rgba(0, 240, 255, 0.25);">
+            <input type="text" id="editor-level-desc" placeholder="Deskripsi Level" style="flex: 2; background: var(--bg-primary); border: 1px solid var(--border-color); color: #fff; font-family: 'Share Tech Mono', monospace; font-size: 0.85rem; padding: 0.4rem; border-radius: 6px; outline: none; border-color: rgba(0, 240, 255, 0.25);">
+          </div>
+          <div style="display: flex; gap: 0.3rem; margin-top: 0.2rem; margin-bottom: 0.2rem;">
+            <button id="btn-editor-create-level" class="btn-primary" style="flex: 1; padding: 0.4rem; font-size: 0.8rem; text-shadow: none; box-shadow: none; background: linear-gradient(135deg, var(--neon-cyan), #008ba3); color: #000; font-weight: bold; border: none; cursor: pointer;">
+              ➕ Create Level
+            </button>
+            <button id="btn-editor-delete-level" class="btn-action" style="flex: 0.8; padding: 0.4rem; font-size: 0.8rem; border-color: rgba(255,42,95,0.25); color: var(--neon-red); background: rgba(255,42,95,0.06); cursor: pointer;">
+              🗑️ Delete Level
+            </button>
+          </div>
+          <button id="btn-editor-reset-campaign" class="btn-action" style="padding: 0.35rem 0.5rem; font-size: 0.75rem; max-width: none; border-color: rgba(255,42,95,0.25); color: var(--neon-red); background: rgba(255,42,95,0.06); margin-top: 0.2rem;">
+            Reset Selected Level to Default
+          </button>
+        </div>
+
+        <!-- Wall Texture Upload -->
+        <div style="border-top: 1px solid var(--border-color); padding-top: 0.5rem; margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.3rem; text-align: left; font-family: 'Share Tech Mono', monospace;">
+          <span style="font-size: 0.85rem; color: var(--neon-cyan);">Custom Level Walls:</span>
+          <div style="display: flex; gap: 0.3rem; align-items: center;">
+            <select id="wall-slot-select" style="flex: 1.2; background: var(--bg-primary); border: 1px solid var(--border-color); color: #fff; font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; padding: 0.35rem; border-radius: 6px; outline: none; border-color: rgba(0, 240, 255, 0.25); cursor: pointer;">
+              <option value="0">Default Wall (#)</option>
+              <option value="1">Wall-1 (0)</option>
+              <option value="2">Wall-2 (7)</option>
+              <option value="3">Wall-3 (8)</option>
+              <option value="4">Wall-4 (9)</option>
+              <option value="5">Wall-5 (?)</option>
+              <option value="6">Wall-6 (!)</option>
+            </select>
+            <input type="file" id="wall-image-upload" accept="image/*" style="display: none;">
+            <button onclick="document.getElementById('wall-image-upload').click()" class="btn-action" style="flex: 1; max-width: none; font-size: 0.75rem; padding: 0.35rem 0.5rem; border-color: rgba(0, 240, 255, 0.25);">📤 Upload</button>
+            <button id="btn-reset-wall" class="btn-action" style="flex: 0.5; max-width: none; font-size: 0.75rem; padding: 0.35rem 0.5rem; color: var(--neon-red); border-color: rgba(255,42,95,0.25);">Reset</button>
+          </div>
+          <span style="font-size: 0.7rem; color: var(--text-muted);">Format: JPG/PNG/WEBP, rekomendasi 256x256px.</span>
+        </div>
+
+        <!-- Floor Texture Upload -->
+        <div style="border-top: 1px solid var(--border-color); padding-top: 0.5rem; margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.3rem; text-align: left; font-family: 'Share Tech Mono', monospace;">
+          <span style="font-size: 0.85rem; color: var(--neon-cyan);">Custom Level Floors:</span>
+          <div style="display: flex; gap: 0.3rem; align-items: center;">
+            <select id="floor-slot-select" style="flex: 1.2; background: var(--bg-primary); border: 1px solid var(--border-color); color: #fff; font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; padding: 0.35rem; border-radius: 6px; outline: none; border-color: rgba(0, 240, 255, 0.25); cursor: pointer;">
+              <option value="bg">Level BG (Stretched)</option>
+              <option value="0">Default Floor (.)</option>
+              <option value="1">Floor-1 (d)</option>
+              <option value="2">Floor-2 (e)</option>
+              <option value="3">Floor-3 (f)</option>
+              <option value="4">Floor-4 (g)</option>
+              <option value="5">Floor-5 (h)</option>
+              <option value="6">Floor-6 (i)</option>
+            </select>
+            <input type="file" id="floor-image-upload" accept="image/*" style="display: none;">
+            <button onclick="document.getElementById('floor-image-upload').click()" class="btn-action" style="flex: 1; max-width: none; font-size: 0.75rem; padding: 0.35rem 0.5rem; border-color: rgba(0, 240, 255, 0.25);">📤 Upload</button>
+            <button id="btn-reset-floor" class="btn-action" style="flex: 0.5; max-width: none; font-size: 0.75rem; padding: 0.35rem 0.5rem; color: var(--neon-red); border-color: rgba(255,42,95,0.25);">Reset</button>
+          </div>
+          <span style="font-size: 0.7rem; color: var(--text-muted);">Format: JPG/PNG/WEBP, rekomendasi 256x256px.</span>
+        </div>
+
+        <!-- Grid Dimension Controls -->
+        <div class="editor-settings-row" style="display: flex; gap: 0.5rem; justify-content: space-between; align-items: center; background: rgba(8, 12, 20, 0.4); padding: 0.5rem; border-radius: 8px; font-family: 'Share Tech Mono', monospace; font-size: 0.9rem;">
+          <div style="display:flex; align-items:center; gap:0.25rem;">
+            <label for="editor-cols">Col:</label>
+            <input type="number" id="editor-cols" min="3" max="20" value="7" style="width: 42px; background: var(--bg-primary); border: 1px solid var(--border-color); color: #fff; font-family: inherit; text-align: center; border-radius: 4px;">
+          </div>
+          <div style="display:flex; align-items:center; gap:0.25rem;">
+            <label for="editor-rows">Row:</label>
+            <input type="number" id="editor-rows" min="3" max="20" value="7" style="width: 42px; background: var(--bg-primary); border: 1px solid var(--border-color); color: #fff; font-family: inherit; text-align: center; border-radius: 4px;">
+          </div>
+          <div style="display:flex; align-items:center; gap:0.25rem;">
+            <label for="editor-steps">Steps:</label>
+            <input type="number" id="editor-steps" min="5" max="99" value="15" style="width: 38px; background: var(--bg-primary); border: 1px solid var(--border-color); color: #fff; font-family: inherit; text-align: center; border-radius: 4px;">
+          </div>
+        </div>
+
+        <!-- Editor Allowed Rules Configurator -->
+        <div class="editor-rules-config" style="background: rgba(8, 12, 20, 0.4); padding: 0.6rem; border-radius: 8px; font-family: 'Share Tech Mono', monospace; font-size: 0.82rem; display: flex; flex-direction: column; gap: 0.45rem;">
+          <span style="color: var(--neon-cyan); font-weight: bold; font-size: 0.9rem;">Config Allowed Rules:</span>
+          
+          <!-- Red Rules -->
+          <div style="display: flex; gap: 0.25rem; align-items: center; justify-content: space-between;">
+            <span style="color: var(--neon-red); font-weight: bold; width: 45px;">RED:</span>
+            <label style="display: flex; align-items: center; gap: 0.2rem; cursor: pointer; color: #fff;">
+              <input type="checkbox" id="chk-allow-red-push" checked style="cursor: pointer;"> PUSH
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.2rem; cursor: pointer; color: #fff;">
+              <input type="checkbox" id="chk-allow-red-swap" checked style="cursor: pointer;"> SWAP
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.2rem; cursor: pointer; color: #fff;">
+              <input type="checkbox" id="chk-allow-red-merge" checked style="cursor: pointer;"> MERGE
+            </label>
+          </div>
+
+          <!-- Blue Rules -->
+          <div style="display: flex; gap: 0.25rem; align-items: center; justify-content: space-between;">
+            <span style="color: var(--neon-blue); font-weight: bold; width: 45px;">BLUE:</span>
+            <label style="display: flex; align-items: center; gap: 0.2rem; cursor: pointer; color: #fff;">
+              <input type="checkbox" id="chk-allow-blue-push" checked style="cursor: pointer;"> PUSH
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.2rem; cursor: pointer; color: #fff;">
+              <input type="checkbox" id="chk-allow-blue-swap" checked style="cursor: pointer;"> SWAP
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.2rem; cursor: pointer; color: #fff;">
+              <input type="checkbox" id="chk-allow-blue-merge" checked style="cursor: pointer;"> MERGE
+            </label>
+          </div>
+
+          <!-- Green Rules -->
+          <div style="display: flex; gap: 0.25rem; align-items: center; justify-content: space-between;">
+            <span style="color: var(--neon-green); font-weight: bold; width: 45px;">GREEN:</span>
+            <label style="display: flex; align-items: center; gap: 0.2rem; cursor: pointer; color: #fff;">
+              <input type="checkbox" id="chk-allow-green-push" checked style="cursor: pointer;"> PUSH
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.2rem; cursor: pointer; color: #fff;">
+              <input type="checkbox" id="chk-allow-green-swap" checked style="cursor: pointer;"> SWAP
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.2rem; cursor: pointer; color: #fff;">
+              <input type="checkbox" id="chk-allow-green-merge" checked style="cursor: pointer;"> MERGE
+            </label>
+          </div>
+        </div>
+
+        <!-- Dynamic Entity Brush Selectors -->
+        <div class="brush-container" style="display: flex; flex-direction: column; gap: 0.4rem;">
+          <span style="font-family: 'Share Tech Mono', monospace; font-size: 0.95rem; color: var(--neon-cyan);">Draw Brush:</span>
+          <div class="brush-grid" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.2rem;">
+            <button class="btn-action brush-btn active" data-brush="clear" title="Eraser (Hapus)" style="padding: 0.4rem 0.2rem; font-size: 0.85rem; max-width: none;">🧹 Clear</button>
+            <button class="btn-action brush-btn" data-brush="wall" title="Default Wall (#)" style="padding: 0.4rem 0.2rem; font-size: 0.85rem; max-width: none;">🧱 Wall</button>
+            <button class="btn-action brush-btn" data-brush="wall-1" title="Custom Wall 1 (Symbol: 0)" style="padding: 0.4rem 0.2rem; font-size: 0.85rem; max-width: none; color: var(--neon-cyan);">🧱 W-1</button>
+            <button class="btn-action brush-btn" data-brush="wall-2" title="Custom Wall 2 (Symbol: 7)" style="padding: 0.4rem 0.2rem; font-size: 0.85rem; max-width: none; color: var(--neon-cyan);">🧱 W-2</button>
+            <button class="btn-action brush-btn" data-brush="wall-3" title="Custom Wall 3 (Symbol: 8)" style="padding: 0.4rem 0.2rem; font-size: 0.85rem; max-width: none; color: var(--neon-cyan);">🧱 W-3</button>
+            <button class="btn-action brush-btn" data-brush="wall-4" title="Custom Wall 4 (Symbol: 9)" style="padding: 0.4rem 0.2rem; font-size: 0.85rem; max-width: none; color: var(--neon-cyan);">🧱 W-4</button>
+            <button class="btn-action brush-btn" data-brush="wall-5" title="Custom Wall 5 (Symbol: ?)" style="padding: 0.4rem 0.2rem; font-size: 0.85rem; max-width: none; color: var(--neon-cyan);">🧱 W-5</button>
+            <button class="btn-action brush-btn" data-brush="wall-6" title="Custom Wall 6 (Symbol: !)" style="padding: 0.4rem 0.2rem; font-size: 0.85rem; max-width: none; color: var(--neon-cyan);">🧱 W-6</button>
+            <button class="btn-action brush-btn" data-brush="floor-1" title="Custom Floor 1 (Symbol: d)" style="padding: 0.4rem 0.2rem; font-size: 0.85rem; max-width: none; color: #a3e635;">🟩 F-1</button>
+            <button class="btn-action brush-btn" data-brush="floor-2" title="Custom Floor 2 (Symbol: e)" style="padding: 0.4rem 0.2rem; font-size: 0.85rem; max-width: none; color: #a3e635;">🟩 F-2</button>
+            <button class="btn-action brush-btn" data-brush="floor-3" title="Custom Floor 3 (Symbol: f)" style="padding: 0.4rem 0.2rem; font-size: 0.85rem; max-width: none; color: #a3e635;">🟩 F-3</button>
+            <button class="btn-action brush-btn" data-brush="floor-4" title="Custom Floor 4 (Symbol: g)" style="padding: 0.4rem 0.2rem; font-size: 0.85rem; max-width: none; color: #a3e635;">🟩 F-4</button>
+            <button class="btn-action brush-btn" data-brush="floor-5" title="Custom Floor 5 (Symbol: h)" style="padding: 0.4rem 0.2rem; font-size: 0.85rem; max-width: none; color: #a3e635;">🟩 F-5</button>
+            <button class="btn-action brush-btn" data-brush="floor-6" title="Custom Floor 6 (Symbol: i)" style="padding: 0.4rem 0.2rem; font-size: 0.85rem; max-width: none; color: #a3e635;">🟩 F-6</button>
+            <button class="btn-action brush-btn" data-brush="portal" title="Portal Exit" style="padding: 0.4rem 0.2rem; font-size: 0.85rem; max-width: none;">🌀 Goal</button>
+            <button class="btn-action brush-btn" data-brush="spikes" title="Spikes Hazard" style="padding: 0.4rem 0.2rem; font-size: 0.85rem; max-width: none;">▲ Spikes</button>
+            <button class="btn-action brush-btn" data-brush="player" title="Player 1 Start Location" style="padding: 0.4rem 0.2rem; font-size: 0.85rem; max-width: none;">◈ P1</button>
+            <button class="btn-action brush-btn" data-brush="player2" title="Player 2 Start Location" style="padding: 0.4rem 0.2rem; font-size: 0.85rem; max-width: none; color: var(--neon-yellow);">❖ P2</button>
+            <button class="btn-action brush-btn" data-brush="player3" title="Player 3 Start Location" style="padding: 0.4rem 0.2rem; font-size: 0.85rem; max-width: none; color: #ff2a5f;">✦ P3</button>
+            <button class="btn-action brush-btn" data-brush="player4" title="Player 4 Start Location" style="padding: 0.4rem 0.2rem; font-size: 0.85rem; max-width: none; color: #be00ff;">⬟ P4</button>
+            <button class="btn-action brush-btn" data-brush="glyph-red" title="Red Glyph (Alpha)" style="padding: 0.4rem 0.2rem; font-size: 0.85rem; max-width: none; color: var(--neon-red);">▲ Red</button>
+            <button class="btn-action brush-btn" data-brush="glyph-blue" title="Blue Glyph (Beta)" style="padding: 0.4rem 0.2rem; font-size: 0.85rem; max-width: none; color: var(--neon-blue);">■ Blue</button>
+            <button class="btn-action brush-btn" data-brush="glyph-green" title="Green Glyph (Gamma)" style="padding: 0.4rem 0.2rem; font-size: 0.85rem; max-width: none; color: var(--neon-green);">● Green</button>
+            <button class="btn-action brush-btn" data-brush="plate-red" title="Red Plate (Triggers red gates)" style="padding: 0.4rem 0.2rem; font-size: 0.8rem; max-width: none; border-color: rgba(255,42,95,0.3);">⛶ R-Plat</button>
+            <button class="btn-action brush-btn" data-brush="plate-blue" title="Blue Plate (Triggers blue gates)" style="padding: 0.4rem 0.2rem; font-size: 0.8rem; max-width: none; border-color: rgba(42,111,255,0.3);">⛶ B-Plat</button>
+            <button class="btn-action brush-btn" data-brush="plate-green" title="Green Plate (Triggers green gates)" style="padding: 0.4rem 0.2rem; font-size: 0.8rem; max-width: none; border-color: rgba(57,255,20,0.3);">⛶ G-Plat</button>
+            <button class="btn-action brush-btn" data-brush="gate-red" title="Red Gate (Blocks path)" style="padding: 0.4rem 0.2rem; font-size: 0.8rem; max-width: none; border-color: rgba(255,42,95,0.3);">🔒 R-Gate</button>
+            <button class="btn-action brush-btn" data-brush="gate-blue" title="Blue Gate (Blocks path)" style="padding: 0.4rem 0.2rem; font-size: 0.8rem; max-width: none; border-color: rgba(42,111,255,0.3);">🔒 B-Gate</button>
+            <button class="btn-action brush-btn" data-brush="gate-green" title="Green Gate (Blocks path)" style="padding: 0.4rem 0.2rem; font-size: 0.8rem; max-width: none; border-color: rgba(57,255,20,0.3);">🔒 G-Gate</button>
+            <!-- Heavy Blocks -->
+            <button class="btn-action brush-btn" data-brush="heavy-2" title="Heavy Wall Weight 2" style="padding: 0.4rem 0.2rem; font-size: 0.8rem; max-width: none; color: #ffa500; border-color: rgba(255,165,0,0.3);">📦 Hvy-2</button>
+            <button class="btn-action brush-btn" data-brush="heavy-3" title="Heavy Wall Weight 3" style="padding: 0.4rem 0.2rem; font-size: 0.8rem; max-width: none; color: #ff4500; border-color: rgba(255,69,0,0.3);">📦 Hvy-3</button>
+            <!-- Portals -->
+            <button class="btn-action brush-btn" data-brush="tele-in" title="Teleport IN portal" style="padding: 0.4rem 0.2rem; font-size: 0.8rem; max-width: none; color: #00ffff; border-color: rgba(0,255,255,0.3);">🚪 Tele-IN</button>
+            <button class="btn-action brush-btn" data-brush="tele-out" title="Teleport OUT portal" style="padding: 0.4rem 0.2rem; font-size: 0.8rem; max-width: none; color: #ff00ff; border-color: rgba(255,0,255,0.3);">🚪 Tele-OUT</button>
+            <!-- Chasm -->
+            <button class="btn-action brush-btn" data-brush="chasm" title="Chasm (Pit)" style="padding: 0.4rem 0.2rem; font-size: 0.8rem; max-width: none; color: #808080; border-color: rgba(128,128,128,0.3);">🕳️ Chasm</button>
+            <!-- Lasers -->
+            <button class="btn-action brush-btn" data-brush="laser-h" title="Laser Continuous Horizontal" style="padding: 0.4rem 0.2rem; font-size: 0.75rem; max-width: none; color: #ff007f; border-color: rgba(255,0,127,0.3);">⚡ L-H</button>
+            <button class="btn-action brush-btn" data-brush="laser-v" title="Laser Continuous Vertical" style="padding: 0.4rem 0.2rem; font-size: 0.75rem; max-width: none; color: #ff007f; border-color: rgba(255,0,127,0.3);">⚡ L-V</button>
+            <button class="btn-action brush-btn" data-brush="laser-p-h" title="Laser Pulsing Horizontal" style="padding: 0.4rem 0.2rem; font-size: 0.75rem; max-width: none; color: #ff007f; border-color: rgba(255,0,127,0.3); border-style: dashed;">⚡ LP-H</button>
+            <button class="btn-action brush-btn" data-brush="laser-p-v" title="Laser Pulsing Vertical" style="padding: 0.4rem 0.2rem; font-size: 0.75rem; max-width: none; color: #ff007f; border-color: rgba(255,0,127,0.3); border-style: dashed;">⚡ LP-V</button>
+            <!-- Conveyors -->
+            <button class="btn-action brush-btn" data-brush="conveyor-l" title="Conveyor Left" style="padding: 0.4rem 0.2rem; font-size: 0.8rem; max-width: none; color: #39ff14; border-color: rgba(57,255,20,0.3);">⬅ Convey-L</button>
+            <button class="btn-action brush-btn" data-brush="conveyor-r" title="Conveyor Right" style="padding: 0.4rem 0.2rem; font-size: 0.8rem; max-width: none; color: #39ff14; border-color: rgba(57,255,20,0.3);">➡ Convey-R</button>
+            <button class="btn-action brush-btn" data-brush="conveyor-u" title="Conveyor Up" style="padding: 0.4rem 0.2rem; font-size: 0.8rem; max-width: none; color: #39ff14; border-color: rgba(57,255,20,0.3);">⬆ Convey-U</button>
+            <button class="btn-action brush-btn" data-brush="conveyor-d" title="Conveyor Down" style="padding: 0.4rem 0.2rem; font-size: 0.8rem; max-width: none; color: #39ff14; border-color: rgba(57,255,20,0.3);">⬇ Convey-D</button>
+            <!-- Identity Portals -->
+            <button class="btn-action brush-btn" data-brush="identity-p1" title="Identity Portal P1 Only" style="padding: 0.4rem 0.2rem; font-size: 0.8rem; max-width: none; color: #00ffff; border-color: rgba(0,255,255,0.3);">🆔 Portal P1</button>
+            <button class="btn-action brush-btn" data-brush="identity-p2" title="Identity Portal P2 Only" style="padding: 0.4rem 0.2rem; font-size: 0.8rem; max-width: none; color: var(--neon-yellow); border-color: rgba(255,255,0,0.3);">🆔 Portal P2</button>
+            <button class="btn-action brush-btn" data-brush="identity-p3" title="Identity Portal P3 Only" style="padding: 0.4rem 0.2rem; font-size: 0.8rem; max-width: none; color: #ff2a5f; border-color: rgba(255,42,95,0.3);">🆔 Portal P3</button>
+            <button class="btn-action brush-btn" data-brush="identity-p4" title="Identity Portal P4 Only" style="padding: 0.4rem 0.2rem; font-size: 0.8rem; max-width: none; color: #be00ff; border-color: rgba(190,0,255,0.3);">🆔 Portal P4</button>
+            <!-- Jammer and Sensor -->
+            <button class="btn-action brush-btn" data-brush="jammer" title="Rule Jammer Zone" style="padding: 0.4rem 0.2rem; font-size: 0.8rem; max-width: none; color: #ff0000; border-color: rgba(255,0,0,0.3);">🚫 Jammer</button>
+            <button class="btn-action brush-btn" data-brush="sensor" title="Sensor Floor" style="padding: 0.4rem 0.2rem; font-size: 0.8rem; max-width: none; color: #ffff00; border-color: rgba(255,255,0,0.3);">📡 Sensor</button>
+            <!-- Android wall challenge tiles -->
+            <button class="btn-action brush-btn" data-brush="cracked-wall" title="R - Dinding retak: hancur saat glyph didorong masuk." style="padding: 0.4rem 0.2rem; font-size: 0.72rem; max-width: none; color: #ffb347; border-color: rgba(255,179,71,0.3);">R Retak</button>
+            <button class="btn-action brush-btn" data-brush="one-way-r" title="> - One-way kanan: hanya bisa dilewati dari arah kanan." style="padding: 0.4rem 0.2rem; font-size: 0.72rem; max-width: none; color: #7dd3fc; border-color: rgba(125,211,252,0.3);">&gt; 1-Way</button>
+            <button class="btn-action brush-btn" data-brush="one-way-l" title="< - One-way kiri: hanya bisa dilewati dari arah kiri." style="padding: 0.4rem 0.2rem; font-size: 0.72rem; max-width: none; color: #7dd3fc; border-color: rgba(125,211,252,0.3);">&lt; 1-Way</button>
+            <button class="btn-action brush-btn" data-brush="one-way-u" title="N - One-way atas: hanya bisa dilewati dari arah atas." style="padding: 0.4rem 0.2rem; font-size: 0.72rem; max-width: none; color: #7dd3fc; border-color: rgba(125,211,252,0.3);">N 1-Way</button>
+            <button class="btn-action brush-btn" data-brush="one-way-d" title="v - One-way bawah: hanya bisa dilewati dari arah bawah." style="padding: 0.4rem 0.2rem; font-size: 0.72rem; max-width: none; color: #7dd3fc; border-color: rgba(125,211,252,0.3);">v 1-Way</button>
+            <button class="btn-action brush-btn" data-brush="timed-wall" title="T - Timed wall: solid dan terbuka bergantian setiap dua langkah." style="padding: 0.4rem 0.2rem; font-size: 0.72rem; max-width: none; color: #facc15; border-color: rgba(250,204,21,0.3);">T Timer</button>
+            <button class="btn-action brush-btn" data-brush="color-wall-red" title="4 - Dinding merah: solid saat RED STOP, terbuka saat RED rule berubah." style="padding: 0.4rem 0.2rem; font-size: 0.72rem; max-width: none; color: var(--neon-red); border-color: rgba(255,42,95,0.3);">4 Wall-R</button>
+            <button class="btn-action brush-btn" data-brush="color-wall-blue" title="5 - Dinding biru: solid saat BLUE STOP, terbuka saat BLUE rule berubah." style="padding: 0.4rem 0.2rem; font-size: 0.72rem; max-width: none; color: var(--neon-blue); border-color: rgba(42,111,255,0.3);">5 Wall-B</button>
+            <button class="btn-action brush-btn" data-brush="color-wall-green" title="6 - Dinding hijau: solid saat GREEN STOP, terbuka saat GREEN rule berubah." style="padding: 0.4rem 0.2rem; font-size: 0.72rem; max-width: none; color: var(--neon-green); border-color: rgba(57,255,20,0.3);">6 Wall-G</button>
+            <button class="btn-action brush-btn" data-brush="mirror-wall" title="M - Mirror wall: player terpental balik saat menabrak." style="padding: 0.4rem 0.2rem; font-size: 0.72rem; max-width: none; color: #22d3ee; border-color: rgba(34,211,238,0.3);">M Mirror</button>
+            <button class="btn-action brush-btn" data-brush="soft-wall" title="W - Soft wall: bisa dilewati tapi memakai 2 moves di Android." style="padding: 0.4rem 0.2rem; font-size: 0.72rem; max-width: none; color: #86efac; border-color: rgba(134,239,172,0.3);">W Soft</button>
+            <button class="btn-action brush-btn" data-brush="linked-wall-a" title="Y - Linked wall A: bergantian solid dengan grup Z." style="padding: 0.4rem 0.2rem; font-size: 0.72rem; max-width: none; color: #f472b6; border-color: rgba(244,114,182,0.3);">Y Link-A</button>
+            <button class="btn-action brush-btn" data-brush="linked-wall-b" title="Z - Linked wall B: bergantian solid dengan grup Y." style="padding: 0.4rem 0.2rem; font-size: 0.72rem; max-width: none; color: #f472b6; border-color: rgba(244,114,182,0.3);">Z Link-B</button>
+            <button class="btn-action brush-btn" data-brush="rotating-wall-h" title="- - Rotating wall horizontal: menahan gerak vertikal lalu berganti tiap langkah." style="padding: 0.4rem 0.2rem; font-size: 0.72rem; max-width: none; color: #fb923c; border-color: rgba(251,146,60,0.3);">- Rotate</button>
+            <button class="btn-action brush-btn" data-brush="rotating-wall-v" title="| - Rotating wall vertical: menahan gerak horizontal lalu berganti tiap langkah." style="padding: 0.4rem 0.2rem; font-size: 0.72rem; max-width: none; color: #fb923c; border-color: rgba(251,146,60,0.3);">| Rotate</button>
+            <button class="btn-action brush-btn" data-brush="player-wall-p1" title="Q - Dinding khusus P1: hanya P1 yang bisa lewat." style="padding: 0.4rem 0.2rem; font-size: 0.72rem; max-width: none; color: #00ffff; border-color: rgba(0,255,255,0.3);">Q P1-W</button>
+            <button class="btn-action brush-btn" data-brush="player-wall-p2" title="E - Dinding khusus P2: hanya P2 yang bisa lewat." style="padding: 0.4rem 0.2rem; font-size: 0.72rem; max-width: none; color: var(--neon-yellow); border-color: rgba(255,255,0,0.3);">E P2-W</button>
+            <button class="btn-action brush-btn" data-brush="player-wall-p3" title="F - Dinding khusus P3: hanya P3 yang bisa lewat." style="padding: 0.4rem 0.2rem; font-size: 0.72rem; max-width: none; color: #ff2a5f; border-color: rgba(255,42,95,0.3);">F P3-W</button>
+            <button class="btn-action brush-btn" data-brush="player-wall-p4" title="G - Dinding khusus P4: hanya P4 yang bisa lewat." style="padding: 0.4rem 0.2rem; font-size: 0.72rem; max-width: none; color: #be00ff; border-color: rgba(190,0,255,0.3);">G P4-W</button>
+            <button class="btn-action brush-btn" data-brush="glyph-only-wall" title="D - Glyph-only wall: player tertahan, glyph bisa didorong lewat." style="padding: 0.4rem 0.2rem; font-size: 0.72rem; max-width: none; color: #cbd5e1; border-color: rgba(203,213,225,0.3);">D Glyph</button>
+          </div>
+        </div>
+
+        <!-- Compile and Run Actions -->
+        <div class="editor-actions" style="display: flex; gap: 0.5rem;">
+          <button id="btn-editor-test" class="btn-primary" style="flex-grow: 1; font-size: 0.9rem; padding: 0.6rem; letter-spacing: 0px; text-shadow:none;">
+            ⚡ Play Test
+          </button>
+          <button id="btn-editor-solve" class="btn-primary" style="flex-grow: 1; font-size: 0.9rem; padding: 0.6rem; letter-spacing: 0px; text-shadow:none; background: linear-gradient(135deg, var(--neon-yellow), #d48800); box-shadow: 0 0 10px rgba(255, 183, 0, 0.3);">
+            🤖 Solve Bot
+          </button>
+        </div>
+
+        <!-- Solver Bot Readout Log -->
+        <div id="solver-result-panel" style="display: none; background: rgba(8, 12, 20, 0.6); padding: 0.6rem; border-radius: 8px; border: 1px solid var(--border-color); font-family: 'Share Tech Mono', monospace; font-size: 0.85rem; text-align: left;">
+          <div id="solver-status-text" style="color: var(--neon-cyan);">Status: Menghitung jalur...</div>
+          <button id="btn-solver-autoplay" class="btn-primary" style="display: none; width: 100%; font-size: 0.8rem; padding: 0.4rem 0.5rem; margin-top: 0.5rem; background: linear-gradient(135deg, var(--neon-green), #1b8a0a); box-shadow: 0 0 8px rgba(57, 255, 20, 0.3); color: #000;">
+            ▶ Autoplay Solusi
+          </button>
+        </div>
+
+        <!-- Level JSON Sharing -->
+        <div class="editor-io" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.25rem;">
+          <button id="btn-editor-export" class="btn-action" style="padding: 0.4rem 0.2rem; font-size: 0.8rem; max-width: none;">📤 Export JSON</button>
+          <button id="btn-editor-import" class="btn-action" style="padding: 0.4rem 0.2rem; font-size: 0.8rem; max-width: none;">📥 Import JSON</button>
+        </div>
+
+        <details class="editor-tile-legend">
+          <summary>Panduan simbol JSON Android</summary>
+          <div class="tile-legend-list">
+            <div><code>.</code><span>Lantai kosong: ruang gerak normal.</span></div>
+            <div><code>#</code><span>Dinding biasa: blok permanen.</span></div>
+            <div><code>@ % * $</code><span>Start P1, P2, P3, P4.</span></div>
+            <div><code>A B C</code><span>Glyph merah, biru, hijau.</span></div>
+            <div><code>H K</code><span>Heavy glyph: butuh 2 atau 3 player segaris untuk didorong.</span></div>
+            <div><code>X</code><span>Portal finish: semua player aktif harus mencapai portal.</span></div>
+            <div><code>^</code><span>Spike: membunuh player jika tidak tertutup glyph.</span></div>
+            <div><code>_</code><span>Jurang: membunuh player; glyph yang masuk akan menutup jurang.</span></div>
+            <div><code>a b c</code><span>Plate merah, biru, hijau untuk membuka gate warna.</span></div>
+            <div><code>1 2 3</code><span>Gate merah, biru, hijau; terbuka saat plate terkait aktif.</span></div>
+            <div><code>[ ]</code><span>Teleport masuk dan keluar.</span></div>
+            <div><code>L l P p</code><span>Laser horizontal, vertikal, pulse horizontal, pulse vertikal.</span></div>
+            <div><code>( ) { }</code><span>Conveyor kiri, kanan, atas, bawah.</span></div>
+            <div><code>I O U V</code><span>Portal khusus P1, P2, P3, P4.</span></div>
+            <div><code>J</code><span>Jammer: glyph di atasnya dianggap STOP.</span></div>
+            <div><code>S</code><span>Sensor: rule glyph di atasnya disalin sementara ke semua warna.</span></div>
+            <div><code>R</code><span>Dinding retak: hancur saat glyph didorong masuk.</span></div>
+            <div><code>&gt; &lt; N v</code><span>One-way wall: hanya bisa dilewati dari arah simbol.</span></div>
+            <div><code>T</code><span>Timed wall: solid dan terbuka bergantian setiap dua langkah.</span></div>
+            <div><code>4 5 6</code><span>Color wall merah, biru, hijau; solid saat rule warna itu STOP.</span></div>
+            <div><code>M</code><span>Mirror wall: player terpental balik saat menabrak.</span></div>
+            <div><code>W</code><span>Soft wall: bisa dilewati, tetapi memakai 2 moves.</span></div>
+            <div><code>Y Z</code><span>Linked wall: grup Y dan Z bergantian solid.</span></div>
+            <div><code>- |</code><span>Rotating wall: menahan arah tertentu lalu berganti tiap langkah.</span></div>
+            <div><code>Q E F G</code><span>Dinding khusus P1, P2, P3, P4.</span></div>
+            <div><code>D</code><span>Glyph-only wall: player tertahan, glyph bisa didorong lewat.</span></div>
+          </div>
+        </details>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>Inspirasi dari <a href="https://github.com/increpare/PuzzleScript" target="_blank" rel="noopener">PuzzleScript</a> (MIT)</span>
+    <span>Rule Glyph Lab &copy; 2026</span>
+  </footer>
+
+  <!-- MODALS -->
+
+  <!-- 1. Help / How To Play Modal -->
+  <div id="modal-help" class="modal-overlay">
+    <div class="modal-content">
+      <h2 class="modal-title">Rule <span>Laboratory Guide</span></h2>
+      <div class="modal-body">
+        <ul class="instructions-list">
+          <li><strong>P1</strong> bergerak dengan <strong>WASD</strong>; <strong>P2</strong> bergerak dengan <strong>tombol panah</strong>.</li>
+          <li>Kedua player harus masuk Portal Putar untuk memenangkan level.</li>
+          <li>Setiap level memiliki batas langkah (STEPS) yang terbatas!</li>
+          <li>Di panel kanan, Anda dapat mengubah sifat fisik Glyph warna:
+            <ul>
+              <li><strong>STOP:</strong> Glyph bertindak sebagai dinding solid.</li>
+              <li><strong>PUSH:</strong> Glyph dapat didorong ke sel kosong.</li>
+              <li><strong>SWAP:</strong> Player akan bertukar tempat dengan Glyph saat melewatinya.</li>
+              <li><strong>MERGE:</strong> Glyph bisa didorong, dan akan menyatu jika menabrak sesama warna!</li>
+            </ul>
+          </li>
+          <li>Injak pressure plate (⛶) untuk membuka pintu pagar warna yang menghalangi jalan.</li>
+          <li>Beberapa level hanya membuka rule tertentu agar urutan tutorial tetap jelas.</li>
+        </ul>
+      </div>
+      <button id="btn-close-help" class="btn-primary">Mengerti</button>
+    </div>
+  </div>
+
+  <!-- 2. Level Select Modal -->
+  <div id="modal-levels" class="modal-overlay">
+    <div class="modal-content" style="max-width: 500px;">
+      <h2 class="modal-title">Pilih <span>Level</span></h2>
+      <div class="modal-body">
+        <!-- Player Mode Selection Tabs -->
+        <div class="mode-tabs" style="display: flex; gap: 0.4rem; justify-content: center; margin-bottom: 1.25rem;">
+          <button class="mode-tab active" data-mode="1" style="flex: 1; padding: 0.5rem; font-family: 'Share Tech Mono', monospace; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-panel); color: var(--text-main); cursor: pointer; transition: all 0.2s;">1 Player</button>
+          <button class="mode-tab" data-mode="2" style="flex: 1; padding: 0.5rem; font-family: 'Share Tech Mono', monospace; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-panel); color: var(--text-main); cursor: pointer; transition: all 0.2s;">2 Players</button>
+          <button class="mode-tab" data-mode="3" style="flex: 1; padding: 0.5rem; font-family: 'Share Tech Mono', monospace; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-panel); color: var(--text-main); cursor: pointer; transition: all 0.2s;">3 Players</button>
+          <button class="mode-tab" data-mode="4" style="flex: 1; padding: 0.5rem; font-family: 'Share Tech Mono', monospace; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-panel); color: var(--text-main); cursor: pointer; transition: all 0.2s;">4 Players</button>
+        </div>
+        <p style="margin-bottom: 1rem; color: var(--text-muted); text-align: center;">Selesaikan level sebelumnya untuk membuka level selanjutnya.</p>
+        <div id="play-chapter-filter-container" style="margin-bottom: 1rem; display: none; align-items: center; gap: 0.5rem; justify-content: center; font-family: 'Share Tech Mono', monospace; font-size: 0.95rem;">
+          <span style="color: var(--neon-cyan);">Pilih Bab:</span>
+          <select id="play-chapter-select" style="background: var(--bg-primary); border: 1px solid var(--border-color); color: #fff; font-family: inherit; font-size: 0.85rem; padding: 0.4rem; border-radius: 6px; outline: none; cursor: pointer; border-color: rgba(0, 240, 255, 0.25); flex-grow: 1;"></select>
+        </div>
+        <div class="level-grid" id="level-select-grid">
+          <!-- Dynamically populated in UI module -->
+        </div>
+      </div>
+      <button id="btn-close-levels" class="btn-primary">Tutup</button>
+    </div>
+  </div>
+
+  <!-- 3. Win / Success Modal -->
+  <div id="modal-win" class="modal-overlay">
+    <div class="modal-content">
+      <h2 class="modal-title">Level <span>Selesai!</span></h2>
+      <div class="modal-body">
+        <p id="win-message" style="font-size: 1.2rem; color: var(--neon-green); margin-bottom: 0.5rem;">Eksperimen Berhasil!</p>
+        <p id="win-stats" style="font-family: 'Share Tech Mono', monospace; font-size: 1.1rem;"></p>
+      </div>
+      <button id="btn-next-level" class="btn-primary">Lanjut Eksperimen</button>
+    </div>
+  </div>
+
+  <!-- 4. Game Over / Out of Moves Modal -->
+  <div id="modal-fail" class="modal-overlay">
+    <div class="modal-content">
+      <h2 class="modal-title" style="color: var(--neon-red); text-shadow: 0 0 10px rgba(255, 42, 95, 0.5);">Energi <span>Habis</span></h2>
+      <div class="modal-body">
+        <p style="margin-bottom: 1rem;">Langkah Anda habis sebelum mencapai portal!</p>
+        <p style="font-family: 'Share Tech Mono', monospace; color: var(--text-muted);">Ubah konfigurasi aturan Anda untuk mencari rute yang lebih efisien.</p>
+      </div>
+      <div style="display: flex; gap: 1rem; justify-content: center;">
+        <button id="btn-fail-undo" class="btn-action" style="flex-grow:1; max-width:none; padding: 0.8rem 1rem;">↩ Undo Langkah</button>
+        <button id="btn-fail-retry" class="btn-primary" style="flex-grow:1; font-size:0.95rem; padding: 0.8rem 1rem;">⟲ Coba Lagi</button>
+      </div>
+    </div>
+  </div>
+
+    <!-- 5. Editor Import Modal -->
+    <div id="modal-import" class="modal-overlay">
+      <div class="modal-content" style="max-width: 460px;">
+        <h2 class="modal-title">Import <span>Level JSON</span></h2>
+        <div class="modal-body">
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem; text-align: left;">Paste Level JSON format code yang valid di bawah ini:</p>
+          <textarea id="import-json-area" placeholder='{"width":7, "height":7, "movesLimit":15, ...}' style="width: 100%; height: 140px; background: rgba(8,12,20,0.8); border: 1px solid var(--border-color); color: var(--text-main); font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; padding: 0.6rem; border-radius: 6px; resize: none; outline: none; box-sizing: border-box;"></textarea>
+          <div id="import-error-msg" style="color: var(--neon-red); font-size: 0.85rem; margin-top: 0.5rem; text-align: left; display: none;">❌ Format Level JSON tidak valid!</div>
+        </div>
+        <div style="display: flex; gap: 1rem; justify-content: center; width: 100%;">
+          <button id="btn-cancel-import" class="btn-action" style="flex-grow: 1; max-width: none; padding: 0.75rem 1rem;">Cancel</button>
+          <button id="btn-submit-import" class="btn-primary" style="flex-grow: 1; font-size: 0.95rem; padding: 0.75rem 1rem;">Load Level</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Editor Export Modal -->
+    <div id="modal-export" class="modal-overlay">
+      <div class="modal-content" style="max-width: 460px;">
+        <h2 class="modal-title">Export <span>Level JSON</span></h2>
+        <div class="modal-body">
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem; text-align: left;">Salin kode JSON level berikut untuk dibagikan atau disimpan:</p>
+          <textarea id="export-json-area" readonly style="width: 100%; height: 140px; background: rgba(8,12,20,0.8); border: 1px solid var(--border-color); color: var(--text-main); font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; padding: 0.6rem; border-radius: 6px; resize: none; outline: none; box-sizing: border-box;"></textarea>
+        </div>
+        <div style="display: flex; gap: 1rem; justify-content: center; width: 100%;">
+          <button id="btn-close-export" class="btn-action" style="flex-grow: 1; max-width: none; padding: 0.75rem 1rem;">Close</button>
+          <button id="btn-copy-export" class="btn-primary" style="flex-grow: 1; font-size: 0.95rem; padding: 0.75rem 1rem;">Copy Code</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. Game Completed Modal -->
+    <div id="modal-finished" class="modal-overlay">
+      <div class="modal-content" style="max-width: 460px; border-color: var(--neon-green); box-shadow: 0 0 30px rgba(57, 255, 20, 0.35);">
+        <h2 class="modal-title" style="color: var(--neon-green); text-shadow: 0 0 10px rgba(57, 255, 20, 0.4);">CONGRATULATIONS</h2>
+        <div class="modal-body">
+          <p style="font-size: 1.3rem; margin-bottom: 1rem; color: #fff; font-weight: bold;">Eksperimen Selesai!</p>
+          <p style="margin-bottom: 1.25rem; font-size: 0.95rem; line-height: 1.5; color: var(--text-main);">
+            Selamat! Anda telah berhasil memecahkan semua <span id="finished-level-count">100</span> level eksperimen di <strong>Rule Glyph Lab</strong> dan resmi dinobatkan sebagai <strong>Master of Glyphs</strong>!
+          </p>
+          <div style="background: rgba(8, 12, 20, 0.6); padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(0, 240, 255, 0.1); font-family: 'Share Tech Mono', monospace; font-size: 1rem; line-height: 1.4;">
+            🏆 STATUS: MASTER SCIENTIST<br>
+            💾 SELURUH DATA LOG BERHASIL DISINKRONISASI
+          </div>
+        </div>
+        <div style="display: flex; gap: 1rem; justify-content: center; width: 100%;">
+          <button id="btn-finished-creator" class="btn-action" style="flex-grow: 1; max-width: none; padding: 0.75rem 1rem;">🛠️ Creator Mode</button>
+          <button id="btn-finished-levels" class="btn-primary" style="flex-grow: 1; font-size: 0.95rem; padding: 0.75rem 1rem; background: linear-gradient(135deg, var(--neon-green), #1b8a0a); box-shadow: 0 0 12px rgba(57, 255, 20, 0.4); color: #000;">☰ Pilih Level</button>
+        </div>
+      </div>
+    </div>
+
+  <!-- 8. Options Modal -->
+  <div id="modal-options" class="modal-overlay">
+    <div class="modal-content">
+      <h2 class="modal-title">Pengaturan</h2>
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 1.25rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; font-family: 'Share Tech Mono', monospace; font-size: 1.1rem;">
+          <span>Sound Audio:</span>
+          <button id="btn-options-mute" class="btn-action" style="max-width: none; width: 110px;">🔊 On</button>
+        </div>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 1.25rem; font-family: 'Share Tech Mono', monospace; font-size: 1.1rem;">
+          <span>Level Creator:</span>
+          <button id="btn-options-editor" class="btn-primary" style="font-size: 0.9rem; padding: 0.5rem 1rem; box-shadow: none;">🛠️ Editor Lab</button>
+        </div>
+      </div>
+      <button id="btn-close-options" class="btn-primary" style="margin-top: 0.5rem;">Tutup</button>
+    </div>
+  </div>
+
+  <!-- 9. Credits Modal -->
+  <div id="modal-credits" class="modal-overlay">
+    <div class="modal-content">
+      <h2 class="modal-title">Credits</h2>
+      <div class="modal-body">
+        <p style="font-weight: bold; margin-bottom: 0.5rem; font-size: 1.25rem; color: var(--neon-cyan);">Rule Glyph Lab</p>
+        <p style="color: var(--neon-red); font-family: 'Share Tech Mono', monospace; font-size: 0.95rem; margin-bottom: 1.25rem; letter-spacing: 2px;">ANDROID EDITION</p>
+        <p style="margin-bottom: 1.25rem; font-size: 0.95rem; line-height: 1.6; text-align: justify; color: var(--text-main);">
+          Sebuah puzzle game berbasis logika grid di mana Anda dapat mengubah sifat fisik dari Glyph warna (Stop, Push, Swap, Merge) secara real-time. Inspirasi dikembangkan dari sistem PuzzleScript (MIT).
+        </p>
+        <div style="background: rgba(8, 12, 20, 0.5); padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-color); font-family: 'Share Tech Mono', monospace; font-size: 0.9rem; text-align: left; line-height: 1.4;">
+          👤 DEVELOPER: CHIRO<br>
+          🏆 DESIGNER: PAIR PROGRAMMER AI<br>
+          📅 TAHUN RILIS: 2026
+        </div>
+      </div>
+      <button id="btn-close-credits" class="btn-primary" style="margin-top: 0.5rem;">Tutup</button>
+    </div>
+  </div>
+
+  <!-- 10. Coop 3/4 Player Selection Modal -->
+  <div id="modal-coop-select" class="modal-overlay">
+    <div class="modal-content">
+      <h2 class="modal-title">Co-Op Mode</h2>
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 1rem;">
+        <p style="font-family: 'Share Tech Mono', monospace; margin-bottom: 0.5rem;">Pilih jumlah pemain untuk mode Co-Op:</p>
+        <button id="btn-coop-select-3" class="btn-primary" style="padding: 0.8rem; font-size: 1rem;">👥 3 Players (Local)</button>
+        <button id="btn-coop-select-4" class="btn-primary" style="padding: 0.8rem; font-size: 1rem; background: linear-gradient(135deg, #be00ff, #7e00b8); box-shadow: 0 0 15px rgba(190, 0, 255, 0.4); color: #fff;">⬟ 4 Players (Local)</button>
+      </div>
+      <button id="btn-close-coop-select" class="btn-action" style="max-width: none; margin-top: 0.5rem;">Batal</button>
+    </div>
+  </div>
+
+  <!-- DIAGNOSTIC CONSOLE FOR REMOTE DEBUGGING -->
+  <div id="debug-console" style="position: fixed; bottom: 10px; left: 10px; z-index: 10000; background: rgba(8,12,20,0.92); color: #00ff00; font-family: 'Share Tech Mono', monospace; font-size: 11px; padding: 10px; border-radius: 8px; max-width: 90%; max-height: 220px; width: 340px; overflow-y: auto; pointer-events: auto; border: 1px solid var(--border-color); box-shadow: 0 0 20px rgba(0,240,255,0.25); display: none;">
+    <div style="font-weight: bold; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; margin-bottom: 5px; display: flex; justify-content: space-between; font-size: 12px; color: var(--neon-cyan);">
+      <span>⚙️ GLYPH LAB DEBUGGER</span>
+      <button onclick="document.getElementById('debug-console').style.display='none'" style="background: none; border: none; color: var(--neon-red); cursor: pointer; font-weight: bold;">[X]</button>
+    </div>
+    <div id="debug-log-list" style="max-height: 170px; overflow-y: auto;"></div>
+  </div>
+  <script>
+    const logList = document.getElementById('debug-log-list');
+    function logToScreen(type, msg) {
+      document.getElementById('debug-console').style.display = 'block';
+      const item = document.createElement('div');
+      item.style.marginBottom = '3px';
+      item.style.lineHeight = '1.3';
+      item.style.color = type === 'error' ? 'var(--neon-red)' : (type === 'warn' ? 'var(--neon-yellow)' : '#39ff14');
+      item.textContent = '[' + new Date().toLocaleTimeString() + '] ' + type.toUpperCase() + ': ' + msg;
+      logList.appendChild(item);
+      document.getElementById('debug-console').scrollTop = document.getElementById('debug-console').scrollHeight;
+    }
+    
+    // Intercept console outputs
+    const orgLog = console.log;
+    console.log = function(...args) {
+      orgLog.apply(console, args);
+      logToScreen('info', args.join(' '));
+    };
+    const orgError = console.error;
+    console.error = function(...args) {
+      orgError.apply(console, args);
+      logToScreen('error', args.join(' '));
+    };
+    const orgWarn = console.warn;
+    console.warn = function(...args) {
+      orgWarn.apply(console, args);
+      logToScreen('warn', args.join(' '));
+    };
+    
+    window.onerror = function (msg, url, lineNo, columnNo, error) {
+      logToScreen('error', msg + ' (' + url.split('/').pop() + ' L' + lineNo + ':' + columnNo + ')');
+      if (error && error.stack) {
+        logToScreen('error', 'Stack: ' + error.stack.split('\n').slice(0, 2).join(' '));
+      }
+      return false;
+    };
+  </script>
+
+  <!-- ENTRY POINT -->
+  <script type="module" src="js/game.js?v=1.0.6"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+{
+  "id": 5,
+  "name": "Dua Warna",
+  "description": "Buka gate merah dengan PUSH, lalu lewati glyph biru dengan SWAP.",
+  "width": 8,
+  "height": 5,
+  "movesLimit": 12,
+  "initialRules": {
+    "red": "STOP",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP"
+    ],
+    "blue": [
+      "STOP",
+      "SWAP"
+    ],
+    "green": [
+      "STOP"
+    ]
+  },
+  "map": [
+    "########",
+    "#@B#..X#",
+    "##.#.#.#",
+    "#..B...#",
+    "########"
+  ]
+}

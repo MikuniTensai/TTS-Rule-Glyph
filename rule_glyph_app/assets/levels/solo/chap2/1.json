@@ -1,0 +1,33 @@
+{
+  "id": 23,
+  "name": "Level Baru 25",
+  "description": "Desain level kustom Anda.",
+  "width": 7,
+  "height": 7,
+  "movesLimit": 15,
+  "initialRules": {
+    "red": "STOP",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP"
+    ],
+    "blue": [
+      "STOP"
+    ],
+    "green": [
+      "STOP"
+    ]
+  },
+  "map": [
+    "#######",
+    "#@....#",
+    "#.....#",
+    "#.....#",
+    "#.....#",
+    "#....X#",
+    "#######"
+  ]
+}

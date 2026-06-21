@@ -1,0 +1,32 @@
+{
+  "id": 4,
+  "name": "Jembatan Spike",
+  "description": "Dorong glyph ke spike untuk menyeberang dengan aman.",
+  "width": 7,
+  "height": 5,
+  "movesLimit": 10,
+  "initialRules": {
+    "red": "STOP",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP"
+    ],
+    "blue": [
+      "STOP",
+      "SWAP"
+    ],
+    "green": [
+      "STOP"
+    ]
+  },
+  "map": [
+    "#######",
+    "#@B#..#",
+    "##..#X#",
+    "#.....#",
+    "#######"
+  ]
+}
