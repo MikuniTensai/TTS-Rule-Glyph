@@ -90,6 +90,6 @@ flutter {
     source = "../.."
 }
 
-tasks.matching { it.name == "preBuild" }.configureEach {
+tasks.matching { it.name == "preBuild" || it.name.startsWith("compileFlutterBuild") }.configureEach {
     dependsOn(syncLevelsJsonForFlutter)
 }
