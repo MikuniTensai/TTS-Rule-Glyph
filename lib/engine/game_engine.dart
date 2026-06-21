@@ -3,6 +3,16 @@ import '../data/levels_data.dart';
 
 class BoardCell {
   bool isWall = false;
+  bool isCrackedWall = false;
+  String? oneWayDir; // 'L', 'R', 'U', 'D'
+  bool isTimedWall = false;
+  String? colorWallColor; // 'red', 'blue', 'green'
+  bool isMirrorWall = false;
+  bool isSoftWall = false;
+  String? linkedWallGroup; // 'a', 'b'
+  String? rotatingWallAxis; // 'horizontal', 'vertical'
+  String? playerWallAllowedId; // 'p1', 'p2', 'p3', 'p4'
+  bool isGlyphOnlyWall = false;
   bool hasPortal = false;
   bool hasSpikes = false;
   String? plateColor; // 'red', 'blue', 'green'
@@ -20,6 +30,16 @@ class BoardCell {
   BoardCell clone() {
     final cell = BoardCell();
     cell.isWall = isWall;
+    cell.isCrackedWall = isCrackedWall;
+    cell.oneWayDir = oneWayDir;
+    cell.isTimedWall = isTimedWall;
+    cell.colorWallColor = colorWallColor;
+    cell.isMirrorWall = isMirrorWall;
+    cell.isSoftWall = isSoftWall;
+    cell.linkedWallGroup = linkedWallGroup;
+    cell.rotatingWallAxis = rotatingWallAxis;
+    cell.playerWallAllowedId = playerWallAllowedId;
+    cell.isGlyphOnlyWall = isGlyphOnlyWall;
     cell.hasPortal = hasPortal;
     cell.hasSpikes = hasSpikes;
     cell.plateColor = plateColor;
@@ -92,6 +112,7 @@ class MoveResult {
   final bool won;
   final bool merged;
   final bool dead;
+  final int moveCost;
   final List<String> deadPlayerIds;
   final bool playerFinished;
   final String playerId;
@@ -101,6 +122,7 @@ class MoveResult {
     required this.won,
     required this.merged,
     required this.dead,
+    this.moveCost = 1,
     List<String>? deadPlayerIds,
     required this.playerFinished,
     required this.playerId,
@@ -161,6 +183,66 @@ class GameEngine {
         switch (char) {
           case '#':
             cell.isWall = true;
+            break;
+          case 'R':
+            cell.isCrackedWall = true;
+            break;
+          case '>':
+            cell.oneWayDir = 'R';
+            break;
+          case '<':
+            cell.oneWayDir = 'L';
+            break;
+          case 'N':
+            cell.oneWayDir = 'U';
+            break;
+          case 'v':
+            cell.oneWayDir = 'D';
+            break;
+          case 'T':
+            cell.isTimedWall = true;
+            break;
+          case '4':
+            cell.colorWallColor = 'red';
+            break;
+          case '5':
+            cell.colorWallColor = 'blue';
+            break;
+          case '6':
+            cell.colorWallColor = 'green';
+            break;
+          case 'M':
+            cell.isMirrorWall = true;
+            break;
+          case 'W':
+            cell.isSoftWall = true;
+            break;
+          case 'Y':
+            cell.linkedWallGroup = 'a';
+            break;
+          case 'Z':
+            cell.linkedWallGroup = 'b';
+            break;
+          case '-':
+            cell.rotatingWallAxis = 'horizontal';
+            break;
+          case '|':
+            cell.rotatingWallAxis = 'vertical';
+            break;
+          case 'Q':
+            cell.playerWallAllowedId = 'p1';
+            break;
+          case 'E':
+            cell.playerWallAllowedId = 'p2';
+            break;
+          case 'F':
+            cell.playerWallAllowedId = 'p3';
+            break;
+          case 'G':
+            cell.playerWallAllowedId = 'p4';
+            break;
+          case 'D':
+            cell.isGlyphOnlyWall = true;
             break;
           case 'X':
             cell.hasPortal = true;
@@ -303,6 +385,80 @@ class GameEngine {
     return p.x != -1 && !p.dead && !p.finished;
   }
 
+  String _dirFromDelta(int dx, int dy) {
+    if (dx > 0) return 'R';
+    if (dx < 0) return 'L';
+    if (dy > 0) return 'D';
+    if (dy < 0) return 'U';
+    return '';
+  }
+
+  bool isTimedWallSolid() => (stepCount ~/ 2) % 2 == 0;
+
+  bool isLinkedWallSolid(String group) {
+    final even = stepCount % 2 == 0;
+    return group == 'a' ? even : !even;
+  }
+
+  String activeRotatingWallAxis(BoardCell cell) {
+    final axis = cell.rotatingWallAxis ?? 'horizontal';
+    if (stepCount % 2 == 0) return axis;
+    return axis == 'horizontal' ? 'vertical' : 'horizontal';
+  }
+
+  bool _blocksByRotatingWall(BoardCell cell, int dx, int dy) {
+    if (cell.rotatingWallAxis == null) return false;
+    final axis = activeRotatingWallAxis(cell);
+    return (axis == 'vertical' && dx != 0) || (axis == 'horizontal' && dy != 0);
+  }
+
+  bool _isColorWallSolid(BoardCell cell, Map<String, String> activeRules) {
+    final color = cell.colorWallColor;
+    if (color == null) return false;
+    return (activeRules[color] ?? 'STOP') == 'STOP';
+  }
+
+  bool blocksPlayer(
+    BoardCell cell,
+    Player player,
+    int dx,
+    int dy,
+    Map<String, String> activeRules,
+  ) {
+    if (cell.isWall || cell.isCrackedWall || cell.isMirrorWall || cell.isGlyphOnlyWall) {
+      return true;
+    }
+    if (cell.oneWayDir != null && cell.oneWayDir != _dirFromDelta(dx, dy)) return true;
+    if (cell.isTimedWall && isTimedWallSolid()) return true;
+    if (_isColorWallSolid(cell, activeRules)) return true;
+    if (cell.linkedWallGroup != null && isLinkedWallSolid(cell.linkedWallGroup!)) return true;
+    if (_blocksByRotatingWall(cell, dx, dy)) return true;
+    if (cell.playerWallAllowedId != null && cell.playerWallAllowedId != player.id) return true;
+    return false;
+  }
+
+  bool blocksGlyph(BoardCell cell, int dx, int dy, Map<String, String> activeRules) {
+    if (cell.isWall || cell.isMirrorWall) return true;
+    if (cell.oneWayDir != null && cell.oneWayDir != _dirFromDelta(dx, dy)) return true;
+    if (cell.isTimedWall && isTimedWallSolid()) return true;
+    if (_isColorWallSolid(cell, activeRules)) return true;
+    if (cell.linkedWallGroup != null && isLinkedWallSolid(cell.linkedWallGroup!)) return true;
+    if (_blocksByRotatingWall(cell, dx, dy)) return true;
+    if (cell.playerWallAllowedId != null) return true;
+    return false;
+  }
+
+  bool blocksLaser(BoardCell cell) {
+    if (cell.isWall || cell.isCrackedWall || cell.isMirrorWall || cell.isGlyphOnlyWall) return true;
+    if (cell.oneWayDir != null) return true;
+    if (cell.isTimedWall && isTimedWallSolid()) return true;
+    if (cell.colorWallColor != null) return true;
+    if (cell.linkedWallGroup != null && isLinkedWallSolid(cell.linkedWallGroup!)) return true;
+    if (cell.rotatingWallAxis != null) return true;
+    if (cell.playerWallAllowedId != null) return true;
+    return false;
+  }
+
   Player? getPlayerAt(int x, int y, [String? skipId]) {
     for (var p in players) {
       if (isPlayerActive(p) && p.x == x && p.y == y && p.id != skipId) {
@@ -327,9 +483,32 @@ class GameEngine {
     }
 
     final targetCell = cells[nextX][nextY];
+    int moveCost = targetCell.isSoftWall ? 2 : 1;
+
+    if (targetCell.isMirrorWall) {
+      final bounceX = player.x - dx;
+      final bounceY = player.y - dy;
+      if (bounceX >= 0 &&
+          bounceX < width &&
+          bounceY >= 0 &&
+          bounceY < height &&
+          !blocksPlayer(cells[bounceX][bounceY], player, -dx, -dy, activeRules) &&
+          getPlayerAt(bounceX, bounceY, player.id) == null &&
+          glyphs.every((g) => g.x != bounceX || g.y != bounceY)) {
+        player.x = bounceX;
+        player.y = bounceY;
+      }
+
+      return _completeMove(
+        player: player,
+        playerId: playerId,
+        didMerge: false,
+        moveCost: moveCost,
+      );
+    }
 
     // Wall check
-    if (targetCell.isWall) {
+    if (blocksPlayer(targetCell, player, dx, dy, activeRules)) {
       return MoveResult(moved: false, won: false, merged: false, dead: false, playerFinished: false, playerId: playerId);
     }
 
@@ -393,7 +572,9 @@ class GameEngine {
 
         final behindCell = cells[behindX][behindY];
 
-        if (behindCell.isWall) {
+        if (behindCell.isCrackedWall) {
+          behindCell.isCrackedWall = false;
+        } else if (blocksGlyph(behindCell, dx, dy, activeRules)) {
           return MoveResult(moved: false, won: false, merged: false, dead: false, playerFinished: false, playerId: playerId);
         }
         if (behindCell.gateColor != null && !isGateColorOpen(behindCell.gateColor!)) {
@@ -507,15 +688,25 @@ class GameEngine {
       player.y = playerDestY;
     }
 
+    return _completeMove(
+      player: player,
+      playerId: playerId,
+      didMerge: didMerge,
+      moveCost: moveCost,
+    );
+  }
+
+  MoveResult _completeMove({
+    required Player player,
+    required String playerId,
+    required bool didMerge,
+    required int moveCost,
+  }) {
     stepCount++;
 
-    // Process Conveyors
     processConveyors();
-
-    // Scan Triggers (Plates, Spikes, Lasers)
     updateTriggers();
 
-    // Check spikes death
     final currentCell = cells[player.x][player.y];
     if (currentCell.hasSpikes) {
       final isCovered = glyphs.any((g) => g.x == player.x && g.y == player.y);
@@ -526,6 +717,7 @@ class GameEngine {
           won: false,
           merged: didMerge,
           dead: true,
+          moveCost: moveCost,
           deadPlayerIds: [player.id],
           playerFinished: false,
           playerId: playerId,
@@ -533,7 +725,6 @@ class GameEngine {
       }
     }
 
-    // Check chasm death
     if (currentCell.isChasm) {
       player.dead = true;
       return MoveResult(
@@ -541,13 +732,13 @@ class GameEngine {
         won: false,
         merged: didMerge,
         dead: true,
+        moveCost: moveCost,
         deadPlayerIds: [player.id],
         playerFinished: false,
         playerId: playerId,
       );
     }
 
-    // Check Exit portal
     final reachedPortal = currentCell.hasPortal || (currentCell.identityPortalPlayer == player.id);
     if (reachedPortal) {
       player.finished = true;
@@ -564,6 +755,7 @@ class GameEngine {
         won: false,
         merged: didMerge,
         dead: true,
+        moveCost: moveCost,
         deadPlayerIds: deadPlayerIds,
         playerFinished: false,
         playerId: playerId,
@@ -576,6 +768,7 @@ class GameEngine {
       won: allFinished,
       merged: didMerge,
       dead: false,
+      moveCost: moveCost,
       playerFinished: reachedPortal,
       playerId: player.id,
     );
@@ -669,23 +862,23 @@ class GameEngine {
 
         if (isHorizontal) {
           for (int tx = x - 1; tx >= 0; tx--) {
-            if (cells[tx][y].isWall) break;
+            if (blocksLaser(cells[tx][y])) break;
             _addLaserBeam(tx, y, 'horizontal');
             if (isLaserBlocked(tx, y)) break;
           }
           for (int tx = x + 1; tx < width; tx++) {
-            if (cells[tx][y].isWall) break;
+            if (blocksLaser(cells[tx][y])) break;
             _addLaserBeam(tx, y, 'horizontal');
             if (isLaserBlocked(tx, y)) break;
           }
         } else {
           for (int ty = y - 1; ty >= 0; ty--) {
-            if (cells[x][ty].isWall) break;
+            if (blocksLaser(cells[x][ty])) break;
             _addLaserBeam(x, ty, 'vertical');
             if (isLaserBlocked(x, ty)) break;
           }
           for (int ty = y + 1; ty < height; ty++) {
-            if (cells[x][ty].isWall) break;
+            if (blocksLaser(cells[x][ty])) break;
             _addLaserBeam(x, ty, 'vertical');
             if (isLaserBlocked(x, ty)) break;
           }
@@ -711,7 +904,7 @@ class GameEngine {
 
   bool isLaserBlocked(int x, int y) {
     final cell = cells[x][y];
-    if (cell.isWall) return true;
+    if (blocksLaser(cell)) return true;
     if (cell.gateColor != null && !isGateColorOpen(cell.gateColor!)) return true;
     if (glyphs.any((g) => g.x == x && g.y == y)) return true;
     return false;
@@ -818,7 +1011,14 @@ class GameEngine {
   bool isValidSlideTarget(int x, int y, String movingEntityKey) {
     if (x < 0 || x >= width || y < 0 || y >= height) return false;
     final cell = cells[x][y];
-    if (cell.isWall) return false;
+    if (cell.isWall || cell.isCrackedWall || cell.isMirrorWall) return false;
+    if (cell.oneWayDir != null) return false;
+    if (cell.isTimedWall && isTimedWallSolid()) return false;
+    if (cell.colorWallColor != null) return false;
+    if (cell.linkedWallGroup != null && isLinkedWallSolid(cell.linkedWallGroup!)) return false;
+    if (cell.rotatingWallAxis != null) return false;
+    if (cell.playerWallAllowedId != null && cell.playerWallAllowedId != movingEntityKey) return false;
+    if (cell.isGlyphOnlyWall && !movingEntityKey.startsWith("g_")) return false;
     if (cell.gateColor != null && !isGateColorOpen(cell.gateColor!)) return false;
 
     // Identity portal check
@@ -881,6 +1081,7 @@ class GameEngine {
       }).toList(),
       'stepCount': stepCount,
       'chasms': cells.map((row) => row.map((c) => c.isChasm).toList()).toList(),
+      'crackedWalls': cells.map((row) => row.map((c) => c.isCrackedWall).toList()).toList(),
     };
   }
 
@@ -913,6 +1114,16 @@ class GameEngine {
       final colList = chasmsMatrix[x] as List;
       for (int y = 0; y < height; y++) {
         cells[x][y].isChasm = colList[y] as bool;
+      }
+    }
+
+    final crackedWallsMatrix = snapshot['crackedWalls'] as List?;
+    if (crackedWallsMatrix != null) {
+      for (int x = 0; x < width; x++) {
+        final colList = crackedWallsMatrix[x] as List;
+        for (int y = 0; y < height; y++) {
+          cells[x][y].isCrackedWall = colList[y] as bool;
+        }
       }
     }
 

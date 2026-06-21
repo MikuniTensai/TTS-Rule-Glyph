@@ -1,6 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 
+const _validMapSymbols =
+    '.#R><NvT456MWYZ-|QEFGDX^abc123@&%*\$ABCHK[]_LlPp(){}IOUVJS';
+const _validRuleNames = {'STOP', 'PUSH', 'SWAP', 'MERGE'};
+
 class LevelData {
   final int id;
   final String name;
@@ -63,18 +67,83 @@ class LevelData {
   }
 
   factory LevelData.fromJson(Map<String, dynamic> json) {
+    final id = json['id'];
+    final name = json['name'];
+    final description = json['description'];
+    final width = json['width'];
+    final height = json['height'];
+    final movesLimit = json['movesLimit'];
+    final initialRulesRaw = json['initialRules'];
+    final allowedRulesRaw = json['allowedRules'];
+    final mapRaw = json['map'];
+
+    if (id is! int ||
+        id <= 0 ||
+        name is! String ||
+        description is! String ||
+        width is! int ||
+        width <= 0 ||
+        width > 64 ||
+        height is! int ||
+        height <= 0 ||
+        height > 64 ||
+        movesLimit is! int ||
+        movesLimit <= 0 ||
+        initialRulesRaw is! Map ||
+        allowedRulesRaw is! Map ||
+        mapRaw is! List) {
+      throw const FormatException('Invalid level JSON schema');
+    }
+
+    final initialRules = Map<String, String>.from(initialRulesRaw);
+    final allowedRules = allowedRulesRaw.map<String, List<String>>(
+      (key, value) =>
+          MapEntry(key as String, List<String>.from(value as Iterable)),
+    );
+    final map = List<String>.from(mapRaw);
+
+    if (map.length != height) {
+      throw FormatException('Level $id map height does not match height');
+    }
+    for (var rowIndex = 0; rowIndex < map.length; rowIndex++) {
+      final row = map[rowIndex];
+      if (row.length != width) {
+        throw FormatException(
+            'Level $id row ${rowIndex + 1} width does not match width');
+      }
+      for (final rune in row.runes) {
+        final symbol = String.fromCharCode(rune);
+        if (!_validMapSymbols.contains(symbol)) {
+          throw FormatException(
+              'Level $id contains unsupported symbol "$symbol"');
+        }
+      }
+    }
+
+    for (final color in ['red', 'blue', 'green']) {
+      final initial = initialRules[color];
+      final allowed = allowedRules[color];
+      if (initial == null ||
+          !_validRuleNames.contains(initial) ||
+          allowed == null ||
+          allowed.isEmpty ||
+          allowed.any((rule) => !_validRuleNames.contains(rule)) ||
+          !allowed.contains(initial)) {
+        throw FormatException(
+            'Level $id has invalid $color rule configuration');
+      }
+    }
+
     return LevelData(
-      id: json['id'] as int,
-      name: json['name'] as String,
-      description: json['description'] as String,
-      width: json['width'] as int,
-      height: json['height'] as int,
-      movesLimit: json['movesLimit'] as int,
-      initialRules: Map<String, String>.from(json['initialRules'] as Map),
-      allowedRules: (json['allowedRules'] as Map).map(
-        (k, v) => MapEntry(k as String, List<String>.from(v as Iterable)),
-      ),
-      map: List<String>.from(json['map'] as Iterable),
+      id: id,
+      name: name,
+      description: description,
+      width: width,
+      height: height,
+      movesLimit: movesLimit,
+      initialRules: initialRules,
+      allowedRules: allowedRules,
+      map: map,
     );
   }
 }
@@ -88,8 +157,26 @@ final Map<String, String> START_RULES = {
 final List<String> STOP_ONLY = ['STOP'];
 
 final List<int> PAR_MOVES = [
-  2, 6, 7, 7, 9, 11, 14, 3, 14, 15,
-  16, 16, 16, 16, 16, 16, 16, 16, 16, 16
+  2,
+  6,
+  7,
+  7,
+  9,
+  11,
+  14,
+  3,
+  14,
+  15,
+  16,
+  16,
+  16,
+  16,
+  16,
+  16,
+  16,
+  16,
+  16,
+  16
 ];
 
 const int ADVANCED_START_INDEX = 10;
@@ -104,13 +191,7 @@ final List<LevelData> BASE_LEVELS = [
     movesLimit: 3,
     initialRules: START_RULES,
     allowedRules: {'red': STOP_ONLY, 'blue': STOP_ONLY, 'green': STOP_ONLY},
-    map: [
-      "#####",
-      "#@.X#",
-      "#...#",
-      "#...#",
-      "#####"
-    ],
+    map: ["#####", "#@.X#", "#...#", "#...#", "#####"],
   ),
   LevelData(
     id: 2,
@@ -120,14 +201,12 @@ final List<LevelData> BASE_LEVELS = [
     height: 5,
     movesLimit: 7,
     initialRules: START_RULES,
-    allowedRules: {'red': ["STOP", "PUSH"], 'blue': STOP_ONLY, 'green': STOP_ONLY},
-    map: [
-      "#######",
-      "#@..1X#",
-      "#A###.#",
-      "#a....#",
-      "#######"
-    ],
+    allowedRules: {
+      'red': ["STOP", "PUSH"],
+      'blue': STOP_ONLY,
+      'green': STOP_ONLY
+    },
+    map: ["#######", "#@..1X#", "#A###.#", "#a....#", "#######"],
   ),
   LevelData(
     id: 3,
@@ -137,14 +216,12 @@ final List<LevelData> BASE_LEVELS = [
     height: 5,
     movesLimit: 10,
     initialRules: START_RULES,
-    allowedRules: {'red': ["STOP", "PUSH"], 'blue': STOP_ONLY, 'green': STOP_ONLY},
-    map: [
-      "########",
-      "#@...1X#",
-      "#A####.#",
-      "#a.....#",
-      "########"
-    ],
+    allowedRules: {
+      'red': ["STOP", "PUSH"],
+      'blue': STOP_ONLY,
+      'green': STOP_ONLY
+    },
+    map: ["########", "#@...1X#", "#A####.#", "#a.....#", "########"],
   ),
   LevelData(
     id: 4,
@@ -154,31 +231,28 @@ final List<LevelData> BASE_LEVELS = [
     height: 5,
     movesLimit: 10,
     initialRules: START_RULES,
-    allowedRules: {'red': STOP_ONLY, 'blue': ["STOP", "SWAP"], 'green': STOP_ONLY},
-    map: [
-      "#######",
-      "#@B#..#",
-      "##..#X#",
-      "#.....#",
-      "#######"
-    ],
+    allowedRules: {
+      'red': STOP_ONLY,
+      'blue': ["STOP", "SWAP"],
+      'green': STOP_ONLY
+    },
+    map: ["#######", "#@B#..#", "##..#X#", "#.....#", "#######"],
   ),
   LevelData(
     id: 5,
     name: "Tukar Zigzag",
-    description: "SWAP membuka jalur pendek melewati ruang yang dipisah dinding.",
+    description:
+        "SWAP membuka jalur pendek melewati ruang yang dipisah dinding.",
     width: 8,
     height: 5,
     movesLimit: 12,
     initialRules: START_RULES,
-    allowedRules: {'red': STOP_ONLY, 'blue': ["STOP", "SWAP"], 'green': STOP_ONLY},
-    map: [
-      "########",
-      "#@B#..X#",
-      "##.#.#.#",
-      "#..B...#",
-      "########"
-    ],
+    allowedRules: {
+      'red': STOP_ONLY,
+      'blue': ["STOP", "SWAP"],
+      'green': STOP_ONLY
+    },
+    map: ["########", "#@B#..X#", "##.#.#.#", "#..B...#", "########"],
   ),
   LevelData(
     id: 6,
@@ -188,14 +262,12 @@ final List<LevelData> BASE_LEVELS = [
     height: 5,
     movesLimit: 12,
     initialRules: START_RULES,
-    allowedRules: {'red': ["STOP", "MERGE"], 'blue': STOP_ONLY, 'green': STOP_ONLY},
-    map: [
-      "########",
-      "#@AAa..#",
-      "#.####.#",
-      "#....1X#",
-      "########"
-    ],
+    allowedRules: {
+      'red': ["STOP", "MERGE"],
+      'blue': STOP_ONLY,
+      'green': STOP_ONLY
+    },
+    map: ["########", "#@AAa..#", "#.####.#", "#....1X#", "########"],
   ),
   LevelData(
     id: 7,
@@ -205,14 +277,12 @@ final List<LevelData> BASE_LEVELS = [
     height: 5,
     movesLimit: 14,
     initialRules: START_RULES,
-    allowedRules: {'red': ["STOP", "MERGE"], 'blue': STOP_ONLY, 'green': STOP_ONLY},
-    map: [
-      "#########",
-      "#@AAAa..#",
-      "#.#####.#",
-      "#.....1X#",
-      "#########"
-    ],
+    allowedRules: {
+      'red': ["STOP", "MERGE"],
+      'blue': STOP_ONLY,
+      'green': STOP_ONLY
+    },
+    map: ["#########", "#@AAAa..#", "#.#####.#", "#.....1X#", "#########"],
   ),
   LevelData(
     id: 8,
@@ -222,22 +292,27 @@ final List<LevelData> BASE_LEVELS = [
     height: 3,
     movesLimit: 4,
     initialRules: START_RULES,
-    allowedRules: {'red': ["STOP", "PUSH"], 'blue': STOP_ONLY, 'green': STOP_ONLY},
-    map: [
-      "#######",
-      "#@A^X.#",
-      "#######"
-    ],
+    allowedRules: {
+      'red': ["STOP", "PUSH"],
+      'blue': STOP_ONLY,
+      'green': STOP_ONLY
+    },
+    map: ["#######", "#@A^X.#", "#######"],
   ),
   LevelData(
     id: 9,
     name: "Dua Warna",
-    description: "Buka gate merah dengan PUSH, lalu lewati glyph biru dengan SWAP.",
+    description:
+        "Buka gate merah dengan PUSH, lalu lewati glyph biru dengan SWAP.",
     width: 9,
     height: 6,
     movesLimit: 16,
     initialRules: START_RULES,
-    allowedRules: {'red': ["STOP", "PUSH"], 'blue': ["STOP", "SWAP"], 'green': STOP_ONLY},
+    allowedRules: {
+      'red': ["STOP", "PUSH"],
+      'blue': ["STOP", "SWAP"],
+      'green': STOP_ONLY
+    },
     map: [
       "#########",
       "#@A.a...#",
@@ -255,7 +330,11 @@ final List<LevelData> BASE_LEVELS = [
     height: 6,
     movesLimit: 20,
     initialRules: START_RULES,
-    allowedRules: {'red': ["STOP", "PUSH"], 'blue': STOP_ONLY, 'green': ["STOP", "MERGE"]},
+    allowedRules: {
+      'red': ["STOP", "PUSH"],
+      'blue': STOP_ONLY,
+      'green': ["STOP", "MERGE"]
+    },
     map: [
       "##########",
       "#@A.a....#",
@@ -273,7 +352,11 @@ final List<LevelData> BASE_LEVELS = [
     height: 8,
     movesLimit: 26,
     initialRules: START_RULES,
-    allowedRules: {'red': ["STOP", "PUSH"], 'blue': ["STOP", "SWAP"], 'green': ["STOP", "MERGE"]},
+    allowedRules: {
+      'red': ["STOP", "PUSH"],
+      'blue': ["STOP", "SWAP"],
+      'green': ["STOP", "MERGE"]
+    },
     map: [
       "##########",
       "#@A.a....#",
@@ -288,12 +371,17 @@ final List<LevelData> BASE_LEVELS = [
   LevelData(
     id: 12,
     name: "Ruang Sempit",
-    description: "Jalur lebih rapat dengan gate yang tetap harus dibuka berurutan.",
+    description:
+        "Jalur lebih rapat dengan gate yang tetap harus dibuka berurutan.",
     width: 10,
     height: 8,
     movesLimit: 26,
     initialRules: START_RULES,
-    allowedRules: {'red': ["STOP", "PUSH"], 'blue': ["STOP", "SWAP"], 'green': ["STOP", "MERGE"]},
+    allowedRules: {
+      'red': ["STOP", "PUSH"],
+      'blue': ["STOP", "SWAP"],
+      'green': ["STOP", "MERGE"]
+    },
     map: [
       "##########",
       "#@A.a....#",
@@ -313,7 +401,11 @@ final List<LevelData> BASE_LEVELS = [
     height: 8,
     movesLimit: 28,
     initialRules: START_RULES,
-    allowedRules: {'red': ["STOP", "PUSH"], 'blue': ["STOP", "SWAP"], 'green': ["STOP", "MERGE"]},
+    allowedRules: {
+      'red': ["STOP", "PUSH"],
+      'blue': ["STOP", "SWAP"],
+      'green': ["STOP", "MERGE"]
+    },
     map: [
       "##########",
       "#@A.a.^..#",
@@ -333,7 +425,11 @@ final List<LevelData> BASE_LEVELS = [
     height: 8,
     movesLimit: 27,
     initialRules: START_RULES,
-    allowedRules: {'red': ["STOP", "PUSH"], 'blue': ["STOP", "SWAP"], 'green': ["STOP", "MERGE"]},
+    allowedRules: {
+      'red': ["STOP", "PUSH"],
+      'blue': ["STOP", "SWAP"],
+      'green': ["STOP", "MERGE"]
+    },
     map: [
       "##########",
       "#@A.a....#",
@@ -353,7 +449,11 @@ final List<LevelData> BASE_LEVELS = [
     height: 8,
     movesLimit: 26,
     initialRules: START_RULES,
-    allowedRules: {'red': ["STOP", "PUSH"], 'blue': ["STOP", "SWAP"], 'green': ["STOP", "MERGE"]},
+    allowedRules: {
+      'red': ["STOP", "PUSH"],
+      'blue': ["STOP", "SWAP"],
+      'green': ["STOP", "MERGE"]
+    },
     map: [
       "##########",
       "#@A.a....#",
@@ -373,7 +473,11 @@ final List<LevelData> BASE_LEVELS = [
     height: 9,
     movesLimit: 30,
     initialRules: START_RULES,
-    allowedRules: {'red': ["STOP", "PUSH"], 'blue': ["STOP", "SWAP"], 'green': ["STOP", "MERGE"]},
+    allowedRules: {
+      'red': ["STOP", "PUSH"],
+      'blue': ["STOP", "SWAP"],
+      'green': ["STOP", "MERGE"]
+    },
     map: [
       "##########",
       "#@A.a....#",
@@ -394,7 +498,11 @@ final List<LevelData> BASE_LEVELS = [
     height: 9,
     movesLimit: 30,
     initialRules: START_RULES,
-    allowedRules: {'red': ["STOP", "PUSH"], 'blue': ["STOP", "SWAP"], 'green': ["STOP", "MERGE"]},
+    allowedRules: {
+      'red': ["STOP", "PUSH"],
+      'blue': ["STOP", "SWAP"],
+      'green': ["STOP", "MERGE"]
+    },
     map: [
       "##########",
       "#@A.a....#",
@@ -415,7 +523,11 @@ final List<LevelData> BASE_LEVELS = [
     height: 8,
     movesLimit: 25,
     initialRules: START_RULES,
-    allowedRules: {'red': ["STOP", "PUSH"], 'blue': ["STOP", "SWAP"], 'green': ["STOP", "MERGE"]},
+    allowedRules: {
+      'red': ["STOP", "PUSH"],
+      'blue': ["STOP", "SWAP"],
+      'green': ["STOP", "MERGE"]
+    },
     map: [
       "##########",
       "#@A.a.^..#",
@@ -435,7 +547,11 @@ final List<LevelData> BASE_LEVELS = [
     height: 9,
     movesLimit: 24,
     initialRules: START_RULES,
-    allowedRules: {'red': ["STOP", "PUSH"], 'blue': ["STOP", "SWAP"], 'green': ["STOP", "MERGE"]},
+    allowedRules: {
+      'red': ["STOP", "PUSH"],
+      'blue': ["STOP", "SWAP"],
+      'green': ["STOP", "MERGE"]
+    },
     map: [
       "##########",
       "#@A.a....#",
@@ -451,12 +567,17 @@ final List<LevelData> BASE_LEVELS = [
   LevelData(
     id: 20,
     name: "Ujian Bab Satu",
-    description: "Semua rule inti muncul sebelum campaign masuk ke ronde presisi.",
+    description:
+        "Semua rule inti muncul sebelum campaign masuk ke ronde presisi.",
     width: 10,
     height: 8,
     movesLimit: 24,
     initialRules: START_RULES,
-    allowedRules: {'red': ["STOP", "PUSH"], 'blue': ["STOP", "SWAP"], 'green': ["STOP", "MERGE"]},
+    allowedRules: {
+      'red': ["STOP", "PUSH"],
+      'blue': ["STOP", "SWAP"],
+      'green': ["STOP", "MERGE"]
+    },
     map: [
       "##########",
       "#@A.a.^..#",
@@ -471,12 +592,17 @@ final List<LevelData> BASE_LEVELS = [
   LevelData(
     id: 21,
     name: "Laboratorium Laser",
-    description: "Tembak laser, teleport, dan timbun jurang. Pahami cara glyph berinteraksi dengan elemen ini.",
+    description:
+        "Tembak laser, teleport, dan timbun jurang. Pahami cara glyph berinteraksi dengan elemen ini.",
     width: 8,
     height: 7,
     movesLimit: 22,
     initialRules: START_RULES,
-    allowedRules: {'red': ["STOP", "PUSH", "SWAP"], 'blue': ["STOP", "PUSH"], 'green': STOP_ONLY},
+    allowedRules: {
+      'red': ["STOP", "PUSH", "SWAP"],
+      'blue': ["STOP", "PUSH"],
+      'green': STOP_ONLY
+    },
     map: [
       "########",
       "#@.L..X#",
@@ -490,12 +616,17 @@ final List<LevelData> BASE_LEVELS = [
   LevelData(
     id: 22,
     name: "Transisi Berwaktu",
-    description: "Injak lantai sensor untuk menyalin aturan, dan manfaatkan lantai berjalan sebelum aturan berwaktu habis.",
+    description:
+        "Injak lantai sensor untuk menyalin aturan, dan manfaatkan lantai berjalan sebelum aturan berwaktu habis.",
     width: 8,
     height: 7,
     movesLimit: 20,
     initialRules: {'red': 'PUSH', 'blue': 'STOP', 'green': 'STOP'},
-    allowedRules: {'red': ["STOP", "PUSH"], 'blue': ["STOP", "PUSH"], 'green': STOP_ONLY},
+    allowedRules: {
+      'red': ["STOP", "PUSH"],
+      'blue': ["STOP", "PUSH"],
+      'green': STOP_ONLY
+    },
     map: [
       "########",
       "#@.S...#",
@@ -525,35 +656,43 @@ final List<Chapter> EXTRA_CHAPTERS = [
   Chapter("Finale", 0),
 ];
 
-final List<LevelData> ADVANCED_LEVELS = BASE_LEVELS.sublist(ADVANCED_START_INDEX);
+final List<LevelData> ADVANCED_LEVELS =
+    BASE_LEVELS.sublist(ADVANCED_START_INDEX);
 
 List<LevelData> generateAllLevels() {
   final List<LevelData> list = [];
-  
+
   // Base Levels
   for (var lvl in BASE_LEVELS) {
     list.add(lvl);
   }
 
   // Advanced levels for chapters
-  for (int chapterIndex = 0; chapterIndex < EXTRA_CHAPTERS.length; chapterIndex++) {
+  for (int chapterIndex = 0;
+      chapterIndex < EXTRA_CHAPTERS.length;
+      chapterIndex++) {
     final chapter = EXTRA_CHAPTERS[chapterIndex];
     for (int baseIndex = 0; baseIndex < ADVANCED_LEVELS.length; baseIndex++) {
       final base = ADVANCED_LEVELS[baseIndex];
-      final id = BASE_LEVELS.length + (chapterIndex * ADVANCED_LEVELS.length) + baseIndex + 1;
-      
+      final id = BASE_LEVELS.length +
+          (chapterIndex * ADVANCED_LEVELS.length) +
+          baseIndex +
+          1;
+
       // Safe par moves resolution
       final parMovesIndex = ADVANCED_START_INDEX + baseIndex;
-      final parMoves = (parMovesIndex >= 0 && parMovesIndex < PAR_MOVES.length) 
-          ? PAR_MOVES[parMovesIndex] 
+      final parMoves = (parMovesIndex >= 0 && parMovesIndex < PAR_MOVES.length)
+          ? PAR_MOVES[parMovesIndex]
           : 16;
 
-      final isFinalLevel = (chapterIndex == EXTRA_CHAPTERS.length - 1) && 
-                           (baseIndex == ADVANCED_LEVELS.length - 1);
+      final isFinalLevel = (chapterIndex == EXTRA_CHAPTERS.length - 1) &&
+          (baseIndex == ADVANCED_LEVELS.length - 1);
 
       list.add(LevelData(
         id: id,
-        name: isFinalLevel ? "Tamat: Audit Akhir" : "${chapter.title} ${baseIndex + 1}",
+        name: isFinalLevel
+            ? "Tamat: Audit Akhir"
+            : "${chapter.title} ${baseIndex + 1}",
         description: isFinalLevel
             ? "Final campaign: semua rule inti harus dibaca tanpa satu langkah cadangan."
             : "${base.name} dengan batas langkah lebih ketat.",
@@ -578,29 +717,29 @@ Map<String, List<LevelData>> LEVELS_BY_MODE = {
     LevelData(
       id: 1,
       name: "Dualitas Sakelar",
-      description: "P1 dan P2 harus saling menginjak plate untuk membuka gate masing-masing.",
+      description:
+          "P1 dan P2 harus saling menginjak plate untuk membuka gate masing-masing.",
       width: 8,
       height: 5,
       movesLimit: 10,
       initialRules: START_RULES,
       allowedRules: {'red': STOP_ONLY, 'blue': STOP_ONLY, 'green': STOP_ONLY},
-      map: [
-        "########",
-        "#@.b.1X#",
-        "########",
-        "#%.a.2X#",
-        "########"
-      ],
+      map: ["########", "#@.b.1X#", "########", "#%.a.2X#", "########"],
     ),
     LevelData(
       id: 2,
       name: "Dorong Sinkron",
-      description: "P1 mendorong glyph merah ke plate merah untuk membuka jalur P1, sementara P2 menekan plate biru.",
+      description:
+          "P1 mendorong glyph merah ke plate merah untuk membuka jalur P1, sementara P2 menekan plate biru.",
       width: 10,
       height: 5,
       movesLimit: 18,
       initialRules: {'red': "PUSH", 'blue': "STOP", 'green': "STOP"},
-      allowedRules: {'red': ["STOP", "PUSH"], 'blue': STOP_ONLY, 'green': STOP_ONLY},
+      allowedRules: {
+        'red': ["STOP", "PUSH"],
+        'blue': STOP_ONLY,
+        'green': STOP_ONLY
+      },
       map: [
         "##########",
         "#@..A.1.X#",
@@ -612,26 +751,26 @@ Map<String, List<LevelData>> LEVELS_BY_MODE = {
     LevelData(
       id: 3,
       name: "Persilangan Spike",
-      description: "Gunakan SWAP/PUSH pada glyph biru untuk menyeberang dengan selamat.",
+      description:
+          "Gunakan SWAP/PUSH pada glyph biru untuk menyeberang dengan selamat.",
       width: 9,
       height: 5,
       movesLimit: 12,
       initialRules: START_RULES,
-      allowedRules: {'red': STOP_ONLY, 'blue': ["STOP", "PUSH", "SWAP"], 'green': STOP_ONLY},
-      map: [
-        "#########",
-        "#@.B.^.X#",
-        "####.####",
-        "#%.B.^.X#",
-        "#########"
-      ],
+      allowedRules: {
+        'red': STOP_ONLY,
+        'blue': ["STOP", "PUSH", "SWAP"],
+        'green': STOP_ONLY
+      },
+      map: ["#########", "#@.B.^.X#", "####.####", "#%.B.^.X#", "#########"],
     ),
   ],
   '3': [
     LevelData(
       id: 1,
       name: "Triad Sakelar",
-      description: "Tiga pemain harus saling membantu membuka gate dalam urutan melingkar.",
+      description:
+          "Tiga pemain harus saling membantu membuka gate dalam urutan melingkar.",
       width: 9,
       height: 7,
       movesLimit: 12,
@@ -650,12 +789,17 @@ Map<String, List<LevelData>> LEVELS_BY_MODE = {
     LevelData(
       id: 2,
       name: "Segitiga Spike",
-      description: "Dorong glyph masing-masing ke atas spikes dan injak plate untuk membuka gate teman.",
+      description:
+          "Dorong glyph masing-masing ke atas spikes dan injak plate untuk membuka gate teman.",
       width: 11,
       height: 7,
       movesLimit: 20,
       initialRules: {'red': "PUSH", 'blue': "PUSH", 'green': "PUSH"},
-      allowedRules: {'red': ["STOP", "PUSH"], 'blue': ["STOP", "PUSH"], 'green': ["STOP", "PUSH"]},
+      allowedRules: {
+        'red': ["STOP", "PUSH"],
+        'blue': ["STOP", "PUSH"],
+        'green': ["STOP", "PUSH"]
+      },
       map: [
         "###########",
         "#@.A.^.b1X#",
@@ -669,12 +813,17 @@ Map<String, List<LevelData>> LEVELS_BY_MODE = {
     LevelData(
       id: 3,
       name: "Merge Bertiga",
-      description: "Gabungkan glyph hijau di pilar bawah untuk menyelesaikan level.",
+      description:
+          "Gabungkan glyph hijau di pilar bawah untuk menyelesaikan level.",
       width: 10,
       height: 7,
       movesLimit: 16,
       initialRules: {'red': "STOP", 'blue': "STOP", 'green': "MERGE"},
-      allowedRules: {'red': STOP_ONLY, 'blue': STOP_ONLY, 'green': ["STOP", "MERGE"]},
+      allowedRules: {
+        'red': STOP_ONLY,
+        'blue': STOP_ONLY,
+        'green': ["STOP", "MERGE"]
+      },
       map: [
         "##########",
         "#@..C.3.X#",
@@ -690,7 +839,8 @@ Map<String, List<LevelData>> LEVELS_BY_MODE = {
     LevelData(
       id: 1,
       name: "Kuartet Sakelar",
-      description: "Empat pemain bekerja sama menggunakan 3 warna gate dengan dependency melingkar.",
+      description:
+          "Empat pemain bekerja sama menggunakan 3 warna gate dengan dependency melingkar.",
       width: 9,
       height: 9,
       movesLimit: 16,
@@ -711,12 +861,17 @@ Map<String, List<LevelData>> LEVELS_BY_MODE = {
     LevelData(
       id: 2,
       name: "Kerja Sama Kuartet",
-      description: "P1, P2, P3 harus menyeberangi spike, sementara P4 berdiri di atas plate-plate pengontrol gate.",
+      description:
+          "P1, P2, P3 harus menyeberangi spike, sementara P4 berdiri di atas plate-plate pengontrol gate.",
       width: 10,
       height: 9,
       movesLimit: 16,
       initialRules: {'red': "PUSH", 'blue': "PUSH", 'green': "PUSH"},
-      allowedRules: {'red': ["STOP", "PUSH"], 'blue': ["STOP", "PUSH"], 'green': ["STOP", "PUSH"]},
+      allowedRules: {
+        'red': ["STOP", "PUSH"],
+        'blue': ["STOP", "PUSH"],
+        'green': ["STOP", "PUSH"]
+      },
       map: [
         "##########",
         "#@.A.^.1X#",
@@ -732,7 +887,8 @@ Map<String, List<LevelData>> LEVELS_BY_MODE = {
     LevelData(
       id: 3,
       name: "Persilangan Kuartet",
-      description: "Gunakan dependency melingkar untuk membebaskan semua rekan tim.",
+      description:
+          "Gunakan dependency melingkar untuk membebaskan semua rekan tim.",
       width: 9,
       height: 9,
       movesLimit: 16,
@@ -753,7 +909,51 @@ Map<String, List<LevelData>> LEVELS_BY_MODE = {
   ]
 };
 
+List<LevelData> _parseLevelList(dynamic raw) {
+  if (raw is! Iterable) {
+    return [];
+  }
+
+  return raw
+      .whereType<Map>()
+      .map((level) => LevelData.fromJson(Map<String, dynamic>.from(level)))
+      .toList();
+}
+
+Future<bool> _initializeLevelsFromBundleJson() async {
+  final jsonStr = await rootBundle.loadString('assets/levels.json');
+  final Map<String, dynamic> data = json.decode(jsonStr);
+  final Map<String, dynamic> modesData =
+      Map<String, dynamic>.from(data['levels_by_mode'] as Map? ?? {});
+
+  final singlePlayerLevels = _parseLevelList(modesData['1']);
+  if (singlePlayerLevels.isEmpty) {
+    return false;
+  }
+
+  LEVELS = singlePlayerLevels;
+  LEVELS_BY_MODE['1'] = LEVELS;
+
+  for (final mode in ['2', '3', '4']) {
+    final modeLevels = _parseLevelList(modesData[mode]);
+    if (modeLevels.isNotEmpty) {
+      LEVELS_BY_MODE[mode] = modeLevels;
+    }
+  }
+
+  return true;
+}
+
 Future<void> initializeLevels() async {
+  try {
+    final loaded = await _initializeLevelsFromBundleJson();
+    if (loaded) {
+      return;
+    }
+  } catch (e) {
+    print("Single JSON level initialization failed, trying split assets: $e");
+  }
+
   try {
     // 1. Load Single Player Chapters (solo/chap1 to solo/chap9)
     final List<LevelData> newSinglePlayerLevels = [];
@@ -794,13 +994,14 @@ Future<void> initializeLevels() async {
           break;
         }
       }
-      
+
       if (modeLevels.isNotEmpty) {
         LEVELS_BY_MODE[mode] = modeLevels;
       }
     }
   } catch (e) {
     // Falls back silently to default compiled-in levels
-    print("Levels asset directory initialization failed, using default levels: $e");
+    print(
+        "Levels asset directory initialization failed, using default levels: $e");
   }
 }

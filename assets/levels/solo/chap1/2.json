@@ -2,9 +2,9 @@
   "id": 2,
   "name": "Dorong Sakelar",
   "description": "Gunakan PUSH untuk menahan plate merah dan membuka gate.",
-  "width": 6,
+  "width": 7,
   "height": 5,
-  "movesLimit": 5,
+  "movesLimit": 7,
   "initialRules": {
     "red": "STOP",
     "blue": "STOP",
@@ -23,10 +23,10 @@
     ]
   },
   "map": [
-    "######",
-    "#@#.##",
-    "#.A.##",
-    "##..X#",
-    "######"
+    "#######",
+    "#@..1X#",
+    "#A###.#",
+    "#a....#",
+    "#######"
   ]
 }

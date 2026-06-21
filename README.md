@@ -27,20 +27,32 @@ The test suite includes engine smoke tests, targeted regressions for spikes and 
 
 ## Level Data
 
-Runtime level assets live under:
+The main level source is:
+
+- `assets/levels.json`
+
+The web editor writes this file automatically when you run `..\run_web.bat` from the outer `rule_glyph_app` folder and edit a campaign level. Flutter now loads this JSON directly, so Android builds use the same data as the web preview.
+
+Split runtime level assets are still kept under:
 
 - `assets/levels/solo/chap*/`
 - `assets/levels/coop/2p/`
 - `assets/levels/coop/3p/`
 - `assets/levels/coop/4p/`
 
-The compiled fallback data is in `lib/data/levels_data.dart`. Keep JSON and compiled data in sync when editing levels.
+They are regenerated automatically before Android packaging. The compiled fallback data is in `lib/data/levels_data.dart`.
 
 Useful scripts:
 
 ```sh
 dart run bin/generate_json.dart
 dart run bin/split_json.dart
+```
+
+Android release builds run `bin/split_json.dart` automatically, so after editing levels from the web you can build the AAB directly:
+
+```sh
+flutter build appbundle --release
 ```
 
 ## Local Network Multiplayer

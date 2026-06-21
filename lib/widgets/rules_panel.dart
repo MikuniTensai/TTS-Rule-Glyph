@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class RulesPanel extends StatelessWidget {
@@ -248,6 +249,137 @@ class RulesPanel extends StatelessWidget {
     );
   }
 
+  Widget _buildWebLegendButton(BuildContext context) {
+    if (!kIsWeb) return const SizedBox.shrink();
+
+    return InkWell(
+      onTap: () => _showTileLegend(context),
+      borderRadius: BorderRadius.circular(6),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
+        decoration: BoxDecoration(
+          color: Colors.cyanAccent.withOpacity(0.055),
+          border: Border.all(color: Colors.cyanAccent.withOpacity(0.18), width: 1),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.help_outline, color: Colors.cyanAccent, size: 12),
+            SizedBox(width: 5),
+            Text(
+              "LEGENDA TILE",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 8.5,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showTileLegend(BuildContext context) {
+    final items = _tileLegendItems();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF131317),
+        title: const Text(
+          "Legenda Tile untuk Desain Level",
+          style: TextStyle(color: Colors.cyanAccent, fontWeight: FontWeight.bold),
+        ),
+        content: SizedBox(
+          width: 520,
+          height: 420,
+          child: ListView.separated(
+            itemCount: items.length,
+            separatorBuilder: (_, __) => Divider(color: Colors.white.withOpacity(0.08), height: 10),
+            itemBuilder: (context, index) {
+              final item = items[index];
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 34,
+                    height: 24,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.05),
+                      border: Border.all(color: Colors.white.withOpacity(0.12)),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      item.symbol,
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.name,
+                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          item.description,
+                          style: const TextStyle(color: Colors.white70, fontSize: 11, height: 1.25),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text("Tutup", style: TextStyle(color: Colors.cyanAccent)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<_TileLegendItem> _tileLegendItems() {
+    return const [
+      _TileLegendItem('.', 'Lantai kosong', 'Ruang gerak normal untuk player dan glyph.'),
+      _TileLegendItem('#', 'Dinding biasa', 'Blok permanen yang tidak bisa dilewati.'),
+      _TileLegendItem('@ % * \$', 'Player start', 'Posisi awal P1, P2, P3, dan P4. Simbol & juga diterima sebagai P2.'),
+      _TileLegendItem('A B C', 'Glyph warna', 'Glyph merah, biru, dan hijau yang mengikuti rule aktif.'),
+      _TileLegendItem('H K', 'Heavy glyph', 'Blok berat yang butuh 2 atau 3 player segaris untuk didorong.'),
+      _TileLegendItem('X', 'Portal finish', 'Tujuan akhir level. Semua player aktif harus mencapai portal.'),
+      _TileLegendItem('^', 'Spike', 'Membunuh player jika diinjak tanpa tertutup glyph.'),
+      _TileLegendItem('_', 'Jurang', 'Membunuh player. Glyph yang didorong ke jurang akan menutupnya.'),
+      _TileLegendItem('a b c', 'Plate warna', 'Plate merah, biru, hijau. Aktif jika diinjak player atau glyph.'),
+      _TileLegendItem('1 2 3', 'Gate warna', 'Gate merah, biru, hijau. Terbuka jika plate warna terkait aktif.'),
+      _TileLegendItem('[ ]', 'Teleport', 'Masuk dari [ dan keluar ke ] terdekat yang kosong.'),
+      _TileLegendItem('L l P p', 'Laser', 'Laser horizontal/vertikal permanen dan laser pulse horizontal/vertikal.'),
+      _TileLegendItem('( ) { }', 'Conveyor', 'Mendorong entity ke kiri, kanan, atas, atau bawah setelah langkah.'),
+      _TileLegendItem('I O U V', 'Portal player', 'Portal khusus P1, P2, P3, dan P4. Player lain tidak bisa masuk.'),
+      _TileLegendItem('J', 'Jammer', 'Glyph di atas jammer dianggap STOP walaupun rule aktif berbeda.'),
+      _TileLegendItem('S', 'Sensor', 'Glyph di atas sensor menyalin rule glyph itu ke semua warna sementara.'),
+      _TileLegendItem('R', 'Cracked wall', 'Dinding retak. Hancur saat glyph didorong masuk, lalu menjadi lantai.'),
+      _TileLegendItem('> < N v', 'One-way wall', 'Hanya bisa dilewati dari arah panah: kanan, kiri, atas, atau bawah.'),
+      _TileLegendItem('T', 'Timed wall', 'Dinding muncul dan hilang bergantian setiap dua langkah.'),
+      _TileLegendItem('4 5 6', 'Color wall', 'Dinding merah, biru, hijau. Solid saat rule warna itu STOP; terbuka saat rule berubah.'),
+      _TileLegendItem('M', 'Mirror wall', 'Saat ditabrak player, player terdorong balik satu tile.'),
+      _TileLegendItem('W', 'Soft wall', 'Bisa dilewati, tetapi menghabiskan 2 moves.'),
+      _TileLegendItem('Y Z', 'Linked wall', 'Dua grup dinding bergantian: saat Y solid, Z terbuka, lalu sebaliknya.'),
+      _TileLegendItem('- |', 'Rotating wall', 'Barrier berputar. - menahan gerak vertikal, | menahan gerak horizontal, lalu berganti tiap langkah.'),
+      _TileLegendItem('Q E F G', 'Player-specific wall', 'Hanya bisa dilewati P1, P2, P3, atau P4 sesuai simbol.'),
+      _TileLegendItem('D', 'Glyph-only wall', 'Player tidak bisa lewat, tetapi glyph bisa didorong melewatinya.'),
+    ];
+  }
+
   Widget _buildRuleRow(BuildContext context, String color) {
     final themeColor = _getColorTheme(color);
     final currentRule = activeRules[color] ?? 'STOP';
@@ -376,6 +508,10 @@ class RulesPanel extends StatelessWidget {
               
               // 2. Moves Counter
               _buildMovesCounter(context),
+
+              const SizedBox(height: 8),
+
+              _buildWebLegendButton(context),
               
               const Spacer(),
               
@@ -412,4 +548,12 @@ class RulesPanel extends StatelessWidget {
       ),
     );
   }
+}
+
+class _TileLegendItem {
+  final String symbol;
+  final String name;
+  final String description;
+
+  const _TileLegendItem(this.symbol, this.name, this.description);
 }

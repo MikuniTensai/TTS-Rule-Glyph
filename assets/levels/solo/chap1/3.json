@@ -3,8 +3,8 @@
   "name": "Koridor Dorong",
   "description": "Dorong glyph lebih jauh sebelum kembali ke jalur utama.",
   "width": 8,
-  "height": 6,
-  "movesLimit": 14,
+  "height": 5,
+  "movesLimit": 10,
   "initialRules": {
     "red": "STOP",
     "blue": "STOP",
@@ -16,8 +16,7 @@
       "PUSH"
     ],
     "blue": [
-      "STOP",
-      "PUSH"
+      "STOP"
     ],
     "green": [
       "STOP"
@@ -25,10 +24,9 @@
   },
   "map": [
     "########",
-    "#@#X...#",
-    "#.###..#",
-    "#.A.#B.#",
-    "##....##",
+    "#@...1X#",
+    "#A####.#",
+    "#a.....#",
     "########"
   ]
 }

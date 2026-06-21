@@ -4,9 +4,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
 import '../audio/audio_manager.dart';
 import '../engine/local_network_controller.dart';
-import 'game_screen.dart';
 import 'level_select_screen.dart';
+import 'multiplayer_lobby_screen.dart';
 import '../widgets/dpad.dart';
+import '../widgets/legal_doc_viewer.dart';
 
 class MainMenuScreen extends StatefulWidget {
   const MainMenuScreen({Key? key}) : super(key: key);
@@ -28,6 +29,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
   void initState() {
     super.initState();
     _loadSettings();
+    AudioManager.instance.startBackgroundMusic();
   }
 
   void _loadSettings() async {
@@ -47,14 +49,14 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
     super.dispose();
   }
 
-  void _navigateToGame({
+  void _navigateToLobby({
     required String mode,
     required NetworkRole role,
-    LocalNetworkController? netController,
+    required LocalNetworkController netController,
   }) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => GameScreen(
+        builder: (context) => MultiplayerLobbyScreen(
           mode: mode,
           networkRole: role,
           networkController: netController,
@@ -63,7 +65,25 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
     );
   }
 
+  bool _isMultiplayerModeEnabled(String mode) => mode == '2';
+
+  void _showModeDisabledMessage(String mode) {
+    AudioManager.instance.playFail();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("$mode Player multiplayer sementara dinonaktifkan untuk rilis awal."),
+        backgroundColor: Colors.orangeAccent.withOpacity(0.9),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
   void _showMultiplayerDialog(String mode) {
+    if (!_isMultiplayerModeEnabled(mode)) {
+      _showModeDisabledMessage(mode);
+      return;
+    }
+
     AudioManager.instance.playRuleChange();
     showDialog(
       context: context,
@@ -125,93 +145,79 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
     );
   }
 
+  Widget _buildLocalNetworkHint(Color color) {
+    return FutureBuilder<List<String>>(
+      future: _networkController.discoverLocalIpAddresses(),
+      builder: (context, snapshot) {
+        final addresses = snapshot.data ?? const <String>[];
+        final text = addresses.isEmpty
+            ? 'No local Wi-Fi/LAN IP detected yet.'
+            : 'This device: ${addresses.join(', ')}';
+
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.08),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: color.withOpacity(0.25)),
+          ),
+          child: Text(
+            text,
+            style: TextStyle(color: color.withOpacity(0.9), fontSize: 12),
+            textAlign: TextAlign.center,
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _hostGame(String mode) async {
+    if (!_isMultiplayerModeEnabled(mode)) {
+      _showModeDisabledMessage(mode);
+      return;
+    }
+
     setState(() {
       _isConnecting = true;
     });
 
     try {
-      await _networkController.startHost();
-      
-      // Show waiting screen
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) {
-          return WillPopScope(
-            onWillPop: () async {
-              await _networkController.shutdown();
-              return true;
-            },
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-              child: AlertDialog(
-                backgroundColor: const Color(0xFF131317),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  side: BorderSide(color: Colors.cyanAccent.withOpacity(0.3), width: 1.5),
-                ),
-                title: const Text(
-                  "Hosting Game",
-                  style: TextStyle(color: Colors.cyanAccent, fontWeight: FontWeight.bold),
-                ),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const CircularProgressIndicator(color: Colors.cyanAccent),
-                    const SizedBox(height: 20),
-                    Text(
-                      "Your IP / Invite Code:",
-                      style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 13),
-                    ),
-                    const SizedBox(height: 6),
-                    SelectableText(
-                      _networkController.hostIpAddress,
-                      style: const TextStyle(color: Colors.cyanAccent, fontSize: 22, fontWeight: FontWeight.bold, letterSpacing: 1),
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      "Waiting for client to connect...",
-                      style: TextStyle(color: Colors.white70, fontSize: 12),
-                    ),
-                  ],
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () async {
-                      await _networkController.shutdown();
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text("Cancel", style: TextStyle(color: Colors.redAccent)),
-                  )
-                ],
-              ),
-            ),
-          );
-        },
-      );
+      await _networkController.startHost(mode: mode);
 
-      // Listen for incoming connection
-      _networkController.connectionStateStream.firstWhere((connected) => connected).then((_) {
-        // Pop Host Wait dialog
-        Navigator.of(context).pop();
-        // Go to game
-        _navigateToGame(
+      if (mounted) {
+        AudioManager.instance.playStart();
+        _navigateToLobby(
           mode: mode,
           role: NetworkRole.host,
           netController: _networkController,
         );
-      });
+      }
     } catch (e) {
-      _showError("Failed to start server: $e");
+      if (mounted) {
+        _showError("Failed to start server: $e");
+      }
     } finally {
-      setState(() {
-        _isConnecting = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isConnecting = false;
+        });
+      }
     }
   }
 
   void _showJoinDialog(String mode) {
+    if (!_isMultiplayerModeEnabled(mode)) {
+      _showModeDisabledMessage(mode);
+      return;
+    }
+
+    _networkController.startRoomScan(mode: mode).catchError((e) {
+      if (mounted) {
+        _showError("Failed to scan rooms: $e");
+      }
+    });
+
     showDialog(
       context: context,
       builder: (context) {
@@ -224,12 +230,22 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
               side: BorderSide(color: Colors.tealAccent.withOpacity(0.3), width: 1.5),
             ),
             title: const Text(
-              "Enter Host Invite Code / IP",
+              "Join Local Room",
               style: TextStyle(color: Colors.tealAccent, fontWeight: FontWeight.bold),
             ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                _buildLocalNetworkHint(Colors.tealAccent),
+                const SizedBox(height: 12),
+                _buildDetectedRooms(mode),
+                const SizedBox(height: 12),
+                const Text(
+                  "Tap a detected room, or enter the host IP shown on the hosting device.",
+                  style: TextStyle(color: Colors.white70, fontSize: 12),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
                 TextField(
                   controller: _ipInputController,
                   autofocus: true,
@@ -249,7 +265,8 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
             ),
             actions: [
               TextButton(
-                onPressed: () {
+                onPressed: () async {
+                  await _networkController.stopRoomDiscovery();
                   Navigator.of(context).pop();
                 },
                 child: const Text("Cancel", style: TextStyle(color: Colors.redAccent)),
@@ -269,10 +286,118 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
           ),
         );
       },
+    ).whenComplete(_networkController.stopRoomDiscovery);
+  }
+
+  Widget _buildDetectedRooms(String mode) {
+    return StreamBuilder<List<LocalNetworkRoom>>(
+      stream: _networkController.roomDiscoveryStream,
+      initialData: const [],
+      builder: (context, snapshot) {
+        final rooms = snapshot.data ?? const <LocalNetworkRoom>[];
+        if (rooms.isEmpty) {
+          return Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.04),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.white.withOpacity(0.10)),
+            ),
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 14,
+                  height: 14,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.tealAccent,
+                  ),
+                ),
+                SizedBox(width: 10),
+                Flexible(
+                  child: Text(
+                    "Scanning rooms...",
+                    style: TextStyle(color: Colors.white54, fontSize: 12),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return ConstrainedBox(
+          constraints: const BoxConstraints(maxHeight: 150),
+          child: ListView.separated(
+            shrinkWrap: true,
+            itemCount: rooms.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 8),
+            itemBuilder: (context, index) {
+              final room = rooms[index];
+              return Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(10),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    _joinGame(mode, room.hostIp, port: room.port);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.tealAccent.withOpacity(0.08),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.tealAccent.withOpacity(0.3)),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.sensors, color: Colors.tealAccent, size: 18),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "${room.mode} Player Room",
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                room.hostIp,
+                                style: TextStyle(color: Colors.white.withOpacity(0.55), fontSize: 11),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        const Icon(Icons.chevron_right, color: Colors.tealAccent, size: 18),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 
-  Future<void> _joinGame(String mode, String hostIp) async {
+  Future<void> _joinGame(String mode, String hostIp, {int port = LocalNetworkController.defaultPort}) async {
+    if (!_isMultiplayerModeEnabled(mode)) {
+      _showModeDisabledMessage(mode);
+      return;
+    }
+
     setState(() {
       _isConnecting = true;
     });
@@ -287,24 +412,30 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
     );
 
     try {
-      await _networkController.connectToHost(hostIp);
+      await _networkController.connectToHost(hostIp, port: port);
       
       // Pop loading spinner
+      if (!mounted) return;
       Navigator.of(context).pop();
 
-      _navigateToGame(
+      AudioManager.instance.playStart();
+      _navigateToLobby(
         mode: mode,
         role: NetworkRole.client,
         netController: _networkController,
       );
     } catch (e) {
       // Pop loading spinner
-      Navigator.of(context).pop();
-      _showError("Failed to connect to host: $e");
+      if (mounted) {
+        Navigator.of(context).pop();
+        _showError("Failed to connect to host: $e");
+      }
     } finally {
-      setState(() {
-        _isConnecting = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isConnecting = false;
+        });
+      }
     }
   }
 
@@ -331,7 +462,10 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
     required VoidCallback onTap,
     required Color color,
     bool isCompact = false,
+    bool enabled = true,
+    String? statusLabel,
   }) {
+    final effectiveColor = enabled ? color : Colors.white38;
     return Container(
       margin: EdgeInsets.symmetric(vertical: isCompact ? 4 : 6),
       height: isCompact ? 44 : 48,
@@ -341,12 +475,12 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
           filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
           child: Container(
             decoration: BoxDecoration(
-              color: color.withOpacity(0.06),
-              border: Border.all(color: color.withOpacity(0.32), width: 1.2),
+              color: effectiveColor.withOpacity(enabled ? 0.06 : 0.035),
+              border: Border.all(color: effectiveColor.withOpacity(enabled ? 0.32 : 0.12), width: 1.2),
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: color.withOpacity(0.04),
+                  color: effectiveColor.withOpacity(enabled ? 0.04 : 0.0),
                   blurRadius: 6,
                 )
               ],
@@ -354,9 +488,9 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
             child: Material(
               color: Colors.transparent,
               child: InkWell(
-                onTap: onTap,
-                highlightColor: color.withOpacity(0.2),
-                splashColor: color.withOpacity(0.1),
+                onTap: enabled ? onTap : null,
+                highlightColor: effectiveColor.withOpacity(0.2),
+                splashColor: effectiveColor.withOpacity(0.1),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Row(
@@ -365,14 +499,14 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                       Expanded(
                         child: Row(
                           children: [
-                            Icon(icon, color: color, size: isCompact ? 18 : 20),
+                            Icon(icon, color: effectiveColor, size: isCompact ? 18 : 20),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
                                 title,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: enabled ? Colors.white : Colors.white38,
                                   fontSize: isCompact ? 12 : 13,
                                   fontWeight: FontWeight.bold,
                                   letterSpacing: 0.6,
@@ -383,7 +517,17 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                         ),
                       ),
                       const SizedBox(width: 6),
-                      Icon(Icons.chevron_right, color: color.withOpacity(0.5), size: isCompact ? 16 : 18),
+                      if (statusLabel != null)
+                        Text(
+                          statusLabel,
+                          style: TextStyle(
+                            color: effectiveColor.withOpacity(0.85),
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      else
+                        Icon(Icons.chevron_right, color: effectiveColor.withOpacity(0.5), size: isCompact ? 16 : 18),
                     ],
                   ),
                 ),
@@ -629,144 +773,36 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
   }
 
   void _showPrivacyPolicyDialog() {
-    _showLegalDialog(
+    AudioManager.instance.playRuleChange();
+    LegalDocViewer.show(
+      context,
       title: "Privacy Policy / Kebijakan Privasi",
-      content: _privacyPolicyText,
-      accentColor: Colors.cyanAccent,
-    );
+      assetPath: "assets/legal/privacy_policy.md",
+    ).then((_) {
+      _showOptionsDialog();
+    });
   }
 
   void _showTermsDialog() {
-    _showLegalDialog(
-      title: "Terms of Service / Ketentuan Layanan",
-      content: _termsOfServiceText,
-      accentColor: Colors.tealAccent,
-    );
-  }
-
-  void _showLegalDialog({
-    required String title,
-    required String content,
-    required Color accentColor,
-  }) {
     AudioManager.instance.playRuleChange();
-    showDialog(
-      context: context,
-      builder: (context) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-          child: AlertDialog(
-            backgroundColor: const Color(0xFF131317),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-              side: BorderSide(color: accentColor.withOpacity(0.4), width: 1.5),
-            ),
-            title: Text(
-              title,
-              style: TextStyle(color: accentColor, fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            content: Container(
-              constraints: const BoxConstraints(maxHeight: 200, maxWidth: 500),
-              width: double.maxFinite,
-              child: Scrollbar(
-                thumbVisibility: true,
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.only(right: 12),
-                  child: Text(
-                    content,
-                    style: const TextStyle(color: Colors.white70, fontSize: 12, height: 1.4),
-                  ),
-                ),
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  _showOptionsDialog(); // return to options
-                },
-                child: Text("Back to Options", style: TextStyle(color: accentColor)),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text("Close", style: TextStyle(color: Colors.white54)),
-              ),
-            ],
-          ),
-        );
-      },
-    );
+    LegalDocViewer.show(
+      context,
+      title: "Terms of Service / Ketentuan Layanan",
+      assetPath: "assets/legal/terms_of_service.md",
+    ).then((_) {
+      _showOptionsDialog();
+    });
   }
 
   void _showSupportDialog() {
     AudioManager.instance.playRuleChange();
-    showDialog(
-      context: context,
-      builder: (context) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-          child: AlertDialog(
-            backgroundColor: const Color(0xFF131317),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-              side: BorderSide(color: Colors.pinkAccent.withOpacity(0.4), width: 1.5),
-            ),
-            title: const Text(
-              "Support & Contact",
-              style: TextStyle(color: Colors.pinkAccent, fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Butuh bantuan atau ingin memberikan masukan?",
-                  style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 12),
-                const Text(
-                  "Website Resmi:",
-                  style: TextStyle(color: Colors.white70, fontSize: 11),
-                ),
-                const SizedBox(height: 2),
-                _buildHyperlink(
-                  "https://nitedreamworks.com/",
-                  "https://nitedreamworks.com/",
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  "Email Dukungan:",
-                  style: TextStyle(color: Colors.white70, fontSize: 11),
-                ),
-                const SizedBox(height: 2),
-                _buildHyperlink(
-                  "support@nitedreamworks.com",
-                  "mailto:support@nitedreamworks.com",
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  "Salin tautan atau email di atas untuk menghubungi kami.",
-                  style: TextStyle(color: Colors.white54, fontSize: 10, fontStyle: FontStyle.italic),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  _showOptionsDialog();
-                },
-                child: const Text("Back to Options", style: TextStyle(color: Colors.pinkAccent)),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text("Close", style: TextStyle(color: Colors.white54)),
-              ),
-            ],
-          ),
-        );
-      },
-    );
+    LegalDocViewer.show(
+      context,
+      title: "Support & Legal Center",
+      assetPath: "assets/legal/support.md",
+    ).then((_) {
+      _showOptionsDialog();
+    });
   }
 
   void _confirmResetProgress() {
@@ -846,65 +882,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
     }
   }
 
-  static const String _privacyPolicyText = 
-    "PRIVACY POLICY / KEBIJAKAN PRIVASI\n\n"
-    "English:\n"
-    "Last updated: June 15, 2026\n\n"
-    "This Privacy Policy describes how Rule Glyph Lab handles user data.\n\n"
-    "1. Information Collection\n"
-    "Rule Glyph Lab is a logical puzzle game that stores level progression and settings locally on your device. Local network multiplayer uses your LAN connection only to host or join a nearby game session. We do not collect, transmit to our servers, store, or share any personal data, device identifiers, or usage statistics.\n\n"
-    "2. Third-Party Services\n"
-    "Our application does not integrate with any third-party analytics, tracking, advertising SDKs, or cloud services.\n\n"
-    "3. Children's Privacy\n"
-    "Because we do not collect any personal information, our application is safe for children of all ages.\n\n"
-    "4. Contact Us\n"
-    "If you have any questions about this Privacy Policy, please contact us at support@nitedreamworks.com.\n\n"
-    "--------------------------------------------------\n\n"
-    "Bahasa Indonesia:\n"
-    "Terakhir diperbarui: 15 Juni 2026\n\n"
-    "Kebijakan Privasi ini menjelaskan bagaimana Rule Glyph Lab mengelola data Anda.\n\n"
-    "1. Pengumpulan Informasi\n"
-    "Rule Glyph Lab adalah game puzzle logika yang menyimpan kemajuan level dan pengaturan secara lokal di perangkat Anda. Mode multiplayer jaringan lokal memakai koneksi LAN hanya untuk host atau join sesi game terdekat. Kami tidak mengumpulkan, mengirimkan ke server kami, menyimpan, atau membagikan data pribadi, pengenal perangkat, atau statistik penggunaan Anda.\n\n"
-    "2. Layanan Pihak Ketiga\n"
-    "Aplikasi kami tidak terintegrasi dengan SDK analisis pihak ketiga, pelacakan, iklan, atau layanan cloud apa pun.\n\n"
-    "3. Privasi Anak-Anak\n"
-    "Karena kami tidak mengumpulkan informasi pribadi apa pun, aplikasi kami sepenuhnya aman untuk anak-anak dari segala usia.\n\n"
-    "4. Hubungi Kami\n"
-    "Jika Anda memiliki pertanyaan tentang Kebijakan Privasi ini, silakan hubungi kami di support@nitedreamworks.com.";
 
-  static const String _termsOfServiceText = 
-    "TERMS OF SERVICE / KETENTUAN LAYANAN\n\n"
-    "English:\n"
-    "Last updated: June 15, 2026\n\n"
-    "Please read these Terms of Service (\"Terms\") carefully before using the Rule Glyph Lab mobile application.\n\n"
-    "1. Agreement to Terms\n"
-    "By installing or playing this game, you agree to be bound by these Terms. If you do not agree, do not install or use the application.\n\n"
-    "2. License to Use\n"
-    "We grant you a personal, non-exclusive, non-transferable, revocable license to use the Rule Glyph Lab application for your personal, non-commercial entertainment on compatible devices.\n\n"
-    "3. Intellectual Property\n"
-    "All content, logic, grid levels, graphics, and custom synthesized audio are the intellectual property of Nite Dreamworks and its developers. You may not copy, reverse engineer, or redistribute the application assets.\n\n"
-    "4. Disclaimer of Warranties\n"
-    "The application is provided \"as-is\" and \"as-available\" without warranties of any kind, either express or implied.\n\n"
-    "5. Limitation of Liability\n"
-    "In no event shall we be liable for any indirect, incidental, or consequential damages arising out of your use or inability to use the application.\n\n"
-    "6. Governing Law\n"
-    "Terms of Service are governed by laws of Indonesia.\n\n"
-    "--------------------------------------------------\n\n"
-    "Bahasa Indonesia:\n"
-    "Terakhir diperbarui: 15 Juni 2026\n\n"
-    "Silakan baca Ketentuan Layanan ini dengan cermat sebelum menggunakan aplikasi mobile Rule Glyph Lab.\n\n"
-    "1. Persetujuan Ketentuan\n"
-    "Dengan menginstal atau memainkan game ini, Anda setuju untuk terikat oleh Ketentuan ini. Jika Anda tidak setuju, jangan menginstal atau menggunakan aplikasi ini.\n\n"
-    "2. Lisensi Penggunaan\n"
-    "Kami memberi Anda lisensi pribadi, non-eksklusif, non-transferabel, dapat ditarik kembali untuk menggunakan aplikasi Rule Glyph Lab untuk hiburan pribadi non-komersial pada perangkat yang kompatibel.\n\n"
-    "3. Hak Kekayaan Intelektual\n"
-    "Semua konten, logika, level kisi, grafis, dan efek suara sintetis adalah kekayaan intelektual dari Nite Dreamworks dan pengembangnya. Anda tidak boleh menyalin, merekayasa balik, atau mendistribusikan ulang aset aplikasi.\n\n"
-    "4. Penafian Jaminan\n"
-    "Aplikasi ini disediakan secara \"sebagaimana adanya\" dan \"sebagaimana tersedia\" tanpa jaminan dalam bentuk apa pun, baik tersurat maupun tersirat.\n\n"
-    "5. Batasan Tanggung Jawab\n"
-    "Dalam keadaan apa pun kami tidak bertanggung jawab atas kerusakan tidak langsung, insidental, atau konsekuensial yang timbul dari penggunaan atau ketidakmampuan Anda untuk menggunakan aplikasi.\n\n"
-    "6. Hukum yang Mengatur\n"
-    "Ketentuan ini diatur dan ditafsirkan sesuai dengan hukum Negara Republik Indonesia, tanpa memperhatikan pertentangan aturan hukumnya.";
 
   void _showCreditsDialog() {
     AudioManager.instance.playRuleChange();
@@ -924,7 +902,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("RULE GLYPH LAB", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+                Text("TTS: RULE GLYPH LAB", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
                 SizedBox(height: 8),
                 Text("Concept & Logic: Richard Locke", style: TextStyle(color: Colors.white70, fontSize: 13)),
                 Text("Flutter Native Port: Antigravity AI", style: TextStyle(color: Colors.white70, fontSize: 13)),
@@ -1000,17 +978,29 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.dashboard_customize_outlined,
-                          size: 64,
-                          color: Colors.cyanAccent,
-                          shadows: [
-                            Shadow(color: Colors.cyanAccent.withOpacity(0.6), blurRadius: 20)
-                          ],
+                        Container(
+                          width: 68,
+                          height: 68,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.cyanAccent.withOpacity(0.3),
+                                blurRadius: 20,
+                                spreadRadius: 2,
+                              ),
+                            ],
+                          ),
+                          child: ClipOval(
+                            child: Image.asset(
+                              'assets/logo.png',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          "RULE GLYPH LAB",
+                          "TTS: RULE GLYPH LAB",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white,
@@ -1024,7 +1014,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          "Logical Grid Puzzle Game",
+                          "Teka-Teki Simbol (TTS) Grid Puzzle",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.cyanAccent.withOpacity(0.8),
@@ -1048,6 +1038,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                           icon: Icons.emoji_events_outlined,
                           onTap: () {
                             AudioManager.instance.playRuleChange();
+                            AudioManager.instance.playStart();
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => const LevelSelectScreen(mode: '1'),
@@ -1067,6 +1058,8 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                           icon: Icons.groups_outlined,
                           onTap: () => _showMultiplayerDialog('3'),
                           color: Colors.pinkAccent,
+                          enabled: false,
+                          statusLabel: "SOON",
                         ),
                         _buildMenuButton(
                           title: "4 Player Local Net",
@@ -1074,6 +1067,8 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                           onTap: () => _showMultiplayerDialog('4'),
                           color: Colors.purpleAccent,
                           isCompact: true,
+                          enabled: false,
+                          statusLabel: "SOON",
                         ),
                         Row(
                           children: [

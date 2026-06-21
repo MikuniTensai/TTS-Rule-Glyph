@@ -4,7 +4,7 @@
   "description": "Capai portal tanpa glyph. Ini level pemanasan.",
   "width": 5,
   "height": 5,
-  "movesLimit": 5,
+  "movesLimit": 3,
   "initialRules": {
     "red": "STOP",
     "blue": "STOP",
@@ -23,9 +23,9 @@
   },
   "map": [
     "#####",
-    "#@..#",
-    "#.#.#",
-    "#..X#",
+    "#@.X#",
+    "#...#",
+    "#...#",
     "#####"
   ]
 }

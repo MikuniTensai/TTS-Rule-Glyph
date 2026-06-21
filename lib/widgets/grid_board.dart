@@ -116,6 +116,26 @@ class GridBoard extends StatelessWidget {
 
   Widget _buildGridCell(int x, int y, double tileSize) {
     final cell = engine.cells[x][y];
+    final isSpecialWall = cell.isCrackedWall ||
+        cell.oneWayDir != null ||
+        cell.isTimedWall ||
+        cell.colorWallColor != null ||
+        cell.isMirrorWall ||
+        cell.isSoftWall ||
+        cell.linkedWallGroup != null ||
+        cell.rotatingWallAxis != null ||
+        cell.playerWallAllowedId != null ||
+        cell.isGlyphOnlyWall;
+
+    if (isSpecialWall) {
+      return Container(
+        decoration: BoxDecoration(
+          color: cell.isSoftWall ? const Color(0xFF18201D) : const Color(0xFF202029),
+          border: Border.all(color: Colors.white.withOpacity(0.05), width: 0.5),
+        ),
+      );
+    }
+
     if (cell.isWall) {
       return Container(
         decoration: BoxDecoration(
@@ -161,6 +181,122 @@ class GridBoard extends StatelessWidget {
           ),
         ),
       );
+    }
+
+    if (cell.isCrackedWall) {
+      decos.add(_buildCellBadge(
+        x: x,
+        y: y,
+        tileSize: tileSize,
+        icon: Icons.crisis_alert,
+        color: Colors.orangeAccent,
+        label: "R",
+      ));
+    }
+
+    if (cell.oneWayDir != null) {
+      IconData icon = Icons.arrow_forward;
+      if (cell.oneWayDir == 'L') icon = Icons.arrow_back;
+      if (cell.oneWayDir == 'U') icon = Icons.arrow_upward;
+      if (cell.oneWayDir == 'D') icon = Icons.arrow_downward;
+      decos.add(_buildCellBadge(
+        x: x,
+        y: y,
+        tileSize: tileSize,
+        icon: icon,
+        color: Colors.lightBlueAccent,
+      ));
+    }
+
+    if (cell.isTimedWall) {
+      decos.add(_buildCellBadge(
+        x: x,
+        y: y,
+        tileSize: tileSize,
+        icon: Icons.timer,
+        color: engine.isTimedWallSolid() ? Colors.amberAccent : Colors.white30,
+        label: engine.isTimedWallSolid() ? "ON" : "OFF",
+      ));
+    }
+
+    if (cell.colorWallColor != null) {
+      decos.add(_buildCellBadge(
+        x: x,
+        y: y,
+        tileSize: tileSize,
+        icon: Icons.palette,
+        color: _getColorTheme(cell.colorWallColor!),
+        label: cell.colorWallColor![0].toUpperCase(),
+      ));
+    }
+
+    if (cell.isMirrorWall) {
+      decos.add(_buildCellBadge(
+        x: x,
+        y: y,
+        tileSize: tileSize,
+        icon: Icons.keyboard_return,
+        color: Colors.cyanAccent,
+        label: "M",
+      ));
+    }
+
+    if (cell.isSoftWall) {
+      decos.add(_buildCellBadge(
+        x: x,
+        y: y,
+        tileSize: tileSize,
+        icon: Icons.filter_2,
+        color: Colors.greenAccent,
+        label: "-2",
+      ));
+    }
+
+    if (cell.linkedWallGroup != null) {
+      final solid = engine.isLinkedWallSolid(cell.linkedWallGroup!);
+      decos.add(_buildCellBadge(
+        x: x,
+        y: y,
+        tileSize: tileSize,
+        icon: Icons.link,
+        color: solid ? Colors.pinkAccent : Colors.white30,
+        label: cell.linkedWallGroup!.toUpperCase(),
+      ));
+    }
+
+    if (cell.rotatingWallAxis != null) {
+      final axis = engine.activeRotatingWallAxis(cell);
+      decos.add(_buildCellBadge(
+        x: x,
+        y: y,
+        tileSize: tileSize,
+        icon: axis == 'vertical' ? Icons.swap_horiz : Icons.swap_vert,
+        color: Colors.deepOrangeAccent,
+        label: axis == 'vertical' ? "|" : "-",
+      ));
+    }
+
+    if (cell.playerWallAllowedId != null) {
+      final playerColor = _getPlayerColor(cell.playerWallAllowedId!);
+      decos.add(_buildCellBadge(
+        x: x,
+        y: y,
+        tileSize: tileSize,
+        icon: Icons.person,
+        color: playerColor,
+        label: cell.playerWallAllowedId!.toUpperCase(),
+      ));
+    }
+
+    if (cell.isGlyphOnlyWall) {
+      decos.add(_buildCellBadge(
+        x: x,
+        y: y,
+        tileSize: tileSize,
+        icon: Icons.category,
+        color: Colors.blueGrey.shade100,
+        label: "G",
+      ));
     }
 
     // Chasms
@@ -423,6 +559,43 @@ class GridBoard extends StatelessWidget {
     }
 
     return decos;
+  }
+
+  Widget _buildCellBadge({
+    required int x,
+    required int y,
+    required double tileSize,
+    required IconData icon,
+    required Color color,
+    String? label,
+  }) {
+    return Positioned(
+      left: x * tileSize,
+      top: y * tileSize,
+      width: tileSize,
+      height: tileSize,
+      child: Container(
+        margin: EdgeInsets.all(tileSize * 0.08),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.08),
+          border: Border.all(color: color.withOpacity(0.65), width: 1.4),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Center(
+          child: label != null
+              ? Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: color,
+                    fontWeight: FontWeight.bold,
+                    fontSize: tileSize * 0.22,
+                  ),
+                )
+              : Icon(icon, color: color, size: tileSize * 0.45),
+        ),
+      ),
+    );
   }
 
   List<Widget> _buildLaserBeam(String coordStr, double tileSize, String axis) {

@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Rule Glyph Lab</string>
+	<string>TTS: Rule Glyph Lab</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -15,9 +15,9 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Rule Glyph Lab</string>
+	<string>TTS: Rule Glyph Lab</string>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>Rule Glyph Lab uses the local network to host or join nearby multiplayer sessions.</string>
+	<string>TTS: Rule Glyph Lab uses the local network to host or join nearby multiplayer sessions.</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

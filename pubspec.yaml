@@ -18,12 +18,19 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/logo.png"
 
 flutter:
   uses-material-design: true
 
   assets:
     - assets/audio/
+    - assets/levels.json
     - assets/levels/solo/chap1/
     - assets/levels/solo/chap2/
     - assets/levels/solo/chap3/
@@ -36,3 +43,5 @@ flutter:
     - assets/levels/coop/2p/
     - assets/levels/coop/3p/
     - assets/levels/coop/4p/
+    - assets/logo.png
+    - assets/legal/

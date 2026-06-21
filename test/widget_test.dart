@@ -5,18 +5,18 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:rule_glyph_app/main.dart';
 
 void main() {
-  testWidgets('Smoke test - Rule Glyph Lab main menu renders', (WidgetTester tester) async {
+  testWidgets('Smoke test - Rule Glyph Lab main menu renders',
+      (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const RuleGlyphApp());
 
     // Verify that our game title is displayed.
-    expect(find.text('RULE GLYPH LAB'), findsOneWidget);
+    expect(find.text('TTS: RULE GLYPH LAB'), findsOneWidget);
     expect(find.text('Survival (1 Player)'), findsOneWidget);
   });
 }

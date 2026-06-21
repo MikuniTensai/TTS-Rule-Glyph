@@ -27,7 +27,7 @@ class RuleGlyphApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Rule Glyph Lab',
+      title: 'Teka-Teki Simbol (TTS): Rule Glyph Lab',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,

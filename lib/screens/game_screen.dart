@@ -65,6 +65,7 @@ class _GameScreenState extends State<GameScreen> {
 
     _loadLevel(_currentLevelIdx);
     _loadControlSettings();
+    AudioManager.instance.startBackgroundMusic();
 
     // Setup network listener if multiplayer
     if (widget.networkRole != NetworkRole.none && widget.networkController != null) {
@@ -151,7 +152,18 @@ class _GameScreenState extends State<GameScreen> {
 
     final res = _engine.tryMove(dx, dy, _activeRules, playerId: activePlayerId);
     if (res.moved) {
-      _movesLeft--;
+      if (res.moveCost > _movesLeft) {
+        final snap = _undoStack.removeLast();
+        _activeRules = snap['rules'] as Map<String, String>;
+        _ruleExpiryCounters = snap['expiries'] as Map<String, int?>;
+        _movesLeft = snap['movesLeft'] as int;
+        _engine.restoreState(snap['engine'] as Map<String, dynamic>);
+        _handleOutOfSteps();
+        setState(() {});
+        return;
+      }
+
+      _movesLeft -= res.moveCost;
       _decayRules();
 
       if (widget.networkController != null && widget.networkController!.isConnected) {
@@ -161,6 +173,7 @@ class _GameScreenState extends State<GameScreen> {
           'playerId': activePlayerId,
           'rules': _activeRules,
           'expiries': _ruleExpiryCounters,
+          'moveCost': res.moveCost,
         }));
       }
 
@@ -286,7 +299,20 @@ class _GameScreenState extends State<GameScreen> {
       final res = _engine.tryMove(dx, dy, _activeRules, playerId: playerId);
       
       if (res.moved) {
-        _movesLeft--;
+        final moveCost = data['moveCost'];
+        final appliedMoveCost = moveCost is int ? moveCost : res.moveCost;
+        if (appliedMoveCost > _movesLeft) {
+          final snap = _undoStack.removeLast();
+          _activeRules = snap['rules'] as Map<String, String>;
+          _ruleExpiryCounters = snap['expiries'] as Map<String, int?>;
+          _movesLeft = snap['movesLeft'] as int;
+          _engine.restoreState(snap['engine'] as Map<String, dynamic>);
+          _handleOutOfSteps();
+          setState(() {});
+          return;
+        }
+
+        _movesLeft -= appliedMoveCost;
         _checkMoveResult(res);
         AudioManager.instance.playMove();
       } else {

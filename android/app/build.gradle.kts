@@ -12,8 +12,35 @@ if (keystorePropertiesFile.exists()) {
     keystorePropertiesFile.inputStream().use { keystoreProperties.load(it) }
 }
 
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.inputStream().use { localProperties.load(it) }
+}
+
+val flutterProjectDir = rootProject.projectDir.parentFile
+val flutterSdkPath = localProperties.getProperty("flutter.sdk")
+val dartExecutable = if (flutterSdkPath != null) {
+    if (System.getProperty("os.name").lowercase().contains("windows")) {
+        "$flutterSdkPath\\bin\\dart.bat"
+    } else {
+        "$flutterSdkPath/bin/dart"
+    }
+} else {
+    "dart"
+}
+
+val syncLevelsJsonForFlutter by tasks.registering(Exec::class) {
+    group = "build"
+    description = "Splits assets/levels.json into Android level asset folders before packaging."
+    workingDir = flutterProjectDir
+    commandLine(dartExecutable, "run", "bin/split_json.dart")
+    inputs.file(file("${flutterProjectDir.path}/assets/levels.json"))
+    outputs.dir(file("${flutterProjectDir.path}/assets/levels"))
+}
+
 android {
-    namespace = "com.nitedreamworks.ruleglyphlab"
+    namespace = "io.dreamworks.tts"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -23,9 +50,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.nitedreamworks.ruleglyphlab"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        applicationId = "io.dreamworks.tts"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
@@ -63,4 +88,8 @@ kotlin {
 
 flutter {
     source = "../.."
+}
+
+tasks.matching { it.name == "preBuild" }.configureEach {
+    dependsOn(syncLevelsJsonForFlutter)
 }

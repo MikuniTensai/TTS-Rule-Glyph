@@ -9,6 +9,8 @@ class AudioManager {
   
   // Audio players cache for overlapping sounds
   final Map<String, AudioPlayer> _players = {};
+  final AudioPlayer _musicPlayer = AudioPlayer();
+  bool _isMusicPlaying = false;
   
   // Cached synthesized sound bytes
   final Map<String, Uint8List> _soundBytes = {};
@@ -49,8 +51,37 @@ class AudioManager {
       return _synthesizeWin(sampleRate);
     } else if (name == 'erase') {
       return _synthesizeErase(sampleRate);
+    } else if (name == 'timer') {
+      return _synthesizeTimerTick(sampleRate);
+    } else if (name == 'start') {
+      return _synthesizeStart(sampleRate);
+    } else if (name == 'music') {
+      return _synthesizeAmbientLoop(sampleRate);
     } else {
       return _synthesizeMove(sampleRate);
+    }
+  }
+
+  Future<void> startBackgroundMusic() async {
+    if (isMuted) return;
+    if (_isMusicPlaying) return;
+
+    try {
+      await _musicPlayer.setReleaseMode(ReleaseMode.loop);
+      await _musicPlayer.setVolume(0.22);
+      await _musicPlayer.play(BytesSource(_getSoundBytes('music'), mimeType: 'audio/wav'));
+      _isMusicPlaying = true;
+    } catch (e) {
+      // ignore audio device errors
+    }
+  }
+
+  Future<void> stopBackgroundMusic() async {
+    try {
+      await _musicPlayer.stop();
+      _isMusicPlaying = false;
+    } catch (e) {
+      // ignore audio device errors
     }
   }
 
@@ -73,6 +104,10 @@ class AudioManager {
       for (var player in _players.values) {
         player.stop();
       }
+      _musicPlayer.stop();
+      _isMusicPlaying = false;
+    } else {
+      startBackgroundMusic();
     }
   }
 
@@ -80,7 +115,8 @@ class AudioManager {
   Future<void> playErase() => playSfx('erase');
   Future<void> playFail() => playSfx('fail');
   Future<void> playRuleChange() => playSfx('rule');
-  Future<void> playTimerTick() => playSfx('erase');
+  Future<void> playTimerTick() => playSfx('timer');
+  Future<void> playStart() => playSfx('start');
   Future<void> playWin() => playSfx('win');
   Future<void> playMerge() => playSfx('merge');
   Future<void> playUnlock() => playSfx('unlock');
@@ -256,6 +292,115 @@ class AudioManager {
       data.setInt16(i * 2, sampleInt, Endian.little);
     }
     
+    final header = _generateWavHeader(data.lengthInBytes, sampleRate);
+    final wavBytes = Uint8List(header.length + data.lengthInBytes);
+    wavBytes.setRange(0, header.length, header);
+    wavBytes.setRange(header.length, wavBytes.length, data.buffer.asUint8List());
+    return wavBytes;
+  }
+
+  /// Timer SFX: soft metronome blip.
+  Uint8List _synthesizeTimerTick(int sampleRate) {
+    const double duration = 0.07;
+    final int numSamples = (sampleRate * duration).toInt();
+    final data = ByteData(numSamples * 2);
+
+    double phase = 0.0;
+    for (int i = 0; i < numSamples; i++) {
+      final double progress = i / numSamples;
+      final double freq = progress < 0.35 ? 880.0 : 660.0;
+      phase += (2.0 * math.pi * freq) / sampleRate;
+
+      final double click = math.sin(phase) * math.exp(-progress * 8.0);
+      final double gain = 0.10 * (1.0 - progress);
+
+      final int sampleInt = (click * gain * 32767.0).toInt().clamp(-32768, 32767);
+      data.setInt16(i * 2, sampleInt, Endian.little);
+    }
+
+    final header = _generateWavHeader(data.lengthInBytes, sampleRate);
+    final wavBytes = Uint8List(header.length + data.lengthInBytes);
+    wavBytes.setRange(0, header.length, header);
+    wavBytes.setRange(header.length, wavBytes.length, data.buffer.asUint8List());
+    return wavBytes;
+  }
+
+  /// Start SFX: compact rising arpeggio for entering play/lobby.
+  Uint8List _synthesizeStart(int sampleRate) {
+    const double duration = 0.38;
+    final int numSamples = (sampleRate * duration).toInt();
+    final data = ByteData(numSamples * 2);
+
+    final freqs = [392.0, 493.88, 659.25, 987.77];
+    final phases = List<double>.filled(freqs.length, 0.0);
+
+    for (int i = 0; i < numSamples; i++) {
+      final double t = i / sampleRate;
+      double val = 0.0;
+
+      for (int n = 0; n < freqs.length; n++) {
+        final double start = n * 0.055;
+        const double noteDur = 0.18;
+        if (t >= start && t < start + noteDur) {
+          final double p = (t - start) / noteDur;
+          phases[n] += (2.0 * math.pi * freqs[n]) / sampleRate;
+          val += math.sin(phases[n]) * 0.11 * (1.0 - p);
+        }
+      }
+
+      final int sampleInt = (val * 32767.0).toInt().clamp(-32768, 32767);
+      data.setInt16(i * 2, sampleInt, Endian.little);
+    }
+
+    final header = _generateWavHeader(data.lengthInBytes, sampleRate);
+    final wavBytes = Uint8List(header.length + data.lengthInBytes);
+    wavBytes.setRange(0, header.length, header);
+    wavBytes.setRange(header.length, wavBytes.length, data.buffer.asUint8List());
+    return wavBytes;
+  }
+
+  /// Background music: low-volume 12s ambient puzzle loop.
+  Uint8List _synthesizeAmbientLoop(int sampleRate) {
+    const double duration = 12.0;
+    final int numSamples = (sampleRate * duration).toInt();
+    final data = ByteData(numSamples * 2);
+
+    final padFreqs = [130.81, 164.81, 196.00, 246.94];
+    final padPhases = List<double>.filled(padFreqs.length, 0.0);
+    final bellFreqs = [523.25, 659.25, 783.99, 987.77, 880.00, 659.25];
+    final bellPhases = List<double>.filled(bellFreqs.length, 0.0);
+
+    for (int i = 0; i < numSamples; i++) {
+      final double t = i / sampleRate;
+      final double loopP = t / duration;
+      final double loopFade = math.sin(math.pi * loopP).clamp(0.0, 1.0);
+      double val = 0.0;
+
+      for (int n = 0; n < padFreqs.length; n++) {
+        final double vibrato = math.sin(2.0 * math.pi * (0.08 + n * 0.015) * t) * 0.9;
+        padPhases[n] += (2.0 * math.pi * (padFreqs[n] + vibrato)) / sampleRate;
+        final double slowAmp = 0.5 + 0.5 * math.sin(2.0 * math.pi * (0.035 + n * 0.01) * t + n);
+        val += math.sin(padPhases[n]) * 0.018 * slowAmp * loopFade;
+      }
+
+      for (int n = 0; n < bellFreqs.length; n++) {
+        final double start = 0.75 + n * 1.85;
+        const double bellDur = 1.4;
+        if (t >= start && t < start + bellDur) {
+          final double p = (t - start) / bellDur;
+          bellPhases[n] += (2.0 * math.pi * bellFreqs[n]) / sampleRate;
+          final double bell = math.sin(bellPhases[n]) + 0.35 * math.sin(bellPhases[n] * 2.01);
+          val += bell * 0.035 * math.exp(-p * 4.2);
+        }
+      }
+
+      final double pulse = math.sin(2.0 * math.pi * 0.5 * t);
+      val += _triangle(2.0 * math.pi * 65.41 * t) * 0.012 * (0.35 + 0.65 * pulse.abs()) * loopFade;
+
+      final int sampleInt = (val * 32767.0).toInt().clamp(-32768, 32767);
+      data.setInt16(i * 2, sampleInt, Endian.little);
+    }
+
     final header = _generateWavHeader(data.lengthInBytes, sampleRate);
     final wavBytes = Uint8List(header.length + data.lengthInBytes);
     wavBytes.setRange(0, header.length, header);
