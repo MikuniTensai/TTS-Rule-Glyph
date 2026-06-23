@@ -63,6 +63,7 @@ class _GameScreenState extends State<GameScreen> {
   StreamSubscription? _netSubscription;
   StreamSubscription? _connSubscription;
   bool _isDisposed = false;
+  bool _isOutOfStepsDialogVisible = false;
 
   @override
   void initState() {
@@ -280,14 +281,40 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void _handleOutOfSteps() {
+    if (_isOutOfStepsDialogVisible || !mounted) return;
+
+    _isOutOfStepsDialogVisible = true;
     AudioManager.instance.playFail();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Batas langkah habis!"),
-        backgroundColor: Colors.orangeAccent,
-        duration: Duration(seconds: 2),
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: const Color(0xFF131317),
+        title: const Text(
+          "Batas Langkah Habis",
+          style: TextStyle(
+            color: Colors.orangeAccent,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: const Text(
+          "Reset level untuk mencoba lagi.",
+          style: TextStyle(color: Colors.white),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              _performReset(local: true);
+            },
+            child: const Text(
+              "Reset Level",
+              style: TextStyle(color: Colors.cyanAccent),
+            ),
+          ),
+        ],
       ),
-    );
+    ).whenComplete(() => _isOutOfStepsDialogVisible = false);
   }
 
   void _handleNetworkMessage(NetworkMessage msg) {
@@ -461,6 +488,7 @@ class _GameScreenState extends State<GameScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
               child: Center(
                 child: GridBoard(
+                  key: ObjectKey(_engine.activeLevel),
                   engine: _engine,
                 ),
               ),

@@ -1,0 +1,38 @@
+{
+  "id": 91,
+  "name": "Bab 7: Presisi 9",
+  "description": "Pra-Finale dengan batas langkah lebih ketat.",
+  "width": 10,
+  "height": 9,
+  "movesLimit": 18,
+  "initialRules": {
+    "red": "STOP",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP",
+      "PUSH"
+    ],
+    "blue": [
+      "STOP",
+      "SWAP"
+    ],
+    "green": [
+      "STOP",
+      "MERGE"
+    ]
+  },
+  "map": [
+    "##########",
+    "#@A.a....#",
+    "#.######.#",
+    "#...1B#..#",
+    "#####...##",
+    "#.....CCc#",
+    "#..#...3X#",
+    "#..^.....#",
+    "##########"
+  ]
+}

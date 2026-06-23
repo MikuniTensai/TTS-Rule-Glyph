@@ -1,0 +1,37 @@
+{
+  "id": 110,
+  "name": "Finale 4",
+  "description": "Audit Ketat dengan batas langkah lebih ketat.",
+  "width": 10,
+  "height": 8,
+  "movesLimit": 16,
+  "initialRules": {
+    "red": "STOP",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP",
+      "PUSH"
+    ],
+    "blue": [
+      "STOP",
+      "SWAP"
+    ],
+    "green": [
+      "STOP",
+      "MERGE"
+    ]
+  },
+  "map": [
+    "##########",
+    "#@A.a....#",
+    "#.######.#",
+    "#...1B#..#",
+    "#####...##",
+    "#.....CCc#",
+    "#......3X#",
+    "##########"
+  ]
+}

@@ -1,10 +1,10 @@
 {
   "id": 7,
-  "name": "Tiga Kunci",
-  "description": "Gabungkan tiga mekanik dasar dalam satu jalur.",
-  "width": 10,
-  "height": 8,
-  "movesLimit": 26,
+  "name": "Lorong Padat",
+  "description": "Tiga glyph harus diringkas dengan MERGE sebelum gate merah.",
+  "width": 9,
+  "height": 5,
+  "movesLimit": 14,
   "initialRules": {
     "red": "STOP",
     "blue": "STOP",
@@ -13,25 +13,20 @@
   "allowedRules": {
     "red": [
       "STOP",
-      "PUSH"
+      "MERGE"
     ],
     "blue": [
-      "STOP",
-      "SWAP"
+      "STOP"
     ],
     "green": [
-      "STOP",
-      "MERGE"
+      "STOP"
     ]
   },
   "map": [
-    "##########",
-    "#@A.a....#",
-    "#.######.#",
-    "#...1B#..#",
-    "#####...##",
-    "#.....CCc#",
-    "#......3X#",
-    "##########"
+    "#########",
+    "#@AAAa..#",
+    "#.#####.#",
+    "#.....1X#",
+    "#########"
   ]
 }

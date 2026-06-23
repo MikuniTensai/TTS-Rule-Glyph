@@ -255,7 +255,7 @@ main {
 
 /* WALL Element */
 .elem-wall {
-  z-index: 2;
+  z-index: 4;
 }
 .elem-wall .element-content {
   background: var(--custom-wall-image, linear-gradient(135deg, #1e293b, #0f172a));
@@ -346,7 +346,7 @@ body.has-custom-wall .elem-wall .element-content::after {
 
 /* FLOOR Elements */
 .elem-floor {
-  z-index: 1; /* Below walls/entities but above default grid-cell-bg */
+  z-index: 2; /* Below walls/entities but above default grid-cell-bg */
 }
 .elem-floor .element-content {
   background-size: cover;
@@ -487,7 +487,7 @@ body.has-custom-wall .elem-wall .element-content::after {
 
 /* PORTAL (Exit) Element */
 .elem-portal {
-  z-index: 1;
+  z-index: 3;
 }
 .elem-portal .element-content {
   background: radial-gradient(circle, transparent 20%, rgba(0, 240, 255, 0.1) 60%, rgba(0, 240, 255, 0.3) 100%);
@@ -503,7 +503,7 @@ body.has-custom-wall .elem-wall .element-content::after {
 
 /* PRESSURE PLATE Elements */
 .elem-plate {
-  z-index: 1;
+  z-index: 3;
 }
 .elem-plate .element-content {
   background: rgba(15, 23, 42, 0.5);
@@ -562,7 +562,7 @@ body.has-custom-wall .elem-wall .element-content::after {
 
 /* HAZARD SPIKES Elements */
 .elem-spikes {
-  z-index: 1;
+  z-index: 3;
 }
 .elem-spikes .element-content {
   background: rgba(15, 23, 42, 0.4);
@@ -1199,6 +1199,9 @@ footer a:hover {
 }
 
 /* Teleporters */
+.elem-teleport-in {
+  z-index: 3;
+}
 .elem-teleport-in .element-content {
   background: radial-gradient(circle, transparent 20%, rgba(0, 255, 255, 0.05) 50%, rgba(0, 255, 255, 0.25) 100%);
   border: 2px dashed #00ffff;
@@ -1212,6 +1215,9 @@ footer a:hover {
   color: #00ffff;
   font-weight: bold;
   text-shadow: 0 0 4px #00ffff;
+}
+.elem-teleport-out {
+  z-index: 3;
 }
 .elem-teleport-out .element-content {
   background: radial-gradient(circle, transparent 20%, rgba(255, 0, 255, 0.05) 50%, rgba(255, 0, 255, 0.25) 100%);
@@ -1234,7 +1240,7 @@ footer a:hover {
 
 /* Chasms */
 .elem-chasm {
-  z-index: 1;
+  z-index: 3;
 }
 .elem-chasm .element-content {
   background: linear-gradient(180deg, #020617, #090d16);
@@ -1251,11 +1257,13 @@ footer a:hover {
 }
 
 /* Laser Emitters & Beams */
+.elem-emitter {
+  z-index: 3;
+}
 .elem-emitter .element-content {
   background: #334155;
   border: 2px solid #64748b;
   border-radius: 4px;
-  z-index: 4;
 }
 .elem-emitter-h .element-content::after {
   content: '↔';
@@ -1311,7 +1319,7 @@ footer a:hover {
 
 /* Conveyor Belts */
 .elem-conveyor {
-  z-index: 1;
+  z-index: 3;
 }
 .elem-conveyor .element-content {
   background: rgba(57, 255, 20, 0.05);
@@ -1372,7 +1380,7 @@ footer a:hover {
 
 /* Identity Portals */
 .elem-identity-portal {
-  z-index: 1;
+  z-index: 3;
 }
 .elem-identity-portal .element-content {
   border: 2px dashed;
@@ -1426,7 +1434,7 @@ footer a:hover {
 
 /* Rule Jammers */
 .elem-jammer-zone {
-  z-index: 1;
+  z-index: 3;
 }
 .elem-jammer-zone .element-content {
   background: repeating-linear-gradient(45deg, rgba(239, 68, 68, 0.05), rgba(239, 68, 68, 0.05) 5px, transparent 5px, transparent 10px);
@@ -1441,7 +1449,7 @@ footer a:hover {
 
 /* Sensor Floor */
 .elem-sensor-floor {
-  z-index: 1;
+  z-index: 3;
 }
 .elem-sensor-floor .element-content {
   background: radial-gradient(circle, rgba(234, 179, 8, 0.1) 0%, transparent 70%);
@@ -1457,7 +1465,7 @@ footer a:hover {
 
 /* Android wall challenge tiles */
 .elem-wall-challenge {
-  z-index: 2;
+  z-index: 4;
 }
 
 .elem-wall-challenge .element-content {

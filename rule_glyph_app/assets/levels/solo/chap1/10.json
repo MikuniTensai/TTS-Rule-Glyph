@@ -1,10 +1,10 @@
 {
   "id": 10,
-  "name": "Audit Ketat",
-  "description": "Batas langkah mulai lebih sempit.",
+  "name": "Hijau Pertama",
+  "description": "PUSH merah membuka jalur, MERGE hijau membuka portal.",
   "width": 10,
-  "height": 8,
-  "movesLimit": 27,
+  "height": 6,
+  "movesLimit": 20,
   "initialRules": {
     "red": "STOP",
     "blue": "STOP",
@@ -16,8 +16,7 @@
       "PUSH"
     ],
     "blue": [
-      "STOP",
-      "SWAP"
+      "STOP"
     ],
     "green": [
       "STOP",
@@ -28,10 +27,8 @@
     "##########",
     "#@A.a....#",
     "#.######.#",
-    "#...1B#..#",
-    "#####...##",
-    "#.....CCc#",
-    "#......3X#",
+    "#...1CCcX#",
+    "#......3.#",
     "##########"
   ]
 }

@@ -1,0 +1,35 @@
+{
+  "id": 46,
+  "name": "Bab 3: Rute Padat 12",
+  "description": "Transisi Berwaktu dengan batas langkah lebih ketat.",
+  "width": 8,
+  "height": 7,
+  "movesLimit": 22,
+  "initialRules": {
+    "red": "PUSH",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP",
+      "PUSH"
+    ],
+    "blue": [
+      "STOP",
+      "PUSH"
+    ],
+    "green": [
+      "STOP"
+    ]
+  },
+  "map": [
+    "########",
+    "#@.S...#",
+    "#A.#####",
+    "#..)..)#",
+    "#B.#####",
+    "#J....X#",
+    "########"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "id": 69,
+  "name": "Bab 5: Audit Cepat 11",
+  "description": "Laboratorium Laser dengan batas langkah lebih ketat.",
+  "width": 8,
+  "height": 7,
+  "movesLimit": 20,
+  "initialRules": {
+    "red": "STOP",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP",
+      "PUSH",
+      "SWAP"
+    ],
+    "blue": [
+      "STOP",
+      "PUSH"
+    ],
+    "green": [
+      "STOP"
+    ]
+  },
+  "map": [
+    "########",
+    "#@.L..X#",
+    "#A.###.#",
+    "#..#_..#",
+    "#B.#...#",
+    "#[.#.]##",
+    "########"
+  ]
+}

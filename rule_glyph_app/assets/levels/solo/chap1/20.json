@@ -1,10 +1,10 @@
 {
   "id": 20,
-  "name": "Bab 2: Rute Lanjutan 2",
-  "description": "Ruang Sempit dengan batas langkah lebih ketat.",
+  "name": "Ujian Bab Satu",
+  "description": "Semua rule inti muncul sebelum campaign masuk ke ronde presisi.",
   "width": 10,
   "height": 8,
-  "movesLimit": 23,
+  "movesLimit": 24,
   "initialRules": {
     "red": "STOP",
     "blue": "STOP",
@@ -26,12 +26,12 @@
   },
   "map": [
     "##########",
-    "#@A.a....#",
+    "#@A.a.^..#",
     "#.######.#",
     "#...1B#..#",
-    "###.#...##",
-    "#...#.CCc#",
-    "#.####.3X#",
+    "#####.^.##",
+    "#.....CCc#",
+    "#......3X#",
     "##########"
   ]
 }

@@ -1,10 +1,10 @@
 {
   "id": 9,
-  "name": "Rintangan Tajam",
-  "description": "Spike mempersempit jalur setelah gate biru.",
-  "width": 10,
-  "height": 8,
-  "movesLimit": 28,
+  "name": "Dua Warna",
+  "description": "Buka gate merah dengan PUSH, lalu lewati glyph biru dengan SWAP.",
+  "width": 9,
+  "height": 6,
+  "movesLimit": 16,
   "initialRules": {
     "red": "STOP",
     "blue": "STOP",
@@ -20,18 +20,15 @@
       "SWAP"
     ],
     "green": [
-      "STOP",
-      "MERGE"
+      "STOP"
     ]
   },
   "map": [
-    "##########",
-    "#@A.a.^..#",
-    "#.######.#",
-    "#...1B#..#",
-    "#####...##",
-    "#.....CCc#",
-    "#......3X#",
-    "##########"
+    "#########",
+    "#@A.a...#",
+    "#.#####.#",
+    "#...1B#X#",
+    "#####...#",
+    "#########"
   ]
 }

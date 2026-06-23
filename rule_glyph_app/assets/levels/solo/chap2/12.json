@@ -1,12 +1,12 @@
 {
   "id": 34,
-  "name": "Bab 2: Rute Lanjutan 9",
-  "description": "Tantangan bab Bab 2: Rute Lanjutan.",
-  "width": 10,
-  "height": 8,
+  "name": "Bab 2: Rute Lanjutan 12",
+  "description": "Transisi Berwaktu dengan batas langkah lebih ketat.",
+  "width": 8,
+  "height": 7,
   "movesLimit": 23,
   "initialRules": {
-    "red": "STOP",
+    "red": "PUSH",
     "blue": "STOP",
     "green": "STOP"
   },
@@ -17,21 +17,19 @@
     ],
     "blue": [
       "STOP",
-      "SWAP"
+      "PUSH"
     ],
     "green": [
-      "STOP",
-      "MERGE"
+      "STOP"
     ]
   },
   "map": [
-    "##########",
-    "#@.......#",
-    "#........#",
-    "#........#",
-    "#........#",
-    "#........#",
-    "#.......X#",
-    "##########"
+    "########",
+    "#@.S...#",
+    "#A.#####",
+    "#..)..)#",
+    "#B.#####",
+    "#J....X#",
+    "########"
   ]
 }

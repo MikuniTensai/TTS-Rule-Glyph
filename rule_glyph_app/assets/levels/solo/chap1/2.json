@@ -2,9 +2,9 @@
   "id": 2,
   "name": "Kunci Merge",
   "description": "Gabungkan dua glyph merah agar lorong bisa dibuka.",
-  "width": 7,
+  "width": 8,
   "height": 5,
-  "movesLimit": 7,
+  "movesLimit": 12,
   "initialRules": {
     "red": "STOP",
     "blue": "STOP",
@@ -13,7 +13,7 @@
   "allowedRules": {
     "red": [
       "STOP",
-      "PUSH"
+      "MERGE"
     ],
     "blue": [
       "STOP"
@@ -23,10 +23,10 @@
     ]
   },
   "map": [
-    "#######",
-    "#@..1X#",
-    "#A###.#",
-    "#a....#",
-    "#######"
+    "########",
+    "#@AAa..#",
+    "#.####.#",
+    "#....1X#",
+    "########"
   ]
 }

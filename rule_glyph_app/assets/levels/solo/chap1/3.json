@@ -1,10 +1,10 @@
 {
   "id": 3,
-  "name": "Lorong Padat",
-  "description": "Tiga glyph harus diringkas dengan MERGE sebelum gate merah.",
-  "width": 8,
+  "name": "Koridor Dorong",
+  "description": "Dorong glyph lebih jauh sebelum kembali ke jalur utama.",
+  "width": 9,
   "height": 5,
-  "movesLimit": 10,
+  "movesLimit": 14,
   "initialRules": {
     "red": "STOP",
     "blue": "STOP",
@@ -13,7 +13,7 @@
   "allowedRules": {
     "red": [
       "STOP",
-      "PUSH"
+      "MERGE"
     ],
     "blue": [
       "STOP"
@@ -23,10 +23,10 @@
     ]
   },
   "map": [
-    "########",
-    "#@...1X#",
-    "#A####.#",
-    "#a.....#",
-    "########"
+    "#########",
+    "#@AAAa..#",
+    "#.#####.#",
+    "#.....1X#",
+    "#########"
   ]
 }

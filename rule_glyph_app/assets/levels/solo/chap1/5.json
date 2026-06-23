@@ -1,7 +1,7 @@
 {
   "id": 5,
-  "name": "Dua Warna",
-  "description": "Buka gate merah dengan PUSH, lalu lewati glyph biru dengan SWAP.",
+  "name": "Tukar Zigzag",
+  "description": "SWAP membuka jalur pendek melewati ruang yang dipisah dinding.",
   "width": 8,
   "height": 5,
   "movesLimit": 12,

@@ -1,10 +1,10 @@
 {
   "id": 26,
-  "name": "Bab 2: Rute Lanjutan 1",
-  "description": "Tantangan bab Bab 2: Rute Lanjutan.",
+  "name": "Bab 2: Rute Lanjutan 4",
+  "description": "Audit Ketat dengan batas langkah lebih ketat.",
   "width": 10,
   "height": 8,
-  "movesLimit": 26,
+  "movesLimit": 23,
   "initialRules": {
     "red": "STOP",
     "blue": "STOP",
@@ -26,12 +26,12 @@
   },
   "map": [
     "##########",
-    "#@.......#",
-    "#........#",
-    "#........#",
-    "#........#",
-    "#........#",
-    "#.......X#",
+    "#@A.a....#",
+    "#.######.#",
+    "#...1B#..#",
+    "#####...##",
+    "#.....CCc#",
+    "#......3X#",
     "##########"
   ]
 }

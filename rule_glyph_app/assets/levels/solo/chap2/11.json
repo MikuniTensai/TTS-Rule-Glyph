@@ -1,19 +1,20 @@
 {
   "id": 33,
-  "name": "Bab 2: Rute Lanjutan 8",
-  "description": "Tantangan bab Bab 2: Rute Lanjutan.",
+  "name": "Bab 2: Rute Lanjutan 11",
+  "description": "Laboratorium Laser dengan batas langkah lebih ketat.",
   "width": 8,
   "height": 7,
-  "movesLimit": 20,
+  "movesLimit": 23,
   "initialRules": {
-    "red": "PUSH",
+    "red": "STOP",
     "blue": "STOP",
     "green": "STOP"
   },
   "allowedRules": {
     "red": [
       "STOP",
-      "PUSH"
+      "PUSH",
+      "SWAP"
     ],
     "blue": [
       "STOP",
@@ -25,11 +26,11 @@
   },
   "map": [
     "########",
-    "#@.....#",
-    "#......#",
-    "#......#",
-    "#......#",
-    "#.....X#",
+    "#@.L..X#",
+    "#A.###.#",
+    "#..#_..#",
+    "#B.#...#",
+    "#[.#.]##",
     "########"
   ]
 }

@@ -1,10 +1,10 @@
 {
   "id": 16,
-  "name": "Ujian Bab Satu",
-  "description": "Semua rule inti muncul sebelum campaign masuk ke ronde presisi.",
+  "name": "Plate Jauh",
+  "description": "Plate dan gate masih berurutan, tapi ruang baca lebih padat.",
   "width": 10,
-  "height": 8,
-  "movesLimit": 24,
+  "height": 9,
+  "movesLimit": 30,
   "initialRules": {
     "red": "STOP",
     "blue": "STOP",
@@ -26,12 +26,13 @@
   },
   "map": [
     "##########",
-    "#@A.a.^..#",
+    "#@A.a....#",
     "#.######.#",
     "#...1B#..#",
-    "#####.^.##",
+    "#####...##",
     "#.....CCc#",
     "#......3X#",
+    "#........#",
     "##########"
   ]
 }

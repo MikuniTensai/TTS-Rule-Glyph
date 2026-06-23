@@ -1,7 +1,7 @@
 {
   "id": 11,
-  "name": "Batas Hampir Pas",
-  "description": "Solusi butuh urutan rule yang efisien.",
+  "name": "Tiga Kunci",
+  "description": "Gabungkan tiga mekanik dasar dalam satu jalur.",
   "width": 10,
   "height": 8,
   "movesLimit": 26,
@@ -29,7 +29,7 @@
     "#@A.a....#",
     "#.######.#",
     "#...1B#..#",
-    "#####.^.##",
+    "#####...##",
     "#.....CCc#",
     "#......3X#",
     "##########"

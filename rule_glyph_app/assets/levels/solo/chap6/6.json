@@ -1,0 +1,38 @@
+{
+  "id": 76,
+  "name": "Bab 6: Hampir Presisi 6",
+  "description": "Plate Jauh dengan batas langkah lebih ketat.",
+  "width": 10,
+  "height": 9,
+  "movesLimit": 19,
+  "initialRules": {
+    "red": "STOP",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP",
+      "PUSH"
+    ],
+    "blue": [
+      "STOP",
+      "SWAP"
+    ],
+    "green": [
+      "STOP",
+      "MERGE"
+    ]
+  },
+  "map": [
+    "##########",
+    "#@A.a....#",
+    "#.######.#",
+    "#...1B#..#",
+    "#####...##",
+    "#.....CCc#",
+    "#......3X#",
+    "#........#",
+    "##########"
+  ]
+}

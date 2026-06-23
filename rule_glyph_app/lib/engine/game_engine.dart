@@ -400,6 +400,25 @@ class GameEngine {
       }
     }
 
+    // Parse custom floor map layer if present (for cells with both floor and overlays/players)
+    final floorMap = levelData.customFloorMap;
+    if (floorMap != null) {
+      for (int y = 0; y < height; y++) {
+        if (y >= floorMap.length) continue;
+        final rowStr = floorMap[y];
+        for (int x = 0; x < width; x++) {
+          if (x >= rowStr.length) continue;
+          final char = rowStr[x];
+          if (char != '.') {
+            final val = int.tryParse(char);
+            if (val != null && val >= 1 && val <= 6) {
+              cells[x][y].customFloorIndex = val;
+            }
+          }
+        }
+      }
+    }
+
     // Set first active player
     for (var p in players) {
       if (p.x != -1) {

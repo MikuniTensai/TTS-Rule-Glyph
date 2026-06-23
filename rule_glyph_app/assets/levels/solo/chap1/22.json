@@ -1,7 +1,7 @@
 {
   "id": 22,
-  "name": "Bab 2: Rute Lanjutan 4",
-  "description": "Audit Ketat dengan batas langkah lebih ketat.",
+  "name": "Transisi Berwaktu",
+  "description": "Injak lantai sensor untuk menyalin aturan, dan manfaatkan lantai berjalan sebelum aturan berwaktu habis.",
   "width": 10,
   "height": 8,
   "movesLimit": 23,

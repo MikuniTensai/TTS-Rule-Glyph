@@ -449,6 +449,27 @@ export class GridEngine {
         this.spawnPlayerDom(player);
       }
     }
+
+    // Parse custom floor map layer if present (for cells with both floor and overlays/players)
+    if (levelData && levelData.custom_floor_map) {
+      for (let y = 0; y < this.height; y++) {
+        const rowStr = levelData.custom_floor_map[y];
+        if (!rowStr) continue;
+        for (let x = 0; x < this.width; x++) {
+          const char = rowStr[x];
+          if (char >= '1' && char <= '6') {
+            const idx = parseInt(char, 10);
+            const cell = this.cells[x][y];
+            cell.customFloorIndex = idx;
+            const key = `${x},${y}`;
+            if (this.floorDoms.has(key)) {
+              this.floorDoms.get(key).remove();
+            }
+            this.floorDoms.set(key, this.createStaticDom(`floor floor-${idx}`, x, y));
+          }
+        }
+      }
+    }
     
     // Compute initial doors/plates states
     this.updateTriggers(false);
@@ -859,8 +880,156 @@ export class GridEngine {
   paintCell(x, y, brushType) {
     if (x < 0 || x >= this.width || y < 0 || y >= this.height) return;
 
-    // Clear what is already there
-    this.clearCell(x, y);
+    // Smart selective clearing to allow custom floor and overlays in the same cell
+    const isWallBrush = brushType === 'wall' || 
+                        brushType.startsWith('wall-') || 
+                        brushType === 'cracked-wall' || 
+                        brushType === 'timed-wall' || 
+                        brushType.startsWith('color-wall-') || 
+                        brushType === 'mirror-wall' || 
+                        brushType === 'soft-wall' || 
+                        brushType.startsWith('linked-wall-') || 
+                        brushType.startsWith('rotating-wall-') || 
+                        brushType.startsWith('player-wall-') || 
+                        brushType === 'glyph-only-wall';
+
+    const isFloorBrush = brushType.startsWith('floor-');
+
+    if (brushType === 'clear' || isWallBrush) {
+      this.clearCell(x, y);
+    } else {
+      // Clear walls and conflicting categories, but preserve custom floor for overlays
+      const cell = this.cells[x][y];
+      const coordKey = `${x},${y}`;
+
+      // 1. Clear wall and special walls
+      cell.isWall = false;
+      cell.customWallIndex = 0;
+      if (this.wallDoms.has(coordKey)) {
+        this.wallDoms.get(coordKey).remove();
+        this.wallDoms.delete(coordKey);
+      }
+      cell.isCrackedWall = false;
+      cell.oneWayDir = null;
+      cell.isTimedWall = false;
+      cell.colorWallColor = null;
+      cell.isMirrorWall = false;
+      cell.isSoftWall = false;
+      cell.linkedWallGroup = null;
+      cell.rotatingWallAxis = null;
+      cell.playerWallAllowedId = null;
+      cell.isGlyphOnlyWall = false;
+      if (this.wallChallengeDoms.has(coordKey)) {
+        this.wallChallengeDoms.get(coordKey).remove();
+        this.wallChallengeDoms.delete(coordKey);
+      }
+
+      // 2. Clear conflicting category based on the brushType
+      if (isFloorBrush) {
+        // If painting a floor, we replace the existing floor
+        cell.customFloorIndex = 0;
+        if (this.floorDoms.has(coordKey)) {
+          this.floorDoms.get(coordKey).remove();
+          this.floorDoms.delete(coordKey);
+        }
+      } else {
+        // If painting an overlay, clear only its specific category (allow overlays to stack with floors and other non-conflicting overlays)
+        if (brushType === 'player' || brushType === 'player2' || brushType === 'player3' || brushType === 'player4') {
+          for (const player of this.players) {
+            if (player.x === x && player.y === y) {
+              player.x = -1;
+              player.y = -1;
+              player.dead = false;
+              player.finished = false;
+              const dom = this.playerDoms.get(player.id);
+              if (dom) {
+                dom.remove();
+                this.playerDoms.delete(player.id);
+              }
+              if (player.id === 'p1') {
+                this.playerDom = null;
+              }
+            }
+          }
+        } else if (brushType.startsWith('glyph-') || brushType.startsWith('heavy-')) {
+          const glyphIdx = this.glyphs.findIndex(g => g.x === x && g.y === y);
+          if (glyphIdx !== -1) {
+            const g = this.glyphs[glyphIdx];
+            if (this.glyphDoms.has(g.id)) {
+              this.glyphDoms.get(g.id).remove();
+              this.glyphDoms.delete(g.id);
+            }
+            this.glyphs.splice(glyphIdx, 1);
+          }
+        } else if (brushType === 'spikes') {
+          cell.hasSpikes = false;
+          if (this.spikeDoms.has(coordKey)) {
+            this.spikeDoms.get(coordKey).remove();
+            this.spikeDoms.delete(coordKey);
+          }
+        } else if (brushType === 'portal') {
+          cell.hasPortal = false;
+          if (this.portalDoms.has(coordKey)) {
+            this.portalDoms.get(coordKey).remove();
+            this.portalDoms.delete(coordKey);
+          }
+        } else if (brushType.startsWith('plate-')) {
+          cell.plateColor = null;
+          if (this.plateDoms.has(coordKey)) {
+            this.plateDoms.get(coordKey).remove();
+            this.plateDoms.delete(coordKey);
+          }
+        } else if (brushType.startsWith('gate-')) {
+          cell.gateColor = null;
+          if (this.gateDoms.has(coordKey)) {
+            this.gateDoms.get(coordKey).remove();
+            this.gateDoms.delete(coordKey);
+          }
+        } else if (brushType.startsWith('tele-')) {
+          cell.teleportType = null;
+          if (this.teleportDoms.has(coordKey)) {
+            this.teleportDoms.get(coordKey).remove();
+            this.teleportDoms.delete(coordKey);
+          }
+        } else if (brushType === 'chasm') {
+          cell.isChasm = false;
+          if (this.chasmDoms.has(coordKey)) {
+            this.chasmDoms.get(coordKey).remove();
+            this.chasmDoms.delete(coordKey);
+          }
+        } else if (brushType.startsWith('laser-')) {
+          cell.laserType = null;
+          if (this.emitterDoms.has(coordKey)) {
+            this.emitterDoms.get(coordKey).remove();
+            this.emitterDoms.delete(coordKey);
+          }
+        } else if (brushType.startsWith('conveyor-')) {
+          cell.conveyorDir = null;
+          if (this.conveyorDoms.has(coordKey)) {
+            this.conveyorDoms.get(coordKey).remove();
+            this.conveyorDoms.delete(coordKey);
+          }
+        } else if (brushType.startsWith('identity-')) {
+          cell.identityPortalPlayer = null;
+          if (this.identityPortalDoms.has(coordKey)) {
+            this.identityPortalDoms.get(coordKey).remove();
+            this.identityPortalDoms.delete(coordKey);
+          }
+        } else if (brushType === 'jammer') {
+          cell.isJammer = false;
+          if (this.jammerDoms.has(coordKey)) {
+            this.jammerDoms.get(coordKey).remove();
+            this.jammerDoms.delete(coordKey);
+          }
+        } else if (brushType === 'sensor') {
+          cell.isSensor = false;
+          if (this.sensorDoms.has(coordKey)) {
+            this.sensorDoms.get(coordKey).remove();
+            this.sensorDoms.delete(coordKey);
+          }
+        }
+      }
+    }
 
     const cell = this.cells[x][y];
 
@@ -1197,11 +1366,22 @@ export class GridEngine {
    */
   serializeLevelData(movesLimit) {
     const mapRows = [];
+    const customFloorRows = [];
+    let hasCustomFloors = false;
     
     for (let y = 0; y < this.height; y++) {
       let row = '';
+      let floorRow = '';
       for (let x = 0; x < this.width; x++) {
         const cell = this.cells[x][y];
+        
+        // Build custom floor map row (1-6 for custom floor indexes, . for default)
+        if (cell.customFloorIndex > 0) {
+          floorRow += cell.customFloorIndex.toString();
+          hasCustomFloors = true;
+        } else {
+          floorRow += '.';
+        }
         
         // 1. Check dynamic entities
         const playerHere = this.players.find(player => player.x === x && player.y === y && !player.finished);
@@ -1288,15 +1468,22 @@ export class GridEngine {
         }
       }
       mapRows.push(row);
+      customFloorRows.push(floorRow);
     }
     
-    return {
+    const result = {
       width: this.width,
       height: this.height,
       movesLimit: movesLimit,
       initialRules: { red: 'STOP', blue: 'STOP', green: 'STOP' },
       map: mapRows
     };
+    
+    if (hasCustomFloors) {
+      result.custom_floor_map = customFloorRows;
+    }
+    
+    return result;
   }
 
   /**

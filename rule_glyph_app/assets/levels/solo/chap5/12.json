@@ -1,0 +1,35 @@
+{
+  "id": 70,
+  "name": "Bab 5: Audit Cepat 12",
+  "description": "Transisi Berwaktu dengan batas langkah lebih ketat.",
+  "width": 8,
+  "height": 7,
+  "movesLimit": 20,
+  "initialRules": {
+    "red": "PUSH",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP",
+      "PUSH"
+    ],
+    "blue": [
+      "STOP",
+      "PUSH"
+    ],
+    "green": [
+      "STOP"
+    ]
+  },
+  "map": [
+    "########",
+    "#@.S...#",
+    "#A.#####",
+    "#..)..)#",
+    "#B.#####",
+    "#J....X#",
+    "########"
+  ]
+}

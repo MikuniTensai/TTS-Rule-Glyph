@@ -1,0 +1,37 @@
+{
+  "id": 61,
+  "name": "Bab 5: Audit Cepat 3",
+  "description": "Rintangan Tajam dengan batas langkah lebih ketat.",
+  "width": 10,
+  "height": 8,
+  "movesLimit": 20,
+  "initialRules": {
+    "red": "STOP",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP",
+      "PUSH"
+    ],
+    "blue": [
+      "STOP",
+      "SWAP"
+    ],
+    "green": [
+      "STOP",
+      "MERGE"
+    ]
+  },
+  "map": [
+    "##########",
+    "#@A.a.^..#",
+    "#.######.#",
+    "#...1B#..#",
+    "#####...##",
+    "#.....CCc#",
+    "#......3X#",
+    "##########"
+  ]
+}

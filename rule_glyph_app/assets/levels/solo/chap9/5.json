@@ -1,0 +1,37 @@
+{
+  "id": 111,
+  "name": "Finale 5",
+  "description": "Batas Hampir Pas dengan batas langkah lebih ketat.",
+  "width": 10,
+  "height": 8,
+  "movesLimit": 16,
+  "initialRules": {
+    "red": "STOP",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP",
+      "PUSH"
+    ],
+    "blue": [
+      "STOP",
+      "SWAP"
+    ],
+    "green": [
+      "STOP",
+      "MERGE"
+    ]
+  },
+  "map": [
+    "##########",
+    "#@A.a....#",
+    "#.######.#",
+    "#...1B#..#",
+    "#####.^.##",
+    "#.....CCc#",
+    "#......3X#",
+    "##########"
+  ]
+}

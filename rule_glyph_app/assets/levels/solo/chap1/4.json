@@ -1,10 +1,10 @@
 {
   "id": 4,
-  "name": "Jembatan Spike",
-  "description": "Dorong glyph ke spike untuk menyeberang dengan aman.",
+  "name": "Ruang Tukar",
+  "description": "Gunakan SWAP untuk masuk lewat glyph biru.",
   "width": 7,
-  "height": 5,
-  "movesLimit": 10,
+  "height": 3,
+  "movesLimit": 4,
   "initialRules": {
     "red": "STOP",
     "blue": "STOP",
@@ -12,11 +12,11 @@
   },
   "allowedRules": {
     "red": [
-      "STOP"
+      "STOP",
+      "PUSH"
     ],
     "blue": [
-      "STOP",
-      "SWAP"
+      "STOP"
     ],
     "green": [
       "STOP"
@@ -24,9 +24,7 @@
   },
   "map": [
     "#######",
-    "#@B#..#",
-    "##..#X#",
-    "#.....#",
+    "#@A^X.#",
     "#######"
   ]
 }

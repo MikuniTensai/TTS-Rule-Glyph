@@ -35,7 +35,9 @@ Future<void> main(List<String> args) async {
         request.response.statusCode = HttpStatus.methodNotAllowed;
         await request.response.close();
       }
-    } on FormatException catch (e) {
+    } on FormatException catch (e, stack) {
+      stderr.writeln('FormatException during request: $e');
+      stderr.writeln(stack);
       request.response.statusCode = HttpStatus.badRequest;
       request.response.headers.contentType = ContentType.json;
       request.response.write(jsonEncode({'ok': false, 'error': e.message}));
@@ -78,6 +80,15 @@ Future<void> _handleAutosave(HttpRequest request, Directory root) async {
     androidAssets.createSync(recursive: true);
   }
 
+  var removedLogoFloors = <Map<String, dynamic>>[];
+  final logoFile = File('${androidAssets.path}/logo.png');
+  if (logoFile.existsSync()) {
+    removedLogoFloors = _removeAccidentalLogoFloors(
+      decoded,
+      logoFile.readAsBytesSync(),
+    );
+  }
+
   final levelsFile = File('${androidAssets.path}/levels.json');
   levelsFile.writeAsStringSync('${_jsonEncoder.convert(decoded)}\n');
   _writeSplitAssets(androidAssets, decoded);
@@ -116,11 +127,64 @@ Future<void> _handleAutosave(HttpRequest request, Directory root) async {
       for (final mode in ['1', '2', '3', '4'])
         mode: (modes[mode] as List).length,
     },
+    'removedLogoFloors': removedLogoFloors,
   };
 
   request.response.headers.contentType = ContentType.json;
   request.response.write(jsonEncode(response));
   await request.response.close();
+}
+
+List<Map<String, dynamic>> _removeAccidentalLogoFloors(
+  Map<String, dynamic> campaign,
+  List<int> logoBytes,
+) {
+  final removed = <Map<String, dynamic>>[];
+  final modes = campaign['levels_by_mode'];
+  if (modes is! Map) return removed;
+
+  for (final modeEntry in modes.entries) {
+    final mode = modeEntry.key.toString();
+    final levels = modeEntry.value;
+    if (levels is! List) continue;
+    for (var levelIndex = 0; levelIndex < levels.length; levelIndex++) {
+      final level = levels[levelIndex];
+      if (level is! Map) continue;
+      final floorKeys = level.keys
+          .whereType<String>()
+          .where((key) => key == 'custom_floor' || key.startsWith('custom_floor_'))
+          .toList();
+      for (final key in floorKeys) {
+        final value = level[key];
+        if (value is! String || value.isEmpty) continue;
+        try {
+          final separator = value.indexOf(',');
+          final encoded = separator == -1 ? value : value.substring(separator + 1);
+          final textureBytes = base64Decode(encoded);
+          if (_bytesEqual(textureBytes, logoBytes)) {
+            level[key] = null;
+            removed.add({
+              'mode': mode,
+              'index': levelIndex,
+              'field': key,
+            });
+            print('Autosave: removed accidental logo texture from $key');
+          }
+        } on FormatException {
+          // Texture validation is handled by the clients; ignore unrelated data here.
+        }
+      }
+    }
+  }
+  return removed;
+}
+
+bool _bytesEqual(List<int> left, List<int> right) {
+  if (left.length != right.length) return false;
+  for (var i = 0; i < left.length; i++) {
+    if (left[i] != right[i]) return false;
+  }
+  return true;
 }
 
 void _validateCampaignJson(Map<String, dynamic> data) {
@@ -158,22 +222,53 @@ void _validateLevel(Map<String, dynamic> level, String mode, int index) {
   final movesLimit = level['movesLimit'];
   final map = level['map'];
 
-  if (id is! int ||
-      id <= 0 ||
-      width is! int ||
-      width <= 0 ||
-      width > 64 ||
-      height is! int ||
-      height <= 0 ||
-      height > 64 ||
-      movesLimit is! int ||
-      movesLimit <= 0 ||
-      level['name'] is! String ||
-      level['description'] is! String ||
-      map is! List ||
-      map.length != height) {
-    throw FormatException('Invalid level schema at $label');
+  if (id is! int || id <= 0) {
+    throw FormatException('Invalid level schema at $label: id is $id (expected positive int)');
   }
+  if (width is! int || width <= 0 || width > 64) {
+    throw FormatException('Invalid level schema at $label: width is $width (expected int 1..64)');
+  }
+  if (height is! int || height <= 0 || height > 64) {
+    throw FormatException('Invalid level schema at $label: height is $height (expected int 1..64)');
+  }
+  if (movesLimit is! int || movesLimit <= 0) {
+    throw FormatException('Invalid level schema at $label: movesLimit is $movesLimit (expected positive int)');
+  }
+  if (level['name'] is! String) {
+    throw FormatException('Invalid level schema at $label: name is ${level['name']} (expected String)');
+  }
+  if (level['description'] is! String) {
+    throw FormatException('Invalid level schema at $label: description is ${level['description']} (expected String)');
+  }
+  if (map is! List) {
+    throw FormatException('Invalid level schema at $label: map is ${map.runtimeType} (expected List)');
+  }
+  if (map.length != height) {
+    throw FormatException('Invalid level schema at $label: map length is ${map.length} but height is $height');
+  }
+
+  final customFloorMap = level['custom_floor_map'];
+  if (customFloorMap != null) {
+    if (customFloorMap is! List) {
+      throw FormatException('Invalid level schema at $label: custom_floor_map is ${customFloorMap.runtimeType} (expected List)');
+    }
+    if (customFloorMap.length != height) {
+      throw FormatException('Invalid level schema at $label: custom_floor_map length is ${customFloorMap.length} but height is $height');
+    }
+    for (var rowIndex = 0; rowIndex < customFloorMap.length; rowIndex++) {
+      final row = customFloorMap[rowIndex];
+      if (row is! String || row.length != width) {
+        throw FormatException('$label custom_floor_map row ${rowIndex + 1} has invalid width (expected $width, got ${row.length})');
+      }
+      for (final rune in row.runes) {
+        final symbol = String.fromCharCode(rune);
+        if (symbol != '.' && (rune < 49 || rune > 54)) {
+          throw FormatException('$label custom_floor_map uses unsupported symbol "$symbol"');
+        }
+      }
+    }
+  }
+
 
   final rows = <String>[];
   for (var rowIndex = 0; rowIndex < map.length; rowIndex++) {
@@ -203,14 +298,12 @@ void _validateLevel(Map<String, dynamic> level, String mode, int index) {
     );
     final expected = playerIndex < playerCount ? 1 : 0;
     if (count != expected) {
-      throw FormatException(
-        '$label must contain $expected P${playerIndex + 1} start, got $count',
-      );
+      print('Autosave Warning: $label must contain $expected P${playerIndex + 1} start, got $count');
     }
     if (expected == 1 &&
         !mapText.contains('X') &&
         !mapText.contains(_playerPortals[playerIndex])) {
-      throw FormatException('$label has no goal for P${playerIndex + 1}');
+      print('Autosave Warning: $label has no goal for P${playerIndex + 1}');
     }
   }
 

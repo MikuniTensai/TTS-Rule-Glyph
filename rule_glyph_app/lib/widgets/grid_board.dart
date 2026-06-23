@@ -3,10 +3,48 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../engine/game_engine.dart';
 
-class GridBoard extends StatelessWidget {
+class GridBoard extends StatefulWidget {
   final GameEngine engine;
 
   const GridBoard({Key? key, required this.engine}) : super(key: key);
+
+  @override
+  State<GridBoard> createState() => _GridBoardState();
+}
+
+class _GridBoardState extends State<GridBoard> {
+  Object? _cachedLevel;
+  final Map<String, MemoryImage> _textureCache = {};
+
+  GameEngine get engine => widget.engine;
+
+  void _syncTextureCache() {
+    final level = engine.activeLevel;
+    if (identical(_cachedLevel, level)) return;
+
+    _cachedLevel = level;
+    _textureCache.clear();
+  }
+
+  MemoryImage? _textureFor(String? data, String label) {
+    if (data == null || data.isEmpty) return null;
+
+    final cached = _textureCache[data];
+    if (cached != null) return cached;
+
+    try {
+      final separatorIndex = data.indexOf(',');
+      final encoded = separatorIndex == -1
+          ? data
+          : data.substring(separatorIndex + 1);
+      final image = MemoryImage(base64Decode(encoded));
+      _textureCache[data] = image;
+      return image;
+    } on FormatException catch (error) {
+      debugPrint('Failed to decode $label texture: $error');
+      return null;
+    }
+  }
 
   Color _getColorTheme(String color) {
     if (color == 'red') return Colors.redAccent;
@@ -25,6 +63,8 @@ class GridBoard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _syncTextureCache();
+
     if (engine.width == 0 || engine.height == 0) {
       return const SizedBox.shrink();
     }
@@ -32,18 +72,12 @@ class GridBoard extends StatelessWidget {
     DecorationImage? floorImageDeco;
     final customFloorBase64 = engine.activeLevel?.customFloor;
     if (customFloorBase64 != null && customFloorBase64.isNotEmpty) {
-      try {
-        var cleanBase64 = customFloorBase64;
-        if (cleanBase64.contains(',')) {
-          cleanBase64 = cleanBase64.substring(cleanBase64.indexOf(',') + 1);
-        }
-        final bytes = base64Decode(cleanBase64);
+      final image = _textureFor(customFloorBase64, 'custom floor');
+      if (image != null) {
         floorImageDeco = DecorationImage(
-          image: MemoryImage(bytes),
+          image: image,
           fit: BoxFit.cover,
         );
-      } catch (e) {
-        print("Failed to decode base64 custom floor texture: $e");
       }
     }
 
@@ -151,7 +185,6 @@ class GridBoard extends StatelessWidget {
       return Container(
         decoration: BoxDecoration(
           color: cell.isSoftWall ? const Color(0xFF18201D) : const Color(0xFF202029),
-          border: Border.all(color: Colors.white.withOpacity(0.05), width: 0.5),
         ),
       );
     }
@@ -171,18 +204,12 @@ class GridBoard extends StatelessWidget {
 
       DecorationImage? imageDeco;
       if (base64Str != null && base64Str.isNotEmpty) {
-        try {
-          var cleanBase64 = base64Str;
-          if (cleanBase64.contains(',')) {
-            cleanBase64 = cleanBase64.substring(cleanBase64.indexOf(',') + 1);
-          }
-          final bytes = base64Decode(cleanBase64);
+        final image = _textureFor(base64Str, 'custom wall');
+        if (image != null) {
           imageDeco = DecorationImage(
-            image: MemoryImage(bytes),
+            image: image,
             fit: BoxFit.cover,
           );
-        } catch (e) {
-          print("Failed to decode base64 custom wall texture: $e");
         }
       }
 
@@ -197,13 +224,6 @@ class GridBoard extends StatelessWidget {
         decoration: BoxDecoration(
           color: const Color(0xFF26262B),
           image: imageDeco,
-          border: Border.all(color: Colors.black, width: 0.5),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.4),
-              blurRadius: 4,
-            )
-          ],
         ),
       );
     }
@@ -222,18 +242,12 @@ class GridBoard extends StatelessWidget {
 
     DecorationImage? floorCellDeco;
     if (floorBase64Str != null && floorBase64Str.isNotEmpty) {
-      try {
-        var cleanBase64 = floorBase64Str;
-        if (cleanBase64.contains(',')) {
-          cleanBase64 = cleanBase64.substring(cleanBase64.indexOf(',') + 1);
-        }
-        final bytes = base64Decode(cleanBase64);
+      final image = _textureFor(floorBase64Str, 'custom floor cell');
+      if (image != null) {
         floorCellDeco = DecorationImage(
-          image: MemoryImage(bytes),
+          image: image,
           fit: BoxFit.cover,
         );
-      } catch (e) {
-        print("Failed to decode base64 custom floor cell texture: $e");
       }
     }
 

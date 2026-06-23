@@ -1,0 +1,36 @@
+{
+  "id": 57,
+  "name": "Bab 4: Jalur Tajam 11",
+  "description": "Laboratorium Laser dengan batas langkah lebih ketat.",
+  "width": 8,
+  "height": 7,
+  "movesLimit": 21,
+  "initialRules": {
+    "red": "STOP",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP",
+      "PUSH",
+      "SWAP"
+    ],
+    "blue": [
+      "STOP",
+      "PUSH"
+    ],
+    "green": [
+      "STOP"
+    ]
+  },
+  "map": [
+    "########",
+    "#@.L..X#",
+    "#A.###.#",
+    "#..#_..#",
+    "#B.#...#",
+    "#[.#.]##",
+    "########"
+  ]
+}

@@ -1,10 +1,10 @@
 {
   "id": 8,
-  "name": "Ruang Sempit",
-  "description": "Jalur lebih rapat dengan gate yang tetap harus dibuka berurutan.",
-  "width": 10,
-  "height": 8,
-  "movesLimit": 26,
+  "name": "Jembatan Spike",
+  "description": "Dorong glyph ke spike untuk menyeberang dengan aman.",
+  "width": 7,
+  "height": 3,
+  "movesLimit": 4,
   "initialRules": {
     "red": "STOP",
     "blue": "STOP",
@@ -16,22 +16,15 @@
       "PUSH"
     ],
     "blue": [
-      "STOP",
-      "SWAP"
+      "STOP"
     ],
     "green": [
-      "STOP",
-      "MERGE"
+      "STOP"
     ]
   },
   "map": [
-    "##########",
-    "#@A.a....#",
-    "#.######.#",
-    "#...1B#..#",
-    "###.#...##",
-    "#...#.CCc#",
-    "#.####.3X#",
-    "##########"
+    "#######",
+    "#@A^X.#",
+    "#######"
   ]
 }

@@ -30,6 +30,7 @@ class LevelData {
   final String? customFloor4;
   final String? customFloor5;
   final String? customFloor6;
+  final List<String>? customFloorMap;
 
   LevelData({
     required this.id,
@@ -56,6 +57,7 @@ class LevelData {
     this.customFloor4,
     this.customFloor5,
     this.customFloor6,
+    this.customFloorMap,
   });
 
   LevelData copyWith({
@@ -83,6 +85,7 @@ class LevelData {
     String? customFloor4,
     String? customFloor5,
     String? customFloor6,
+    List<String>? customFloorMap,
   }) {
     return LevelData(
       id: id ?? this.id,
@@ -109,6 +112,7 @@ class LevelData {
       customFloor4: customFloor4 ?? this.customFloor4,
       customFloor5: customFloor5 ?? this.customFloor5,
       customFloor6: customFloor6 ?? this.customFloor6,
+      customFloorMap: customFloorMap ?? this.customFloorMap,
     );
   }
 
@@ -138,6 +142,7 @@ class LevelData {
       if (customFloor4 != null) 'custom_floor_4': customFloor4,
       if (customFloor5 != null) 'custom_floor_5': customFloor5,
       if (customFloor6 != null) 'custom_floor_6': customFloor6,
+      if (customFloorMap != null) 'custom_floor_map': customFloorMap,
     };
   }
 
@@ -151,6 +156,10 @@ class LevelData {
     final initialRulesRaw = json['initialRules'];
     final allowedRulesRaw = json['allowedRules'];
     final mapRaw = json['map'];
+    final customFloorMapRaw = json['custom_floor_map'];
+    final List<String>? customFloorMap = customFloorMapRaw != null
+        ? List<String>.from(customFloorMapRaw as Iterable)
+        : null;
 
     if (id is! int ||
         id <= 0 ||
@@ -195,6 +204,26 @@ class LevelData {
       }
     }
 
+    if (customFloorMap != null) {
+      if (customFloorMap.length != height) {
+        throw FormatException('Level $id custom_floor_map height does not match height');
+      }
+      for (var rowIndex = 0; rowIndex < customFloorMap.length; rowIndex++) {
+        final row = customFloorMap[rowIndex];
+        if (row.length != width) {
+          throw FormatException(
+              'Level $id custom_floor_map row ${rowIndex + 1} width does not match width');
+        }
+        for (final rune in row.runes) {
+          final symbol = String.fromCharCode(rune);
+          if (symbol != '.' && (rune < 49 || rune > 54)) {
+            throw FormatException(
+                'Level $id custom_floor_map contains unsupported symbol "$symbol"');
+          }
+        }
+      }
+    }
+
     for (final color in ['red', 'blue', 'green']) {
       final initial = initialRules[color];
       final allowed = allowedRules[color];
@@ -234,6 +263,7 @@ class LevelData {
       customFloor4: json['custom_floor_4'] as String?,
       customFloor5: json['custom_floor_5'] as String?,
       customFloor6: json['custom_floor_6'] as String?,
+      customFloorMap: customFloorMap,
     );
   }
 }

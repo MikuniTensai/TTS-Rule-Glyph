@@ -1,12 +1,12 @@
 {
   "id": 18,
-  "name": "Transisi Berwaktu",
-  "description": "Injak lantai sensor untuk menyalin aturan, dan manfaatkan lantai berjalan sebelum aturan berwaktu habis.",
-  "width": 8,
-  "height": 7,
-  "movesLimit": 20,
+  "name": "Sirkuit Padat",
+  "description": "Semua gate inti muncul lagi dengan ruang gerak lebih kecil.",
+  "width": 10,
+  "height": 8,
+  "movesLimit": 25,
   "initialRules": {
-    "red": "PUSH",
+    "red": "STOP",
     "blue": "STOP",
     "green": "STOP"
   },
@@ -17,19 +17,21 @@
     ],
     "blue": [
       "STOP",
-      "PUSH"
+      "SWAP"
     ],
     "green": [
-      "STOP"
+      "STOP",
+      "MERGE"
     ]
   },
   "map": [
-    "########",
-    "#@.S...#",
-    "#A.#####",
-    "#..)..)#",
-    "#B.#####",
-    "#J....X#",
-    "########"
+    "##########",
+    "#@A.a.^..#",
+    "#.######.#",
+    "#...1B#..#",
+    "#####.^.##",
+    "#.....CCc#",
+    "#......3X#",
+    "##########"
   ]
 }

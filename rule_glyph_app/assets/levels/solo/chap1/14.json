@@ -1,10 +1,10 @@
 {
   "id": 14,
-  "name": "Sirkuit Padat",
-  "description": "Semua gate inti muncul lagi dengan ruang gerak lebih kecil.",
+  "name": "Audit Ketat",
+  "description": "Batas langkah mulai lebih sempit.",
   "width": 10,
   "height": 8,
-  "movesLimit": 25,
+  "movesLimit": 27,
   "initialRules": {
     "red": "STOP",
     "blue": "STOP",
@@ -26,10 +26,10 @@
   },
   "map": [
     "##########",
-    "#@A.a.^..#",
+    "#@A.a....#",
     "#.######.#",
     "#...1B#..#",
-    "#####.^.##",
+    "#####...##",
     "#.....CCc#",
     "#......3X#",
     "##########"

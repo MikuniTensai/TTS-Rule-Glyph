@@ -112,12 +112,21 @@ class GameController {
       onWallImageUploaded: (slotIndex, base64) => {
         if (!this.isEditorMode || !this.editorLevelData) return;
         this.editorLevelData[`custom_wall_${slotIndex}`] = base64;
+        if (slotIndex === 0) {
+          localStorage.setItem('rule_glyph_custom_wall_image', base64);
+          this.uiManager.applyCustomWallImage(base64);
+        }
         this.gridEngine.loadLevel(this.editorLevelData);
         this.autoSaveEditorState();
       },
       onWallImageReset: (slotIndex) => {
         if (!this.isEditorMode || !this.editorLevelData) return;
-        delete this.editorLevelData[`custom_wall_${slotIndex}`];
+        // Keep a null tombstone so cleanLevelForExport does not restore fallback data.
+        this.editorLevelData[`custom_wall_${slotIndex}`] = null;
+        if (slotIndex === 0) {
+          localStorage.removeItem('rule_glyph_custom_wall_image');
+          this.uiManager.applyCustomWallImage(null);
+        }
         this.gridEngine.loadLevel(this.editorLevelData);
         this.autoSaveEditorState();
       },
@@ -134,9 +143,9 @@ class GameController {
       onFloorImageReset: (slotKey) => {
         if (!this.isEditorMode || !this.editorLevelData) return;
         if (slotKey === 'bg') {
-          delete this.editorLevelData.custom_floor;
+          this.editorLevelData.custom_floor = null;
         } else {
-          delete this.editorLevelData[`custom_floor_${slotKey}`];
+          this.editorLevelData[`custom_floor_${slotKey}`] = null;
         }
         this.gridEngine.loadLevel(this.editorLevelData);
         this.autoSaveEditorState();
@@ -769,6 +778,42 @@ class GameController {
       }
       resizedData.map.push(row);
     }
+
+    // Build parallel custom floor map matrix if it was present
+    const oldFloorMap = currentData.custom_floor_map || this.editorLevelData?.custom_floor_map;
+    if (oldFloorMap) {
+      resizedData.custom_floor_map = [];
+      for (let y = 0; y < rows; y++) {
+        let floorRow = '';
+        for (let x = 0; x < cols; x++) {
+          if (y < oldFloorMap.length && x < oldFloorMap[y].length) {
+            floorRow += oldFloorMap[y][x];
+          } else {
+            floorRow += '.';
+          }
+        }
+        resizedData.custom_floor_map.push(floorRow);
+      }
+    }
+
+    // Copy metadata and custom images from old editorLevelData to prevent loss during resize/step updates
+    if (this.editorLevelData) {
+      if (this.editorLevelData.id !== undefined) resizedData.id = this.editorLevelData.id;
+      if (this.editorLevelData.name !== undefined) resizedData.name = this.editorLevelData.name;
+      if (this.editorLevelData.description !== undefined) resizedData.description = this.editorLevelData.description;
+      if (this.editorLevelData.custom_floor !== undefined) resizedData.custom_floor = this.editorLevelData.custom_floor;
+      
+      for (let i = 0; i <= 6; i++) {
+        const wallKey = `custom_wall_${i}`;
+        if (this.editorLevelData[wallKey] !== undefined) {
+          resizedData[wallKey] = this.editorLevelData[wallKey];
+        }
+        const floorKey = `custom_floor_${i}`;
+        if (this.editorLevelData[floorKey] !== undefined) {
+          resizedData[floorKey] = this.editorLevelData[floorKey];
+        }
+      }
+    }
     
     this.editorLevelData = resizedData;
     this.gridEngine.loadLevel(resizedData);
@@ -946,6 +991,22 @@ class GameController {
       allowedRules: cloneAllowedRules(this.allowedRules),
       map: data.map
     };
+
+    if (data.custom_floor_map) {
+      exportData.custom_floor_map = data.custom_floor_map;
+    }
+
+    for (let i = 0; i <= 6; i++) {
+      if (this.editorLevelData && this.editorLevelData[`custom_wall_${i}`] !== undefined) {
+        exportData[`custom_wall_${i}`] = this.editorLevelData[`custom_wall_${i}`];
+      }
+      if (this.editorLevelData && this.editorLevelData[`custom_floor_${i}`] !== undefined) {
+        exportData[`custom_floor_${i}`] = this.editorLevelData[`custom_floor_${i}`];
+      }
+    }
+    if (this.editorLevelData && this.editorLevelData.custom_floor !== undefined) {
+      exportData.custom_floor = this.editorLevelData.custom_floor;
+    }
 
     return exportData;
   }
@@ -1452,6 +1513,9 @@ class GameController {
     if (merged.custom_floor !== undefined) {
       cleaned.custom_floor = merged.custom_floor;
     }
+    if (merged.custom_floor_map !== undefined) {
+      cleaned.custom_floor_map = merged.custom_floor_map;
+    }
     return cleaned;
   }
 
@@ -1524,6 +1588,7 @@ class GameController {
       }
 
       const result = await response.json();
+      this.applyServerTextureSanitization(result.removedLogoFloors);
       console.log(`Autosaved Android JSON: ${result.soloLevels || 0} solo levels.`);
       this.diskAutosaveWarningShown = false;
       this.uiManager.setEditorSaveStatus('saved', 'ANDROID JSON SAVED');
@@ -1533,6 +1598,46 @@ class GameController {
         this.diskAutosaveWarningShown = true;
         console.warn('Disk autosave is unavailable. Run run_web.bat with Dart so Android JSON can be updated automatically.', e);
       }
+    }
+  }
+
+  applyServerTextureSanitization(entries) {
+    if (!Array.isArray(entries) || entries.length === 0) return;
+
+    let reloadActiveLevel = false;
+    entries.forEach((entry) => {
+      const mode = String(entry.mode);
+      const index = Number(entry.index);
+      const field = String(entry.field);
+      if (!/^custom_floor(?:_[0-6])?$/.test(field) || !Number.isInteger(index)) return;
+
+      const sourceLevel = LEVELS_BY_MODE[mode]?.[index];
+      if (sourceLevel) sourceLevel[field] = null;
+
+      const storageKey = `rule_glyph_campaign_edit_${mode}_${index}`;
+      try {
+        const stored = localStorage.getItem(storageKey);
+        if (stored) {
+          const level = JSON.parse(stored);
+          level[field] = null;
+          localStorage.setItem(storageKey, JSON.stringify(level));
+        }
+      } catch (error) {
+        console.warn('Failed to clean sanitized floor texture from local storage', error);
+      }
+
+      if (mode === this.currentMode && index === this.editingTemplateIndex && this.editorLevelData) {
+        this.editorLevelData[field] = null;
+        reloadActiveLevel = true;
+      }
+    });
+
+    if (reloadActiveLevel) {
+      localStorage.setItem(
+        `rule_glyph_editor_level_data_${this.currentMode}`,
+        JSON.stringify(this.editorLevelData)
+      );
+      this.gridEngine.loadLevel(this.editorLevelData);
     }
   }
 

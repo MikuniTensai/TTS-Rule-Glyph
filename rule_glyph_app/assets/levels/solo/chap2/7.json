@@ -1,10 +1,10 @@
 {
   "id": 29,
-  "name": "Bab 2: Rute Lanjutan 4",
-  "description": "Tantangan bab Bab 2: Rute Lanjutan.",
+  "name": "Bab 2: Rute Lanjutan 7",
+  "description": "Jalur Bercabang dengan batas langkah lebih ketat.",
   "width": 10,
-  "height": 8,
-  "movesLimit": 25,
+  "height": 9,
+  "movesLimit": 23,
   "initialRules": {
     "red": "STOP",
     "blue": "STOP",
@@ -26,12 +26,13 @@
   },
   "map": [
     "##########",
-    "#@.......#",
+    "#@A.a....#",
+    "#.######.#",
+    "#...1B#..#",
+    "#####...##",
+    "#.....CCc#",
+    "#..#...3X#",
     "#........#",
-    "#........#",
-    "#........#",
-    "#........#",
-    "#.......X#",
     "##########"
   ]
 }

@@ -1,0 +1,38 @@
+{
+  "id": 41,
+  "name": "Bab 3: Rute Padat 7",
+  "description": "Jalur Bercabang dengan batas langkah lebih ketat.",
+  "width": 10,
+  "height": 9,
+  "movesLimit": 22,
+  "initialRules": {
+    "red": "STOP",
+    "blue": "STOP",
+    "green": "STOP"
+  },
+  "allowedRules": {
+    "red": [
+      "STOP",
+      "PUSH"
+    ],
+    "blue": [
+      "STOP",
+      "SWAP"
+    ],
+    "green": [
+      "STOP",
+      "MERGE"
+    ]
+  },
+  "map": [
+    "##########",
+    "#@A.a....#",
+    "#.######.#",
+    "#...1B#..#",
+    "#####...##",
+    "#.....CCc#",
+    "#..#...3X#",
+    "#........#",
+    "##########"
+  ]
+}
